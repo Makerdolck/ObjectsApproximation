@@ -853,7 +853,7 @@ void COpenGLView::DrawOpenGL_Circle(GeomObjectApprox obj)
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Point
 void COpenGLView::DrawOpenGL_Point(PointApprox *obj)
 {
-	glPointSize(5);
+	glPointSize(10);
 
 	glBegin(GL_POINTS);
 

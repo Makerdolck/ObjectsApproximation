@@ -7,7 +7,7 @@
 // ---																										// Constructors
 CmmApprox::CmmApprox()
 {
-	PortNumber		= 0;
+	PortNumber		= 1;
 	MachineAccuracy = 3;
 	flagConnected	= false;
 
@@ -69,4 +69,5 @@ void CmmApprox::Disconect_()
 	if (!flagConnected || hLibrary == NULL)
 		return;
 	(*DisConnect)();
+	flagConnected = false;
 }
