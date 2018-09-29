@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCOpenGLTest", "Projects\M
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCOpenGLTestSelection", "Projects\MFCOpenGLTestSelection\try_OpenGL.vcxproj", "{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCDubrovkin", "Projects\MFCDubrovkin\MFCDubrovkin.vcxproj", "{F5623E67-A5BC-4DDB-BB90-518174F2BC77}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCKio", "Projects\MFCKio\MFCKio.vcxproj", "{F5623E67-A5BC-4DDB-BB90-518174F2BC77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

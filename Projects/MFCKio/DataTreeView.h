@@ -17,8 +17,8 @@
 #ifndef __DATA_TREE_VIEW_H__
 #define __DATA_TREE_VIEW_H__
 
-class CMFCDubrovkinView;
-#include "MFCDubrovkinView.h"
+class CMFCKioView;
+#include "MFCKioView.h"
 
 // CMyEditView view
 
@@ -45,7 +45,7 @@ public:								// Tree Item Root
 
 	CTreeCtrl		*pCtrl;
 
-	CMFCDubrovkinView	*pView;
+	CMFCKioView	*pView;
 
 	std::vector<ObjectApprox*>	*objectsArray;
 

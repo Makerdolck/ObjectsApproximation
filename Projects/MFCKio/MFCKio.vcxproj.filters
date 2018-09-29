@@ -19,15 +19,6 @@
     <ClCompile Include="MainFrm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MFCDubrovkin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCDubrovkinDoc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCDubrovkinView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\include\OpenGLView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,6 +94,15 @@
     <ClCompile Include="..\..\include\OutSource\Reference.cpp">
       <Filter>Source Files\OutSource</Filter>
     </ClCompile>
+    <ClCompile Include="MFCKioView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCKioDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCKio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -121,15 +121,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MainFrm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCDubrovkin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCDubrovkinDoc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCDubrovkinView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\OpenGLView.h">
@@ -216,6 +207,15 @@
     <ClInclude Include="..\..\include\OutSource\Reference.h">
       <Filter>Header Files\OutSource</Filter>
     </ClInclude>
+    <ClInclude Include="MFCKio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCKioDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCKioView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\buttons.bmp">
@@ -275,12 +275,6 @@
     <Image Include="res\menuimages_hc.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\MFCDubrovkin.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\MFCDubrovkinDoc.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="res\output_wnd.ico">
       <Filter>Resource Files</Filter>
     </Image>
@@ -323,12 +317,18 @@
     <Image Include="res\writesmall.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\MFCKio.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\MFCKioDoc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\MFCDubrovkin.rc2">
+    <None Include="res\ribbon.mfcribbon-ms">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="res\ribbon.mfcribbon-ms">
+    <None Include="res\MFCKio.rc2">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -380,7 +380,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MFCDubrovkin.rc">
+    <ResourceCompile Include="MFCKio.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

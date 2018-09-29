@@ -9,9 +9,7 @@
 struct MeshTriangles
 {
 	std::vector<PointGeometric>		points;
-
 	std::vector<VectorGeometric>	vectorsNormal;
-
 };
 
 

@@ -22,13 +22,13 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{F5623E67-A5BC-4DDB-BB90-518174F2BC77}</ProjectGuid>
     <Keyword>MFCProj</Keyword>
-    <RootNamespace>MFCDubrovkin</RootNamespace>
+    <RootNamespace>MFCKio</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <SccProjectName>SAK</SccProjectName>
     <SccAuxPath>SAK</SccAuxPath>
     <SccLocalPath>SAK</SccLocalPath>
     <SccProvider>SAK</SccProvider>
-    <ProjectName>MFCDubrovkin</ProjectName>
+    <ProjectName>MFCKio</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -230,9 +230,9 @@
     <ClInclude Include="DialogMeasure.h" />
     <ClInclude Include="DialogSettings.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="MFCDubrovkin.h" />
-    <ClInclude Include="MFCDubrovkinDoc.h" />
-    <ClInclude Include="MFCDubrovkinView.h" />
+    <ClInclude Include="MFCKio.h" />
+    <ClInclude Include="MFCKioDoc.h" />
+    <ClInclude Include="MFCKioView.h" />
     <ClInclude Include="DataTreeView.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -268,9 +268,9 @@
     <ClCompile Include="DialogMeasure.cpp" />
     <ClCompile Include="DialogSettings.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="MFCDubrovkin.cpp" />
-    <ClCompile Include="MFCDubrovkinDoc.cpp" />
-    <ClCompile Include="MFCDubrovkinView.cpp" />
+    <ClCompile Include="MFCKio.cpp" />
+    <ClCompile Include="MFCKioDoc.cpp" />
+    <ClCompile Include="MFCKioView.cpp" />
     <ClCompile Include="DataTreeView.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -280,7 +280,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MFCDubrovkin.rc" />
+    <ResourceCompile Include="MFCKio.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\buttons.bmp" />
@@ -302,8 +302,8 @@
     <Image Include="res\main.bmp" />
     <Image Include="res\menuimages.bmp" />
     <Image Include="res\menuimages_hc.bmp" />
-    <Image Include="res\MFCDubrovkin.ico" />
-    <Image Include="res\MFCDubrovkinDoc.ico" />
+    <Image Include="res\MFCKio.ico" />
+    <Image Include="res\MFCKioDoc.ico" />
     <Image Include="res\output_wnd.ico" />
     <Image Include="res\output_wnd_hc.ico" />
     <Image Include="res\properties.bmp" />
@@ -320,7 +320,7 @@
     <Image Include="res\writesmall.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\MFCDubrovkin.rc2" />
+    <None Include="res\MFCKio.rc2" />
     <None Include="res\ribbon.mfcribbon-ms" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
