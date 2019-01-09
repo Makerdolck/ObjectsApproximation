@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore">
+      <UniqueIdentifier>{62a2a0f7-4d8a-4d48-a289-ddf70a451d8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore\Geometric">
+      <UniqueIdentifier>{b697f510-3c93-4ae1-9e5a-b33b62dbbe88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore\ApproxObjects">
+      <UniqueIdentifier>{ce267dd5-95a2-42d7-aa57-83732541fb64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore\ApproxObjects\FlatGeometry">
+      <UniqueIdentifier>{29065d0b-c329-47a8-97f8-5efe9be20239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore\ApproxObjects\VolumeGeometry">
+      <UniqueIdentifier>{c0cd4cb5-7826-480d-be4b-11c7944b5d37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore">
+      <UniqueIdentifier>{9ef2fa5c-ab7f-4185-88d5-502b8989dcdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore\Geometric">
+      <UniqueIdentifier>{c209d500-3484-4e7a-91ba-9b880dffbf67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore\ApproxObjects">
+      <UniqueIdentifier>{cba238fd-cf7e-4206-843c-6a4c2dedb6f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore\ApproxObjects\FlatGeometry">
+      <UniqueIdentifier>{7f06e526-c553-451b-aebf-21ab502aaeaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore\ApproxObjects\VolumeGeometry">
+      <UniqueIdentifier>{f55d37f7-0179-49ad-85f4-ac342556e149}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\VectorGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\PointGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\PlaneGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\LineGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CircleGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\TorusApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\SphereApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CylinderApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ConeApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\GeomObjectApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\LineSegmentApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\RectangleApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\PointApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\PlaneApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CircleApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ApproximationApprox.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CmmApprox.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\DVector\Dvector.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\MeasureTypesEnum.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ObjectApproxC3D.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dataLine.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataPlane.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataPlane_.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataSphere.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataTorus.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataCone.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataCylinder.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\ApproximationCore\VectorGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\PointGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\PlaneGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\LineGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CircleGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\TorusApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\SphereApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CylinderApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ConeApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CircleApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\RectangleApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\PointApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\PlaneApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\LineSegmentApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\GeomObjectApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ObjectApproxC3D.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ApproximationApprox.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CmmApprox.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DVector\Dvector.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\MeasureTypesEnum.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\DVector\Dvector.inl">
+      <Filter>Header Files\ApproxCore</Filter>
+    </None>
+  </ItemGroup>
+</Project>

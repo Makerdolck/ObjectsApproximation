@@ -1,0 +1,16 @@
+﻿#include "vsn_light.h"
+#include "vsn_viewport.h"
+#include "vsn_scenecontent.h"
+#include "vsn_process.h"
+#include "vsn_processmanager.h"
+#include "vsn_prcamerapan.h"
+#include "vsn_prcamerapan.h"
+#include "vsn_prcamerazoom.h"
+#include "vsn_prcameraorbit.h"
+#include "vsn_prcamerarotate.h"
+#include "vsn_geomsamplesmath.h"
+#include "vsn_geomobject.h"
+#include "vsn_geomsamples.h"
+#include "vsn_scenesegment.h"
+
+using namespace C3DVision;
