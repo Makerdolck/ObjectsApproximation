@@ -37,7 +37,7 @@ int main()
 	double accuracy = 0.000001;
 
 	do
-	{
+	{  
 
 		enteredVariantMax++;
 		std::cout << enteredVariantMax << ". " << "Cylinder" << endl;
@@ -58,9 +58,9 @@ int main()
 
 		std::cin >> enteredNumber;
 
-	} while (enteredNumber <= 0 || enteredNumber > enteredVariantMax);
+	} while (enteredNumber < 0 || enteredNumber > enteredVariantMax);
 
-	system("cls");
+	system("cls");		// Clear cmd-window
 
 	ifstream file;	
 	
@@ -76,7 +76,37 @@ int main()
 	CircleApprox		circle;
 	RectangleApprox		rectangle;
 
+	VectorGeometric vectorR;
+
+	double gaussFreeCoefficients[3], gaussResult[3];
+	double **gaussCoefficients = new double*[3];
+	for (int i = 0; i < 3; i++)
+		gaussCoefficients[i] = new double[3];
+
 	switch (enteredNumber) {
+	case 0:
+		cout << "\t\t\t\t\t Test Mode \n\n\n\n";
+
+		//vectorR = VectorGeometric(PointGeometric(10,10,10), PointGeometric(-10, 20, 20), false); // newCenter and Point
+
+		//point.X = vectorR * VectorGeometric(0,1,0);	//VectorX
+		//point.Y = vectorR * VectorGeometric(0,0,1);	//VectorY
+		//point.Z = vectorR * VectorGeometric(-1,0,0);	//VectorZ
+
+		//cout << "Point: \t" << point.X << "\t" << point.Y << "\t" << point.Z << endl;
+		
+		
+
+		gaussCoefficients[0][0] = 2;	gaussCoefficients[0][1] = -1;	gaussCoefficients[0][2] = 0;	gaussFreeCoefficients[0] = 0;
+		gaussCoefficients[1][0] = -1;	gaussCoefficients[1][1] = 1;	gaussCoefficients[1][2] = 4;	gaussFreeCoefficients[1] = 13;
+		gaussCoefficients[2][0] = 1;	gaussCoefficients[2][1] = 2;	gaussCoefficients[2][2] = 3;	gaussFreeCoefficients[2] = 14;
+
+		GaussMethod(gaussCoefficients, &gaussFreeCoefficients[0], 3, &gaussResult[0]);
+
+		cout << gaussResult[0] << endl << gaussResult[1] << endl << gaussResult[2];
+
+
+		break;
 	case 1:
 
 		file.open("dataCylinder.txt");
@@ -101,7 +131,7 @@ int main()
 		cout << "Diametr: \t" << cylinder.Radius*2 << endl;
 		//cout << "Radius: \t" << cylinder.Radius			<< endl;
 		//cout << "Height: \t" << cylinder.Height			<< endl << endl;;
-
+		
 		break;
 	case 2:
 
@@ -284,3 +314,5 @@ int main()
 	_getch();
 	return 0;
 }
+
+

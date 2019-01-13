@@ -18,6 +18,8 @@ public:
 	double							Radius,
 									Height;
 
+	std::vector<PointGeometric>		Mesh;
+
 protected:
 	char							*objectApproxName;
 
@@ -29,7 +31,7 @@ public:
 	char*			GetName();
 
 protected:
-	virtual void	FindHeight(PointGeometric *points, int arraySize);
+	virtual void	FindHeight(PointGeometric *points, int arraySize);	
 	PointGeometric	CenterByPoints(PointGeometric *points, int arraySize);
 };
 

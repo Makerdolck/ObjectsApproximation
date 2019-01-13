@@ -9,7 +9,7 @@ ObjectApproxC3D::ObjectApproxC3D()
 	flagReady	= false;
 	Name		= L"Name";
 	objMath		= new GeomObjectApprox();
-	objSS		= new SceneSegment();
+	//objSS		= new SceneSegment();
 }
 
 ObjectApproxC3D::~ObjectApproxC3D()

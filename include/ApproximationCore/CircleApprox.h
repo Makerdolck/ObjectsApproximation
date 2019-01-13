@@ -13,15 +13,13 @@ class CircleApprox : public GeomObjectApprox
 private:
 	PlaneApprox		Plane;
 
-public:
-
-
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:
 	CircleApprox();
 	~CircleApprox();
 
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
+	void			Triangulation(double stepSize = 1.0f);
 
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);

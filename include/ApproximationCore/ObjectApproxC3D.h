@@ -4,14 +4,15 @@
 #define __OBJECT_APPROX_C3D_H__
 
 #include "GeomObjectApprox.h"
-#include "..\\vsn_scenesegment.h"
+#include <iostream>
+//#include "..\\vsn_scenesegment.h"
 
 class ObjectApproxC3D
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 public:
 	GeomObjectApprox	*objMath;
-	SceneSegment		*objSS;
+	//SceneSegment		*objSS;
 
 	std::wstring		Name;
 
