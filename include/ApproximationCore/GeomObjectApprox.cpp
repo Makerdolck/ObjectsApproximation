@@ -6,7 +6,7 @@
 // ---																										// Constructors
 GeomObjectApprox::GeomObjectApprox() { Radius = 0.0f; Height = 0.0f; objectApproxName = nullptr; }
 
-GeomObjectApprox::~GeomObjectApprox() { PointsForApprox.clear(); }
+GeomObjectApprox::~GeomObjectApprox() { PointsForApprox.clear(); Mesh.clear(); }
 // ---																										// Return the Object-Name
 char* GeomObjectApprox::GetName()
 {
