@@ -506,26 +506,27 @@ void CExampleView::DrawOpenGL_Cylinder()
 
 
 		
-		//// Bottom center point
-		//glColor3d(1, 0, 0);
-		//glPointSize(5);
-		//glBegin(GL_POINTS);
-		//	glVertex3d(cylinder.PointBottomSurface.X, cylinder.PointBottomSurface.Y, cylinder.PointBottomSurface.Z);
-		//glEnd();
+		// Bottom center point
+		/*glColor3d(1, 0, 0);
+		glPointSize(5);
+		glBegin(GL_POINTS);
+			glVertex3d(cylinder.PointBottomSurface.X, cylinder.PointBottomSurface.Y, cylinder.PointBottomSurface.Z);
+		glEnd();*/
 
-		//glBegin(GL_LINE_LOOP);
-		//for (i = 0; i < cylinder.pointsTopCircleEdge.size(); i++)
-		//{
-		//	glVertex3f(cylinder.pointsTopCircleEdge[i].X, cylinder.pointsTopCircleEdge[i].Y, cylinder.pointsTopCircleEdge[i].Z);
-		//}
-		//glEnd();
+		glColor3d(1, 0, 0);
+		glBegin(GL_LINE_LOOP);
+		for (i = 0; i < cylinder.pointsTopCircleEdge_Copy.size(); i++)
+		{
+			glVertex3f(cylinder.pointsTopCircleEdge_Copy[i].X, cylinder.pointsTopCircleEdge_Copy[i].Y, cylinder.pointsTopCircleEdge_Copy[i].Z);
+		}
+		glEnd();
 
-		//glBegin(GL_LINE_LOOP);
-		//for (i = 0; i < cylinder.pointsTBttmCircleEdge.size(); i++)
-		//{
-		//	glVertex3f(cylinder.pointsTBttmCircleEdge[i].X, cylinder.pointsTBttmCircleEdge[i].Y, cylinder.pointsTBttmCircleEdge[i].Z);
-		//}
-		//glEnd();
+		glBegin(GL_LINE_LOOP);
+		for (i = 0; i < cylinder.pointsBottomCircleEdge_Copy.size(); i++)
+		{
+			glVertex3f(cylinder.pointsBottomCircleEdge_Copy[i].X, cylinder.pointsBottomCircleEdge_Copy[i].Y, cylinder.pointsBottomCircleEdge_Copy[i].Z);
+		}
+		glEnd();
 	}
 
 	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
@@ -682,7 +683,7 @@ void CExampleView::DrawOpenGL_Cone()
 		file.close();
 		points.clear();
 
-		glColor3f(1.0f, 0.85f, 0.85f);				// текущий цвет примитивов
+		glColor3f(0.85f, 0.85f, 0.9f);				// текущий цвет примитивов
 
 		glBegin(GL_TRIANGLES);
 		int i;
@@ -693,30 +694,33 @@ void CExampleView::DrawOpenGL_Cone()
 			glVertex3f(coneApprox.Mesh[i - 2].X, coneApprox.Mesh[i - 2].Y, coneApprox.Mesh[i - 2].Z);
 		}
 		glEnd();
-	}
+	
 
 
 		//// Bottom center point
 		//glColor3d(1, 0, 0);
 		//glPointSize(5);
 		//glBegin(GL_POINTS);
-		//	glVertex3d(cylinder.PointBottomSurface.X, cylinder.PointBottomSurface.Y, cylinder.PointBottomSurface.Z);
+		//	glVertex3d(coneApprox.PointBottomSurface.X, coneApprox.PointBottomSurface.Y, coneApprox.PointBottomSurface.Z);
 		//glEnd();
 
-		//glBegin(GL_LINE_LOOP);
-		//for (i = 0; i < cylinder.pointsTopCircleEdge.size(); i++)
-		//{
-		//	glVertex3f(cylinder.pointsTopCircleEdge[i].X, cylinder.pointsTopCircleEdge[i].Y, cylinder.pointsTopCircleEdge[i].Z);
-		//}
-		//glEnd();
+		glColor3d(1, 0, 0);
+		glBegin(GL_LINE_LOOP);
+		for (i = 0; i < coneApprox.pointsTopCircleEdge_Copy.size(); i++)
+		{
+			glVertex3f(coneApprox.pointsTopCircleEdge_Copy[i].X, coneApprox.pointsTopCircleEdge_Copy[i].Y, coneApprox.pointsTopCircleEdge_Copy[i].Z);
+		}
+		glEnd();
 
-		//glBegin(GL_LINE_LOOP);
-		//for (i = 0; i < cylinder.pointsTBttmCircleEdge.size(); i++)
-		//{
-		//	glVertex3f(cylinder.pointsTBttmCircleEdge[i].X, cylinder.pointsTBttmCircleEdge[i].Y, cylinder.pointsTBttmCircleEdge[i].Z);
-		//}
-		//glEnd();
+		glBegin(GL_LINE_LOOP);
+		for (i = 0; i < coneApprox.pointsBottomCircleEdge_Copy.size(); i++)
+		{
+			glVertex3f(coneApprox.pointsBottomCircleEdge_Copy[i].X, coneApprox.pointsBottomCircleEdge_Copy[i].Y, coneApprox.pointsBottomCircleEdge_Copy[i].Z);
+		}
+		glEnd();
 
+
+	}
 	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
 }
 ///////////////////////////////////////////////////////

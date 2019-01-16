@@ -4,7 +4,7 @@
 
 
 // ---																										// Constructors
-CircleGeometric::CircleGeometric() { Radius = 1; }
+CircleGeometric::CircleGeometric() { Point = PointGeometric(); Radius = 1; }
 CircleGeometric::CircleGeometric(PointGeometric point1, PointGeometric point2, PointGeometric point3)
 {
 	VectorGeometric vectorByP2P1, vectorByP3P2, vectorNormal;
@@ -38,6 +38,8 @@ CircleGeometric::CircleGeometric(PointGeometric point1, PointGeometric point2, P
 	Point.Z =	VectorGeometric(vectorByP2P1.X, vectorByP2P1.Y, scalarV21P21, false) *
 				(VectorGeometric(vectorByP3P2.X, vectorByP3P2.Y, scalarV32P32, false) ^
 					VectorGeometric(vectorNormal.X, vectorNormal.Y, scalarVNormalP1, false)) / scalarThreePlanesIntersection;
+
+	Radius = Point.DistanceToPoint(point1);
 
 	//CDNode P0(point1.X, point1.Y, point1.Z);
 	//CDNode P1(point2.X, point2.Y, point2.Z);

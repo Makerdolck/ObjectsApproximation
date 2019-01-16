@@ -11,11 +11,15 @@ class ConeApprox : public GeomObjectApprox
 //	--- --- --- --- --- --- --- --- ---	// Properties
 private:
 	PointGeometric	PointBottomSurfaceCenter;
+	PointGeometric	PointTopSurfaceCenter;
 
 public:
 	double	Angle,
 			RadiusSmaller,
 			HeightPhantom;
+
+	std::vector<PointGeometric> pointsTopCircleEdge_Copy;
+	std::vector<PointGeometric> pointsBottomCircleEdge_Copy;
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:

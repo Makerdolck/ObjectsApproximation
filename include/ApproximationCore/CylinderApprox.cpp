@@ -129,7 +129,7 @@ void CylinderApprox::Triangulation(double stepSize)
 	PointGeometric	tmpPoint;
 
 	std::vector<PointGeometric> pointsBottomCircleEdge;
-	std::vector<PointGeometric> pointsBottomCircleEdge_Copy;
+	//std::vector<PointGeometric> pointsBottomCircleEdge_Copy;
 
 	//	---	---	--- Points on bottom Circle Edge
 
@@ -207,20 +207,7 @@ void CylinderApprox::Triangulation(double stepSize)
 																		vectorZ);
 	}
 
-
-	//	---	---	---	---	---	Top&Bottom Circles for test	---	---	---	---	---	---	---	\\//
-
-	/*pointsTopCircleEdge.insert(pointsTopCircleEdge.end(), pointsBottomCircleEdge.begin(), pointsBottomCircleEdge.end());
-
-	tmpLine.Vector = Line.Vector;
-	for (int i = 0; i < pointsTopCircleEdge.size(); i++)
-	{
-		tmpLine.Point = pointsTopCircleEdge[i];
-		pointsTopCircleEdge[i] = tmpLine.CreatePointOnDistance(Height);
-	}
-	pointsTBttmCircleEdge.insert(pointsTBttmCircleEdge.end(), pointsBottomCircleEdge.begin(), pointsBottomCircleEdge.end());*/
-
-	//	---	---	--- Bottom surface (Mesh)
+	//	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	--- Bottom&Top surfaces (Mesh)
 
 	std::vector<PointGeometric> pointsSecondCircle;
 
@@ -348,7 +335,7 @@ void CylinderApprox::Triangulation(double stepSize)
 	pointsBottomCircleEdge.clear();
 	pointsBottomCircleEdge.insert(pointsBottomCircleEdge.end(), pointsBottomCircleEdge_Copy.begin(), pointsBottomCircleEdge_Copy.end());
 	
-	//	---	---	---	--- Lateral Surface (Mesh)
+	//	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	Lateral Surface (Mesh)
 	
 	tmpLine.Vector = Line.Vector;
 
@@ -357,27 +344,27 @@ void CylinderApprox::Triangulation(double stepSize)
 	for (double stepSum = stepSize; stepSum <= Height; stepSum += tmpStepSize)
 	{
 		tmpLine.Point = pointsBottomCircleEdge[0];
-		pointsSecondCircle.push_back(tmpLine.CreatePointOnDistance(stepSize));
+		pointsSecondCircle.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 
 		for (int i = 1; i < pointsBottomCircleEdge.size(); i++)
 		{
 			tmpLine.Point = pointsBottomCircleEdge[i];
-			pointsSecondCircle.push_back(tmpLine.CreatePointOnDistance(stepSize));
+			pointsSecondCircle.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 
 
 			tmpLine.Point = pointsBottomCircleEdge[i-1];
 			
 			// First triangle
 			Mesh.push_back(pointsBottomCircleEdge[i - 1]);
-			Mesh.push_back(tmpLine.CreatePointOnDistance(stepSize));
+			Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 			Mesh.push_back(pointsBottomCircleEdge[i]);
 
 			// Second triangle
-			Mesh.push_back(tmpLine.CreatePointOnDistance(stepSize));
+			Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 
 			tmpLine.Point = pointsBottomCircleEdge[i];
 
-			Mesh.push_back(tmpLine.CreatePointOnDistance(stepSize));
+			Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 			Mesh.push_back(pointsBottomCircleEdge[i]);			
 		}
 
@@ -385,15 +372,15 @@ void CylinderApprox::Triangulation(double stepSize)
 
 		// First triangle
 		Mesh.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
-		Mesh.push_back(tmpLine.CreatePointOnDistance(stepSize));
+		Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 		Mesh.push_back(pointsBottomCircleEdge[0]);
 
 		// Second triangle
-		Mesh.push_back(tmpLine.CreatePointOnDistance(stepSize));
+		Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 
 		tmpLine.Point = pointsBottomCircleEdge[0];
 
-		Mesh.push_back(tmpLine.CreatePointOnDistance(stepSize));
+		Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 		Mesh.push_back(pointsBottomCircleEdge[0]);
 
 		
@@ -408,9 +395,21 @@ void CylinderApprox::Triangulation(double stepSize)
 	}
 
 
+
+	//	---	---	---	---	---	Top Circle Edge for test	---	---	---	---	---	---	---	\\//
+
+	pointsTopCircleEdge_Copy.insert(pointsTopCircleEdge_Copy.end(), pointsBottomCircleEdge_Copy.begin(), pointsBottomCircleEdge_Copy.end());
+
+	tmpLine.Vector = Line.Vector;
+	for (int i = 0; i < pointsTopCircleEdge_Copy.size(); i++)
+	{
+		tmpLine.Point = pointsTopCircleEdge_Copy[i];
+		pointsTopCircleEdge_Copy[i] = tmpLine.CreatePointOnDistance(Height);
+	}
+	
 	
 	pointsSecondCircle.clear();
 	pointsBottomCircleEdge.clear();
-	pointsBottomCircleEdge_Copy.clear();
+	//pointsBottomCircleEdge_Copy.clear();
 }
 
