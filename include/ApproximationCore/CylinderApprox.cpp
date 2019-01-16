@@ -116,7 +116,7 @@ void CylinderApprox::FindByPoints(PointGeometric *points, int arraySize, double 
 
 	FindHeight(points, arraySize);
 
-	PointBottomSurface = Line.CreatePointOnDistance(Height / 2, false);
+	PointBottomSurfaceCenter = Line.CreatePointOnDistance(Height / 2, false);
 
 	//	---	---	--- Triangulation
 
@@ -130,10 +130,6 @@ void CylinderApprox::Triangulation(double stepSize)
 
 	std::vector<PointGeometric> pointsBottomCircleEdge;
 	std::vector<PointGeometric> pointsBottomCircleEdge_Copy;
-
-	int countPointsBottomCircle = 0;
-
-	double coefficients[3][3], freeCoefficients[3], gausResult[3];
 
 	//	---	---	--- Points on bottom Circle Edge
 
@@ -195,42 +191,26 @@ void CylinderApprox::Triangulation(double stepSize)
 
 	PlaneGeometric tmpPlane = Line;
 
-	tmpPoint = PointBottomSurface;	// Center point of new coordinate system
+	tmpPoint = PointBottomSurfaceCenter;	// Center point of new coordinate system
 
 	VectorGeometric vectorZ, vectorY, vectorX = VectorGeometric(tmpPoint, PointGeometric(tmpPoint.X + 10, tmpPoint.Y + 10, tmpPoint.Z + 10));
 	vectorX = tmpPlane.VectorProjection(vectorX);
 	vectorZ = Line.Vector;
 	vectorY = vectorX ^ vectorZ;
 
-	double gaussFreeCoefficients[3], gaussResult[3];
-	double **gaussCoefficients = new double*[3];
-	for (int i = 0; i < 3; i++)
-		gaussCoefficients[i] = new double[3];
-
-	countPointsBottomCircle = pointsBottomCircleEdge.size();	// Count of points on one circle Edge
-
-	/*Mesh.insert(Mesh.end(), pointsBottomCircleEdge.begin(), pointsBottomCircleEdge.end());*/
-
-	for (int i = 0; i < countPointsBottomCircle; i++)
+	for (int i = 0; i < pointsBottomCircleEdge.size(); i++)
 	{
-		gaussCoefficients[0][0] = vectorX.X;	gaussCoefficients[0][1] = vectorX.Y;	gaussCoefficients[0][2] = vectorX.Z;
-		gaussFreeCoefficients[0] = pointsBottomCircleEdge[i].X + tmpPoint.X*vectorX.X + tmpPoint.Y*vectorX.Y + tmpPoint.Z*vectorX.Z;
-
-		gaussCoefficients[1][0] = vectorY.X;	gaussCoefficients[1][1] = vectorY.Y;	gaussCoefficients[1][2] = vectorY.Z;
-		gaussFreeCoefficients[1] = pointsBottomCircleEdge[i].Y + tmpPoint.X*vectorY.X + tmpPoint.Y*vectorY.Y + tmpPoint.Z*vectorY.Z;
-
-		gaussCoefficients[2][0] = vectorZ.X;	gaussCoefficients[2][1] = vectorZ.Y;	gaussCoefficients[2][2] = vectorZ.Z;
-		gaussFreeCoefficients[2] = pointsBottomCircleEdge[i].Z + tmpPoint.X*vectorZ.X + tmpPoint.Y*vectorZ.Y + tmpPoint.Z*vectorZ.Z;
-
-		GaussMethod(gaussCoefficients, &gaussFreeCoefficients[0], 3, &gaussResult[0]);
-
-
-		pointsBottomCircleEdge[i] = PointGeometric(gaussResult[0], gaussResult[1], gaussResult[2]);
+		pointsBottomCircleEdge[i] = TransferPointToNewCoordinateSystem(	pointsBottomCircleEdge[i], 
+																		tmpPoint, 
+																		vectorX, 
+																		vectorY, 
+																		vectorZ);
 	}
 
 
 	//	---	---	---	---	---	Top&Bottom Circles for test	---	---	---	---	---	---	---	\\//
-	pointsTopCircleEdge.insert(pointsTopCircleEdge.end(), pointsBottomCircleEdge.begin(), pointsBottomCircleEdge.end());
+
+	/*pointsTopCircleEdge.insert(pointsTopCircleEdge.end(), pointsBottomCircleEdge.begin(), pointsBottomCircleEdge.end());
 
 	tmpLine.Vector = Line.Vector;
 	for (int i = 0; i < pointsTopCircleEdge.size(); i++)
@@ -238,7 +218,7 @@ void CylinderApprox::Triangulation(double stepSize)
 		tmpLine.Point = pointsTopCircleEdge[i];
 		pointsTopCircleEdge[i] = tmpLine.CreatePointOnDistance(Height);
 	}
-	pointsTBttmCircleEdge.insert(pointsTBttmCircleEdge.end(), pointsBottomCircleEdge.begin(), pointsBottomCircleEdge.end());
+	pointsTBttmCircleEdge.insert(pointsTBttmCircleEdge.end(), pointsBottomCircleEdge.begin(), pointsBottomCircleEdge.end());*/
 
 	//	---	---	--- Bottom surface (Mesh)
 
@@ -255,7 +235,7 @@ void CylinderApprox::Triangulation(double stepSize)
 			// Point between two points on (outer) circle
 			tmpPoint = tmpLine.CreatePointOnDistance(pointsBottomCircleEdge[i - 1].DistanceToPoint(pointsBottomCircleEdge[i]) / 2);
 
-			tmpLine.Vector = VectorGeometric(tmpPoint, PointBottomSurface);
+			tmpLine.Vector = VectorGeometric(tmpPoint, PointBottomSurfaceCenter);
 			tmpLine.Point = tmpPoint;
 			// Point on new (inner) circle 
 			tmpPoint = tmpLine.CreatePointOnDistance(stepSize);
@@ -330,13 +310,13 @@ void CylinderApprox::Triangulation(double stepSize)
 		
 	}
 
-	//	---	Triangles on top and bottom surfaces (which connectwith center point)
+	//	---	Triangles on top and bottom surfaces (which connect with center point)
 	for (int i = 1; i < pointsBottomCircleEdge.size(); i++)
 	{
 		//	.... Triangles on bottom surface
 		Mesh.push_back(pointsBottomCircleEdge[i - 1]);
 		Mesh.push_back(pointsBottomCircleEdge[i]);
-		Mesh.push_back(PointBottomSurface);
+		Mesh.push_back(PointBottomSurfaceCenter);
 
 		tmpLine.Vector = Line.Vector;
 
@@ -345,7 +325,7 @@ void CylinderApprox::Triangulation(double stepSize)
 		Mesh.push_back(tmpLine.CreatePointOnDistance(Height));
 		tmpLine.Point = pointsBottomCircleEdge[i];
 		Mesh.push_back(tmpLine.CreatePointOnDistance(Height));
-		tmpLine.Point = PointBottomSurface;
+		tmpLine.Point = PointBottomSurfaceCenter;
 		Mesh.push_back(tmpLine.CreatePointOnDistance(Height));
 		//	... ||
 	}
@@ -353,7 +333,7 @@ void CylinderApprox::Triangulation(double stepSize)
 	//	... Last triangles of top and bottom surfaces
 	Mesh.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
 	Mesh.push_back(pointsBottomCircleEdge[0]);
-	Mesh.push_back(PointBottomSurface);
+	Mesh.push_back(PointBottomSurfaceCenter);
 
 	tmpLine.Vector = Line.Vector;
 
@@ -361,7 +341,7 @@ void CylinderApprox::Triangulation(double stepSize)
 	Mesh.push_back(tmpLine.CreatePointOnDistance(Height));
 	tmpLine.Point = pointsBottomCircleEdge[0];
 	Mesh.push_back(tmpLine.CreatePointOnDistance(Height));
-	tmpLine.Point = PointBottomSurface;
+	tmpLine.Point = PointBottomSurfaceCenter;
 	Mesh.push_back(tmpLine.CreatePointOnDistance(Height));
 	//	...	||
 	
@@ -371,13 +351,15 @@ void CylinderApprox::Triangulation(double stepSize)
 	//	---	---	---	--- Lateral Surface (Mesh)
 	
 	tmpLine.Vector = Line.Vector;
+
+	double tmpStepSize = stepSize;
 	
-	for (double stepSum = stepSize; stepSum <= Height; stepSum += stepSize)
+	for (double stepSum = stepSize; stepSum <= Height; stepSum += tmpStepSize)
 	{
 		tmpLine.Point = pointsBottomCircleEdge[0];
 		pointsSecondCircle.push_back(tmpLine.CreatePointOnDistance(stepSize));
 
-		for (int i = 1; i < countPointsBottomCircle; i++)
+		for (int i = 1; i < pointsBottomCircleEdge.size(); i++)
 		{
 			tmpLine.Point = pointsBottomCircleEdge[i];
 			pointsSecondCircle.push_back(tmpLine.CreatePointOnDistance(stepSize));
@@ -399,10 +381,10 @@ void CylinderApprox::Triangulation(double stepSize)
 			Mesh.push_back(pointsBottomCircleEdge[i]);			
 		}
 
-		tmpLine.Point = pointsBottomCircleEdge[countPointsBottomCircle-1];
+		tmpLine.Point = pointsBottomCircleEdge[pointsBottomCircleEdge.size()-1];
 
 		// First triangle
-		Mesh.push_back(pointsBottomCircleEdge[countPointsBottomCircle - 1]);
+		Mesh.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
 		Mesh.push_back(tmpLine.CreatePointOnDistance(stepSize));
 		Mesh.push_back(pointsBottomCircleEdge[0]);
 
@@ -420,7 +402,7 @@ void CylinderApprox::Triangulation(double stepSize)
 
 		if ((Height - stepSum) < stepSize && (Height - stepSum)!=0)
 		{
-			stepSize = Height - stepSum;
+			tmpStepSize = Height - stepSum;
 			/*stepSum = Height - stepSize;*/
 		}
 	}
@@ -431,3 +413,4 @@ void CylinderApprox::Triangulation(double stepSize)
 	pointsBottomCircleEdge.clear();
 	pointsBottomCircleEdge_Copy.clear();
 }
+

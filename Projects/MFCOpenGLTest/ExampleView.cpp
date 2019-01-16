@@ -139,6 +139,8 @@ int CExampleView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
 	glMatrixMode(GL_MODELVIEW);
 
+	
+
     return 0;
 }
 // ---																							// On Destroy
@@ -204,11 +206,15 @@ void CExampleView::OnDraw(CDC* pDC)
 	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
 
 
-	DrawOpenGL_Cube(10, 15, 0, 0);
-	DrawOpenGL_Cube(10, 0, 0, 0);
+	////DrawOpenGL_Cube(10, 15, 0, 0);
+	//DrawOpenGL_Cube(10, 0, 0, 0);
 
 	DrawOpenGL_Circle();
 	DrawOpenGL_Cylinder();
+	DrawOpenGL_Point();
+	DrawOpenGL_LineSegment();
+	DrawOpenGL_PlaneViaRectangle();
+	DrawOpenGL_Cone();
 
 	////	---	---	---
 	//std::ifstream					file;
@@ -249,7 +255,7 @@ void CExampleView::OnDraw(CDC* pDC)
 	glFinish();                                           //Blocks until all OpenGL execution is complete
 	//SwapBuffers(wglGetCurrentDC());                       //Exchanges the front and back buffers 
 }
-// ---																							// On Draw
+// ---																							// On Size
 void CExampleView::OnSize(UINT nType, int cx, int cy)
 {
 	CView::OnSize(nType, cx, cy);
@@ -450,15 +456,18 @@ void CExampleView::DrawOpenGL_Circle()
 		}		
 		glEnd();
 
-		glColor3d(1, 0, 0);
+		/*glColor3d(1, 0, 0);
 		glPointSize(3);
 		glBegin(GL_POINTS);
 			glVertex3d(circle.Line.Point.X, circle.Line.Point.Y, circle.Line.Point.Z);
-		glEnd();
+		glEnd();*/
 
 	}
 
 	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+
+	file.close();
+	points.clear();
 }
 ///////////////////////////////////////////////////////
 
@@ -487,7 +496,7 @@ void CExampleView::DrawOpenGL_Cylinder()
 
 		glBegin(GL_TRIANGLES);
 		int i;
-		for (i = 2; i < cylinder.Mesh.size() /*&&i <= dd*/; i+=3)
+		for (i = 2; i < cylinder.Mesh.size(); i+=3)
 		{
 			glVertex3f(cylinder.Mesh[i].X, cylinder.Mesh[i].Y, cylinder.Mesh[i].Z);
 			glVertex3f(cylinder.Mesh[i - 1].X, cylinder.Mesh[i - 1].Y, cylinder.Mesh[i - 1].Z);
@@ -520,6 +529,194 @@ void CExampleView::DrawOpenGL_Cylinder()
 	}
 
 	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+
+	file.close();
+	points.clear();
 }
 ///////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Point
+void CExampleView::DrawOpenGL_Point()
+{
+
+	std::ifstream					file;
+	PointApprox						pointApprox;
+	std::vector <PointGeometric>	points;
+	PointGeometric					point;
+	double							accuracy = 0.00001;
+
+	file.open("dataSphere.txt");
+	if (file.is_open())
+	{
+		while (!file.eof())					// Reading File "data.txt"
+		{
+			file >> point.X >> point.Y >> point.Z;
+			points.push_back(point);
+			//points.Add(point);
+		}
+
+		pointApprox.FindByPoints(&points[0], (int)points.size(), accuracy);
+
+
+		
+		glColor3d(1, 1, 0);
+		glPointSize(5);
+		glBegin(GL_POINTS);
+		glVertex3d(pointApprox.Line.Point.X, pointApprox.Line.Point.Y, pointApprox.Line.Point.Z);
+		glEnd();
+
+	}
+
+	glPointSize(1);
+	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+
+	file.close();
+	points.clear();
+}
+///////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL LineSegment
+void CExampleView::DrawOpenGL_LineSegment()
+{
+	std::ifstream					file;
+	LineSegmentApprox				lineApprox;
+	std::vector <PointGeometric>	points;
+	PointGeometric					point;
+	double							accuracy = 0.00001;
+
+	file.open("dataLine.txt");
+	if (file.is_open())
+	{
+		while (!file.eof())					// Reading File "data.txt"
+		{
+			file >> point.X >> point.Y >> point.Z;
+			points.push_back(point);
+			//points.Add(point);
+		}
+
+		lineApprox.FindByPoints(&points[0], (int)points.size(), accuracy);
+
+
+
+		glColor3d(1, 0, 0);
+		//glPointSize(5);
+		glLineWidth(2);
+		glBegin(GL_LINES);
+			glVertex3d(lineApprox.PointStart.X, lineApprox.PointStart.Y, lineApprox.PointStart.Z);
+			glVertex3d(lineApprox.PointEnd.X, lineApprox.PointEnd.Y, lineApprox.PointEnd.Z);
+		glEnd();
+		
+	}
+
+	glLineWidth(1);
+	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+
+	file.close();
+	points.clear();
+}
+///////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Plane (Rectangle)
+void CExampleView::DrawOpenGL_PlaneViaRectangle()
+{
+	std::ifstream					file;
+	RectangleApprox					planeApprox;
+	std::vector <PointGeometric>	points;
+	PointGeometric					point;
+	double							accuracy = 0.00001;
+
+	file.open("dataPlane.txt");
+	if (file.is_open())
+	{
+		while (!file.eof())					// Reading File "data.txt"
+		{
+			file >> point.X >> point.Y >> point.Z;
+			points.push_back(point);
+			//points.Add(point);
+		}
+
+		planeApprox.FindByPoints(&points[0], (int)points.size(), accuracy);
+
+		glBegin(GL_TRIANGLES);
+		int i;
+		for (i = 2; i < planeApprox.Mesh.size(); i += 3)
+		{
+			glVertex3f(planeApprox.Mesh[i].X,		planeApprox.Mesh[i].Y,		planeApprox.Mesh[i].Z);
+			glVertex3f(planeApprox.Mesh[i - 1].X,	planeApprox.Mesh[i - 1].Y,	planeApprox.Mesh[i - 1].Z);
+			glVertex3f(planeApprox.Mesh[i - 2].X,	planeApprox.Mesh[i - 2].Y,	planeApprox.Mesh[i - 2].Z);
+		}
+		glEnd();
+	}
+
+	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+
+	file.close();
+	points.clear();
+}
+///////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Cone
+void CExampleView::DrawOpenGL_Cone()
+{
+
+
+	std::ifstream					file;
+	std::vector <PointGeometric>	points;
+	ConeApprox						coneApprox;
+	PointGeometric					point;
+	double							accuracy = 0.00001;
+
+	file.open("dataCone.txt");
+	if (file.is_open())
+	{
+		while (!file.eof())					// Reading File "data.txt"
+		{
+			file >> point.X >> point.Y >> point.Z;
+			points.push_back(point);
+			//points.Add(point);
+		}
+
+		coneApprox.FindByPoints(&points[0], (int)points.size(), accuracy);
+
+
+		file.close();
+		points.clear();
+
+		glColor3f(1.0f, 0.85f, 0.85f);				// текущий цвет примитивов
+
+		glBegin(GL_TRIANGLES);
+		int i;
+		for (i = 2; i < coneApprox.Mesh.size(); i += 3)
+		{
+			glVertex3f(coneApprox.Mesh[i].X, coneApprox.Mesh[i].Y, coneApprox.Mesh[i].Z);
+			glVertex3f(coneApprox.Mesh[i - 1].X, coneApprox.Mesh[i - 1].Y, coneApprox.Mesh[i - 1].Z);
+			glVertex3f(coneApprox.Mesh[i - 2].X, coneApprox.Mesh[i - 2].Y, coneApprox.Mesh[i - 2].Z);
+		}
+		glEnd();
+	}
+
+
+		//// Bottom center point
+		//glColor3d(1, 0, 0);
+		//glPointSize(5);
+		//glBegin(GL_POINTS);
+		//	glVertex3d(cylinder.PointBottomSurface.X, cylinder.PointBottomSurface.Y, cylinder.PointBottomSurface.Z);
+		//glEnd();
+
+		//glBegin(GL_LINE_LOOP);
+		//for (i = 0; i < cylinder.pointsTopCircleEdge.size(); i++)
+		//{
+		//	glVertex3f(cylinder.pointsTopCircleEdge[i].X, cylinder.pointsTopCircleEdge[i].Y, cylinder.pointsTopCircleEdge[i].Z);
+		//}
+		//glEnd();
+
+		//glBegin(GL_LINE_LOOP);
+		//for (i = 0; i < cylinder.pointsTBttmCircleEdge.size(); i++)
+		//{
+		//	glVertex3f(cylinder.pointsTBttmCircleEdge[i].X, cylinder.pointsTBttmCircleEdge[i].Y, cylinder.pointsTBttmCircleEdge[i].Z);
+		//}
+		//glEnd();
+
+	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+}
+///////////////////////////////////////////////////////

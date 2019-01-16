@@ -10,10 +10,10 @@ class CylinderApprox : public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 public:
-	PointGeometric				PointBottomSurface;
+	PointGeometric				PointBottomSurfaceCenter;
 
-	std::vector<PointGeometric> pointsTopCircleEdge;
-	std::vector<PointGeometric> pointsTBttmCircleEdge;
+	//std::vector<PointGeometric> pointsTopCircleEdge;
+	//std::vector<PointGeometric> pointsTBttmCircleEdge;
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:

@@ -10,7 +10,7 @@ class ConeApprox : public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 private:
-	PointGeometric	PointForBottomCenter;
+	PointGeometric	PointBottomSurfaceCenter;
 
 public:
 	double	Angle,
@@ -23,6 +23,7 @@ public:
 	~ConeApprox();
 
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
+	void			Triangulation(double stepSize = 1.0f);
 
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);

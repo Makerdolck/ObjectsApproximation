@@ -33,12 +33,13 @@ public:
 	RectangleApprox();
 	~RectangleApprox();
 
+	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
+	void			Triangulation(double stepSize = 1.0f);
+
 private:
 	void			FindWidthHeightMinMaxXY(PointGeometric *points, int arraySize);
 	void			FindPointsCoordinates(PointGeometric *points, int arraySize);
 
-public:
-	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
 };

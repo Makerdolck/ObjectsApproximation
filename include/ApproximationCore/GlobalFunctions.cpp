@@ -36,4 +36,44 @@ void GaussMethod(double **coefficients, double *freeCoefficients, int dimension,
 		result[k] = (freeCoefficients[k] - d) / coefficients[k][k]; // формула (4)
 	}
 }
+// ---																										// Transfer Point To New CoordinateSystem
+PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
+													PointGeometric	pointCenterNewCoordinateSystem,
+													VectorGeometric	vectorX,
+													VectorGeometric	vectorY,
+													VectorGeometric vectorZ)
+{
+	PointGeometric	pointResult,
+					pointCenter = pointCenterNewCoordinateSystem;
 
+	double	gaussFreeCoefficients[3], 
+			gaussResult[3],
+
+			**gaussCoefficients = new double*[3];
+	for (int i = 0; i < 3; i++)
+		gaussCoefficients[i] = new double[3];
+
+
+	gaussCoefficients[0][0] = vectorX.X;	gaussCoefficients[0][1] = vectorX.Y;	gaussCoefficients[0][2] = vectorX.Z;
+	gaussFreeCoefficients[0] = point.X + pointCenter.X*vectorX.X + pointCenter.Y*vectorX.Y + pointCenter.Z*vectorX.Z;
+
+	gaussCoefficients[1][0] = vectorY.X;	gaussCoefficients[1][1] = vectorY.Y;	gaussCoefficients[1][2] = vectorY.Z;
+	gaussFreeCoefficients[1] = point.Y + pointCenter.X*vectorY.X + pointCenter.Y*vectorY.Y + pointCenter.Z*vectorY.Z;
+
+	gaussCoefficients[2][0] = vectorZ.X;	gaussCoefficients[2][1] = vectorZ.Y;	gaussCoefficients[2][2] = vectorZ.Z;
+	gaussFreeCoefficients[2] = point.Z + pointCenter.X*vectorZ.X + pointCenter.Y*vectorZ.Y + pointCenter.Z*vectorZ.Z;
+
+	GaussMethod(gaussCoefficients, &gaussFreeCoefficients[0], 3, &gaussResult[0]);
+
+
+	pointResult = PointGeometric(gaussResult[0], gaussResult[1], gaussResult[2]);
+
+
+	for (int i = 0; i < 3; i++)
+		delete gaussCoefficients[i];
+	delete gaussCoefficients;
+
+
+
+	return pointResult;
+}

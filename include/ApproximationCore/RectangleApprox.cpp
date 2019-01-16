@@ -120,4 +120,49 @@ void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double
 
 
 	Line.Point = Plane.PointProjection(WanderingCenter);
+
+	//	---	---	--- Triangulation
+
+	Triangulation(1.0f);
 }
+// ---																										// Triangulation
+void RectangleApprox::Triangulation(double stepSize)
+{
+	double				LengthX = fabs(minX) + fabs(maxX),
+						HeightY = fabs(minY) + fabs(maxY);
+
+	double	tmpStepSizeX = stepSize,
+			tmpStepSizeY = stepSize;
+
+	for (double stepSumY = stepSize; stepSumY <= HeightY; stepSumY += tmpStepSizeY)
+	{
+		tmpStepSizeX = stepSize;
+
+		for (double stepSumX = stepSize; stepSumX <= LengthX; stepSumX += tmpStepSizeX)
+		{
+			Mesh.push_back(PointGeometric(stepSumX - stepSize, stepSumY - stepSize));		// -|-
+			Mesh.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
+			Mesh.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
+
+			Mesh.push_back(PointGeometric(stepSumX, stepSumY));								// 0|0
+			Mesh.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
+			Mesh.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
+
+			if ((LengthX - stepSumX) < stepSize && (LengthX - stepSumX) != 0)
+			{
+				tmpStepSizeX = LengthX - stepSumX;
+			}
+		}
+
+		if ((HeightY - stepSumY) < stepSize && (HeightY - stepSumY) != 0)
+		{
+			tmpStepSizeY = HeightY - stepSumY;
+		}
+	}
+
+
+}
+
+
+
+
