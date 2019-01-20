@@ -77,7 +77,7 @@ private:
 
 	CRect       m_oldRect;
 
-	int			dd = 2;
+	int			dd;
 
 	//CDC* pDC;
 public:
@@ -88,6 +88,7 @@ public:
 	void DrawOpenGL_LineSegment();
 	void DrawOpenGL_PlaneViaRectangle();
 	void DrawOpenGL_Cone();
+	void DrawOpenGL_Sphere();
 
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

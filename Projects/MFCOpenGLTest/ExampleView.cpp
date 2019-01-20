@@ -56,6 +56,8 @@ CExampleView::CExampleView()
 	wTransformY = 0;
 
 	flagMiddleButtonDown = false;
+	
+	dd = 768;
 }
 
 CExampleView::~CExampleView()
@@ -141,6 +143,8 @@ int CExampleView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	
 
+	glEnable(GL_DEPTH_TEST);
+
     return 0;
 }
 // ---																							// On Destroy
@@ -209,45 +213,16 @@ void CExampleView::OnDraw(CDC* pDC)
 	////DrawOpenGL_Cube(10, 15, 0, 0);
 	//DrawOpenGL_Cube(10, 0, 0, 0);
 
-	DrawOpenGL_Circle();
+
+	
 	DrawOpenGL_Cylinder();
-	DrawOpenGL_Point();
 	DrawOpenGL_LineSegment();
 	DrawOpenGL_PlaneViaRectangle();
 	DrawOpenGL_Cone();
-
-	////	---	---	---
-	//std::ifstream					file;
-	//CylinderApprox					cylinder;
-	//std::vector <PointGeometric>	points;
-	//PointGeometric					point;
-	//double							accuracy = 0.00001;
-
-	//file.open("dataCylinder.txt");
-	//if (file.is_open())
-	//{
-	//	while (!file.eof())					// Reading File "data.txt"
-	//	{
-	//		file >> point.X >> point.Y >> point.Z;
-	//		points.push_back(point);
-	//		//points.Add(point);
-	//	}
-
-	//	cylinder.FindByPoints(&points[0], (int)points.size(), accuracy);
-
-
-	//	glBegin(GL_LINE_LOOP);
-
-	//	int i;
-	//	for ( i= 0; i < cylinder.pointsBottomCircle.size()/*&&i< dd*/; i++)
-	//	{
-	//		glVertex3f(cylinder.pointsBottomCircle[i].X, cylinder.pointsBottomCircle[i].Y, cylinder.pointsBottomCircle[i].Z);
-	//	}
-
-
-	//	glEnd();
-	//	
-	//}
+	DrawOpenGL_Sphere();
+	DrawOpenGL_Circle();
+	DrawOpenGL_Point();
+	
 
 	////	---	---	---
 
@@ -338,10 +313,12 @@ void CExampleView::OnLButtonDown(UINT nFlags, CPoint point)
 // ---																							// On Mouse Wheel
 BOOL CExampleView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
+	double step = 15.0f;
+
 	if (zDelta < 0)
-		m_z += 15.0f;
+		m_z += step;
 	else 
-		m_z -= 15.0f;
+		m_z -= step;
 
 	Invalidate(FALSE);
 
@@ -447,6 +424,8 @@ void CExampleView::DrawOpenGL_Circle()
 
 		circle.FindByPoints(&points[0], (int)points.size(), accuracy);
 
+
+		glColor3d(0, 0.4f, 0.8f);
 
 		glBegin(GL_LINE_LOOP);
 		int i;
@@ -558,12 +537,11 @@ void CExampleView::DrawOpenGL_Point()
 
 		pointApprox.FindByPoints(&points[0], (int)points.size(), accuracy);
 
-
-		
-		glColor3d(1, 1, 0);
+		glColor3d(1.0f, 0.05f, 0.01f);
 		glPointSize(5);
+
 		glBegin(GL_POINTS);
-		glVertex3d(pointApprox.Line.Point.X, pointApprox.Line.Point.Y, pointApprox.Line.Point.Z);
+			glVertex3d(pointApprox.X + 20, pointApprox.Y + 20, pointApprox.Z + 20);
 		glEnd();
 
 	}
@@ -724,3 +702,54 @@ void CExampleView::DrawOpenGL_Cone()
 	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
 }
 ///////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Sphere
+void CExampleView::DrawOpenGL_Sphere()
+{
+
+	std::ifstream					file;
+	SphereApprox					sphereApprox;
+	std::vector <PointGeometric>	points;
+	PointGeometric					point;
+	double							accuracy = 0.00001;
+
+	file.open("dataSphere.txt");
+	if (file.is_open())
+	{
+		while (!file.eof())					// Reading File "data.txt"
+		{
+			file >> point.X >> point.Y >> point.Z;
+			points.push_back(point);
+			//points.Add(point);
+		}
+
+		sphereApprox.FindByPoints(&points[0], (int)points.size(), accuracy);
+
+		glColor3f(0.2f, 0.85f, 0.1f);
+		glBegin(GL_TRIANGLES);
+		int i;
+		for (i = 2; i < sphereApprox.Mesh.size() /*&&i<=dd*/; i += 3)
+		{
+			//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
+			
+			glVertex3f(sphereApprox.Mesh[i].X, sphereApprox.Mesh[i].Y, sphereApprox.Mesh[i].Z);
+			glVertex3f(sphereApprox.Mesh[i - 1].X, sphereApprox.Mesh[i - 1].Y, sphereApprox.Mesh[i - 1].Z);
+			glVertex3f(sphereApprox.Mesh[i - 2].X, sphereApprox.Mesh[i - 2].Y, sphereApprox.Mesh[i - 2].Z);
+		}
+		glEnd();
+
+		/*glColor3d(1, 0, 0);
+		glPointSize(3);
+		glBegin(GL_POINTS);
+			glVertex3d(circle.Line.Point.X, circle.Line.Point.Y, circle.Line.Point.Z);
+		glEnd();*/
+
+	}
+
+	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+
+	file.close();
+	points.clear();
+}
+///////////////////////////////////////////////////////
+
