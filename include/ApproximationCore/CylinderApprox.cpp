@@ -8,7 +8,7 @@
 // ---																										// Constructors
 CylinderApprox::CylinderApprox() { objectApproxName = (char*)"cylinder"; }
 
-CylinderApprox::~CylinderApprox(){}
+CylinderApprox::~CylinderApprox() { pointsTopCircleEdge_Copy.clear(); pointsBottomCircleEdge_Copy.clear(); }
 // ---																										// --- APPROXIMATION ---
 double CylinderApprox::FunctionApprox(PointGeometric *points, int arraySize)		// R - r
 {
@@ -410,6 +410,10 @@ void CylinderApprox::Triangulation(double stepSize)
 	
 	pointsSecondCircle.clear();
 	pointsBottomCircleEdge.clear();
-	//pointsBottomCircleEdge_Copy.clear();
+
+	pointsNPquarter.clear();
+	pointsNNquarter.clear();
+	pointsPNquarter.clear();
+
 }
 

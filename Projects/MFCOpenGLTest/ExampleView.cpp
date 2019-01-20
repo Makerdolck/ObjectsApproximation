@@ -426,6 +426,7 @@ void CExampleView::DrawOpenGL_Circle()
 
 
 		glColor3d(0, 0.4f, 0.8f);
+		glLineWidth(3);
 
 		glBegin(GL_LINE_LOOP);
 		int i;
@@ -443,6 +444,7 @@ void CExampleView::DrawOpenGL_Circle()
 
 	}
 
+	glLineWidth(1);
 	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
 
 	file.close();
@@ -700,6 +702,9 @@ void CExampleView::DrawOpenGL_Cone()
 
 	}
 	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+
+	file.close();
+	points.clear();
 }
 ///////////////////////////////////////////////////////
 

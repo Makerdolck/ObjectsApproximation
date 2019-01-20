@@ -78,12 +78,7 @@ void CircleApprox::FindByPoints(PointGeometric *points, int arraySize, double ac
 // ---																										// Triangulation
 void CircleApprox::Triangulation(double stepSize)
 {
-	//LineGeometric	tmpLine;
 	PointGeometric	tmpPoint;
-
-	//std::vector<PointGeometric> Mesh;
-
-	double coefficients[3][3], freeCoefficients[3], gausResult[3];
 
 	//	---	---	---	--- Lateral Surface
 
@@ -152,32 +147,18 @@ void CircleApprox::Triangulation(double stepSize)
 	vectorZ = Line.Vector;
 	vectorY = vectorX ^ vectorZ;
 
-	double gaussFreeCoefficients[3], gaussResult[3];
-	double **gaussCoefficients = new double*[3];
-	for (int i = 0; i < 3; i++)
-		gaussCoefficients[i] = new double[3];
-
 	tmpPoint = Line.Point;	// Center point of new coordinate system
 
 	for (int i = 0; i < Mesh.size(); i++)
 	{
-		gaussCoefficients[0][0] = vectorX.X;	gaussCoefficients[0][1] = vectorX.Y;	gaussCoefficients[0][2] = vectorX.Z;
-		gaussFreeCoefficients[0] = Mesh[i].X + tmpPoint.X*vectorX.X + tmpPoint.Y*vectorX.Y + tmpPoint.Z*vectorX.Z;
-
-		gaussCoefficients[1][0] = vectorY.X;	gaussCoefficients[1][1] = vectorY.Y;	gaussCoefficients[1][2] = vectorY.Z;
-		gaussFreeCoefficients[1] = Mesh[i].Y + tmpPoint.X*vectorY.X + tmpPoint.Y*vectorY.Y + tmpPoint.Z*vectorY.Z;
-
-		gaussCoefficients[2][0] = vectorZ.X;	gaussCoefficients[2][1] = vectorZ.Y;	gaussCoefficients[2][2] = vectorZ.Z;
-		gaussFreeCoefficients[2] = Mesh[i].Z + tmpPoint.X*vectorZ.X + tmpPoint.Y*vectorZ.Y + tmpPoint.Z*vectorZ.Z;
-
-		GaussMethod(gaussCoefficients, &gaussFreeCoefficients[0], 3, &gaussResult[0]);
-
-
-		Mesh[i] = PointGeometric(gaussResult[0], gaussResult[1], gaussResult[2]);
+		Mesh[i] = TransferPointToNewCoordinateSystem(Mesh[i],
+			tmpPoint,
+			vectorX,
+			vectorY,
+			vectorZ);
 	}
 
-
-
-
-
+	pointsNPquarter.clear();
+	pointsNNquarter.clear();
+	pointsPNquarter.clear();
 }

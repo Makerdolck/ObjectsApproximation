@@ -6,8 +6,8 @@
 // ---																										// Constructors
 RectangleApprox::RectangleApprox() { Width = 0, Height = 0; objectApproxName = (char*)"rectangle"; }
 
-RectangleApprox::~RectangleApprox() { /*delete WanderingPoints;*/ }
-// ---																										// Find Height, Width and MaxMin X_Y
+RectangleApprox::~RectangleApprox() { delete [] WanderingPoints; }
+// ---										 																// Find Height, Width and MaxMin X_Y
 void RectangleApprox::FindWidthHeightMinMaxXY(PointGeometric *points, int arraySize)
 {
 	maxX = WanderingPoints[0].X,
@@ -128,8 +128,8 @@ void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double
 // ---																										// Triangulation
 void RectangleApprox::Triangulation(double stepSize)
 {
-	double				LengthX = fabs(minX) + fabs(maxX),
-						HeightY = fabs(minY) + fabs(maxY);
+	double	LengthX = fabs(minX) + fabs(maxX),
+			HeightY = fabs(minY) + fabs(maxY);
 
 	double	tmpStepSizeX = stepSize,
 			tmpStepSizeY = stepSize;

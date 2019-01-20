@@ -30,8 +30,6 @@ double LineSegmentApprox::FunctionApprox(PointGeometric *points, int arraySize)
 
 void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
 {
-
-
 	Line.Vector = VectorGeometric(points[0], points[arraySize - 1]);	// Find center vector
 	CenterByPoints(points, arraySize);									// Find center point
 

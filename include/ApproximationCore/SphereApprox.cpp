@@ -77,14 +77,13 @@ void SphereApprox::Triangulation(double stepSize)
 
 	//	---	---	---	---	---	First half of First Hemisphere
 
-	lineAxisZ.Vector = VectorGeometric(0, 0, 1);
-	lineAxisZ.Point = PointGeometric();
+	lineAxisZ.Vector		= VectorGeometric(0, 0, 1);
+	lineAxisZ.Point			= PointGeometric();
 
-	tmpLine.Vector = lineAxisZ.Vector;
-	//circleSecond.Line.Vector= lineAxisZ.Vector;
+	tmpLine.Vector			= lineAxisZ.Vector;
 	circleFirst.Line.Vector = lineAxisZ.Vector;
-	circleFirst.Line.Point = PointGeometric(0, 0, 0);
-	circleFirst.Radius = Radius;
+	circleFirst.Line.Point	= PointGeometric(0, 0, 0);
+	circleFirst.Radius		= Radius;
 
 	circleFirst.Triangulation(stepSize);
 
@@ -153,14 +152,13 @@ void SphereApprox::Triangulation(double stepSize)
 
 	//	---	---	---	---	---	Second half of First Hemisphere
 
-	lineAxisY.Vector = VectorGeometric(0, 1, 0);
-	lineAxisY.Point = PointGeometric();
+	lineAxisY.Vector		= VectorGeometric(0, 1, 0);
+	lineAxisY.Point			= PointGeometric();
 
-	tmpLine.Vector = lineAxisY.Vector;
-	//circleSecond.Line.Vector= lineAxisY.Vector;
+	tmpLine.Vector			= lineAxisY.Vector;
 	circleFirst.Line.Vector = lineAxisZ.Vector;
-	circleFirst.Line.Point = PointGeometric(0, 0, 0);
-	circleFirst.Radius = Radius;
+	circleFirst.Line.Point	= PointGeometric(0, 0, 0);
+	circleFirst.Radius		= Radius;
 
 	circleFirst.Triangulation(stepSize);
 
@@ -265,4 +263,7 @@ void SphereApprox::Triangulation(double stepSize)
 			vectorZ);
 	}
 
+
+
+	pointsMidleCircle.clear();
 }

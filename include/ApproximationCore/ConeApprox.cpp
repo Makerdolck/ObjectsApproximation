@@ -8,7 +8,7 @@
 // ---																										// Constructors
 ConeApprox::ConeApprox() { objectApproxName = (char*)"cone"; Angle = 45; RadiusSmaller = 0; }
 
-ConeApprox::~ConeApprox(){}
+ConeApprox::~ConeApprox(){ pointsBottomCircleEdge_Copy.clear(); pointsTopCircleEdge_Copy.clear();}
 // ---																										// Find Point For Bottom Center
 void ConeApprox::FindPointForBottomCenter(PointGeometric *points, int arraySize)
 {
@@ -251,7 +251,6 @@ void ConeApprox::Triangulation(double stepSize)
 	PointGeometric	tmpPoint;
 
 	std::vector<PointGeometric> pointsBottomCircleEdge;
-	/*std::vector<PointGeometric> pointsBottomCircleEdge_Copy;*/
 
 	//	---	---	--- Points on bottom Circle Edge
 
@@ -623,10 +622,8 @@ void ConeApprox::Triangulation(double stepSize)
 
 
 
-	pointsBottomCircleEdge.clear();
-	//pointsBottomCircleEdge_Copy.clear();
+	pointsBottomCircleEdge.clear();	
 	pointsTopCircleEdge.clear();
-	//pointsTopCircleEdge_Copy.clear();
 	pointsSecondCircle.clear();
 
 	pointsNNquarter.clear();

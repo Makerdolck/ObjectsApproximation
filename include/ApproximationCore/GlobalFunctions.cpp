@@ -48,8 +48,8 @@ PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
 
 	double	gaussFreeCoefficients[3], 
 			gaussResult[3],
-
 			**gaussCoefficients = new double*[3];
+
 	for (int i = 0; i < 3; i++)
 		gaussCoefficients[i] = new double[3];
 
@@ -70,8 +70,9 @@ PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
 
 
 	for (int i = 0; i < 3; i++)
-		delete gaussCoefficients[i];
-	delete gaussCoefficients;
+		delete [] gaussCoefficients[i];
+
+	delete [] gaussCoefficients;
 
 
 

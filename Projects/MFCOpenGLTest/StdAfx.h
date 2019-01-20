@@ -3,6 +3,11 @@
 //      are changed infrequently
 //
 
+// Memory Leaks detecting
+////#define _CRTDBG_MAP_ALLOC
+////#include <stdlib.h>
+////#include <crtdbg.h>
+
 #if !defined(AFX_STDAFX_H__F10F7167_2B31_11D4_90AE_0010B53C9D0C__INCLUDED_)
 #define AFX_STDAFX_H__F10F7167_2B31_11D4_90AE_0010B53C9D0C__INCLUDED_
 
