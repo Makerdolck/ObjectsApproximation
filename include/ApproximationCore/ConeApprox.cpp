@@ -247,8 +247,9 @@ void ConeApprox::FindByPoints(PointGeometric *points, int arraySize, double accu
 // ---																										// Triangulation
 void ConeApprox::Triangulation(double stepSize)
 {
-	LineGeometric	tmpLine;
-	PointGeometric	tmpPoint;
+	LineGeometric				tmpLine;
+	PointGeometric				tmpPoint;
+
 
 	std::vector<PointGeometric> pointsBottomCircleEdge;
 
@@ -320,7 +321,7 @@ void ConeApprox::Triangulation(double stepSize)
 	vectorZ = Line.Vector;
 	vectorY = vectorX ^ vectorZ;
 
-	for (int i = 0; i < pointsBottomCircleEdge.size(); i++)
+	for (int i = 0; i < (int) pointsBottomCircleEdge.size(); i++)
 	{
 		pointsBottomCircleEdge[i] = TransferPointToNewCoordinateSystem(pointsBottomCircleEdge[i],
 			tmpPoint,
@@ -337,7 +338,7 @@ void ConeApprox::Triangulation(double stepSize)
 
 	for (double stepSum = stepSize; stepSum <= Radius; stepSum += stepSize)
 	{
-		for (int i = 1; i < pointsBottomCircleEdge.size(); i++)
+		for (int i = 1; i < (int)pointsBottomCircleEdge.size(); i++)
 		{
 			tmpLine.Vector = VectorGeometric(pointsBottomCircleEdge[i - 1], pointsBottomCircleEdge[i]);
 			tmpLine.Point = pointsBottomCircleEdge[i - 1];
@@ -352,29 +353,42 @@ void ConeApprox::Triangulation(double stepSize)
 			pointsSecondCircle.push_back(tmpPoint);
 
 			//	.... Triangles on bottom surface
-			Mesh.push_back(pointsBottomCircleEdge[i - 1]);
-			Mesh.push_back(pointsBottomCircleEdge[i]);
-			Mesh.push_back(tmpPoint);
+			Mesh.points.push_back(pointsBottomCircleEdge[i - 1]);
+			Mesh.points.push_back(pointsBottomCircleEdge[i]);
+			Mesh.points.push_back(tmpPoint);
+
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 			//	...	||
 
 			if (i > 1)
 			{
 				//	.... Triangles on bottom surface
-				Mesh.push_back(pointsSecondCircle[i - 2]);
-				Mesh.push_back(pointsSecondCircle[i - 1]);
-				Mesh.push_back(pointsBottomCircleEdge[i - 1]);
+				Mesh.points.push_back(pointsSecondCircle[i - 2]);
+				Mesh.points.push_back(pointsSecondCircle[i - 1]);
+				Mesh.points.push_back(pointsBottomCircleEdge[i - 1]);
+
+				tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+				Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 				//	... ||
 			}
 		}
 
 		//	.... Triangles on bottom surface
-		Mesh.push_back(pointsBottomCircleEdge[0]);
-		Mesh.push_back(pointsSecondCircle[0]);
-		Mesh.push_back(pointsSecondCircle[pointsSecondCircle.size() - 1]);
+		Mesh.points.push_back(pointsBottomCircleEdge[0]);
+		Mesh.points.push_back(pointsSecondCircle[0]);
+		Mesh.points.push_back(pointsSecondCircle[pointsSecondCircle.size() - 1]);
 
-		Mesh.push_back(pointsBottomCircleEdge[0]);
-		Mesh.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
-		Mesh.push_back(pointsSecondCircle[pointsSecondCircle.size() - 1]);
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
+
+
+		Mesh.points.push_back(pointsBottomCircleEdge[0]);
+		Mesh.points.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
+		Mesh.points.push_back(pointsSecondCircle[pointsSecondCircle.size() - 1]);
+
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 		//	...	||
 
 		pointsSecondCircle.swap(pointsBottomCircleEdge);
@@ -383,26 +397,32 @@ void ConeApprox::Triangulation(double stepSize)
 	}
 
 	//	---	Triangles on  bottom surfaces (which connect with center point)
-	for (int i = 1; i < pointsBottomCircleEdge.size(); i++)
+	for (int i = 1; i < (int)pointsBottomCircleEdge.size(); i++)
 	{
 		//	.... Triangles on bottom surface
-		Mesh.push_back(pointsBottomCircleEdge[i - 1]);
-		Mesh.push_back(pointsBottomCircleEdge[i]);
-		Mesh.push_back(PointBottomSurfaceCenter);
+		Mesh.points.push_back(pointsBottomCircleEdge[i - 1]);
+		Mesh.points.push_back(pointsBottomCircleEdge[i]);
+		Mesh.points.push_back(PointBottomSurfaceCenter);
+
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 		//	... ||
 	}
 
 	//	... Last triangle of bottom surfaces
-	Mesh.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
-	Mesh.push_back(pointsBottomCircleEdge[0]);
-	Mesh.push_back(PointBottomSurfaceCenter);
+	Mesh.points.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
+	Mesh.points.push_back(pointsBottomCircleEdge[0]);
+	Mesh.points.push_back(PointBottomSurfaceCenter);
+
+	tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+	Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 	//	...	||
 
 	pointsBottomCircleEdge.clear();
 	pointsBottomCircleEdge.insert(pointsBottomCircleEdge.end(), pointsBottomCircleEdge_Copy.begin(), pointsBottomCircleEdge_Copy.end());
 
-	//	\\	//	\\	//	\\	//	\\	//	\\	//	\\
-	\\	//	\\	//	\\	//	\\	//	\\	//	\\	//
+	// _________________________________
+	// ---------------------------------
 
 	std::vector<PointGeometric> pointsTopCircleEdge;
 	/*std::vector<PointGeometric> pointsTopCircleEdge_Copy;*/
@@ -472,7 +492,7 @@ void ConeApprox::Triangulation(double stepSize)
 	vectorZ = Line.Vector;
 	vectorY = vectorX ^ vectorZ;
 
-	for (int i = 0; i < pointsTopCircleEdge.size(); i++)
+	for (int i = 0; i < (int)pointsTopCircleEdge.size(); i++)
 	{
 		pointsTopCircleEdge[i] = TransferPointToNewCoordinateSystem(pointsTopCircleEdge[i],
 			tmpPoint,
@@ -489,7 +509,7 @@ void ConeApprox::Triangulation(double stepSize)
 
 	for (double stepSum = stepSize; stepSum <= RadiusSmaller; stepSum += stepSize)
 	{
-		for (int i = 1; i < pointsTopCircleEdge.size(); i++)
+		for (int i = 1; i < (int)pointsTopCircleEdge.size(); i++)
 		{
 			tmpLine.Vector = VectorGeometric(pointsTopCircleEdge[i - 1], pointsTopCircleEdge[i]);
 			tmpLine.Point = pointsTopCircleEdge[i - 1];
@@ -504,29 +524,43 @@ void ConeApprox::Triangulation(double stepSize)
 			pointsSecondCircle.push_back(tmpPoint);
 
 			//	.... Triangles on bottom surface
-			Mesh.push_back(pointsTopCircleEdge[i - 1]);
-			Mesh.push_back(pointsTopCircleEdge[i]);
-			Mesh.push_back(tmpPoint);
+			Mesh.points.push_back(pointsTopCircleEdge[i - 1]);
+			Mesh.points.push_back(pointsTopCircleEdge[i]);
+			Mesh.points.push_back(tmpPoint);
+
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 			//	...	||
 
 			if (i > 1)
 			{
 				//	.... Triangles on bottom surface
-				Mesh.push_back(pointsSecondCircle[i - 2]);
-				Mesh.push_back(pointsSecondCircle[i - 1]);
-				Mesh.push_back(pointsTopCircleEdge[i - 1]);
+				Mesh.points.push_back(pointsSecondCircle[i - 2]);
+				Mesh.points.push_back(pointsSecondCircle[i - 1]);
+				Mesh.points.push_back(pointsTopCircleEdge[i - 1]);
+
+				tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+				Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
+
 				//	... ||
 			}
 		}
 
 		//	.... Triangles on bottom surface
-		Mesh.push_back(pointsTopCircleEdge[0]);
-		Mesh.push_back(pointsSecondCircle[0]);
-		Mesh.push_back(pointsSecondCircle[pointsSecondCircle.size() - 1]);
+		Mesh.points.push_back(pointsTopCircleEdge[0]);
+		Mesh.points.push_back(pointsSecondCircle[0]);
+		Mesh.points.push_back(pointsSecondCircle[pointsSecondCircle.size() - 1]);
 
-		Mesh.push_back(pointsTopCircleEdge[0]);
-		Mesh.push_back(pointsTopCircleEdge[pointsTopCircleEdge.size() - 1]);
-		Mesh.push_back(pointsSecondCircle[pointsSecondCircle.size() - 1]);
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
+		
+
+		Mesh.points.push_back(pointsTopCircleEdge[0]);
+		Mesh.points.push_back(pointsTopCircleEdge[pointsTopCircleEdge.size() - 1]);
+		Mesh.points.push_back(pointsSecondCircle[pointsSecondCircle.size() - 1]);
+
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 		//	...	||
 
 		pointsSecondCircle.swap(pointsTopCircleEdge);
@@ -535,19 +569,25 @@ void ConeApprox::Triangulation(double stepSize)
 	}
 
 	//	---	Triangles on  bottom surfaces (which connect with center point)
-	for (int i = 1; i < pointsTopCircleEdge.size(); i++)
+	for (int i = 1; i < (int)pointsTopCircleEdge.size(); i++)
 	{
 		//	.... Triangles on bottom surface
-		Mesh.push_back(pointsTopCircleEdge[i - 1]);
-		Mesh.push_back(pointsTopCircleEdge[i]);
-		Mesh.push_back(PointTopSurfaceCenter);
+		Mesh.points.push_back(pointsTopCircleEdge[i - 1]);
+		Mesh.points.push_back(pointsTopCircleEdge[i]);
+		Mesh.points.push_back(PointTopSurfaceCenter);
+
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 		//	... ||
 	}
 
 	//	... Last triangle of bottom surfaces
-	Mesh.push_back(pointsTopCircleEdge[pointsTopCircleEdge.size() - 1]);
-	Mesh.push_back(pointsTopCircleEdge[0]);
-	Mesh.push_back(PointTopSurfaceCenter);
+	Mesh.points.push_back(pointsTopCircleEdge[pointsTopCircleEdge.size() - 1]);
+	Mesh.points.push_back(pointsTopCircleEdge[0]);
+	Mesh.points.push_back(PointTopSurfaceCenter);
+
+	tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+	Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 	//	...	||
 
 	//	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	---	Lateral Surface (Mesh)
@@ -567,7 +607,7 @@ void ConeApprox::Triangulation(double stepSize)
 		tmpLine.Vector = VectorGeometric(tmpLine.Point, tmpPoint);
 		pointsSecondCircle.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 
-		for (int i = 1; i < pointsBottomCircleEdge.size(); i++)
+		for (int i = 1; i < (int)pointsBottomCircleEdge.size(); i++)
 		{
 			tmpLine.Point = pointsBottomCircleEdge[i];
 			tmpLine.Vector = VectorGeometric(tmpLine.Point, tmpPoint);
@@ -578,36 +618,48 @@ void ConeApprox::Triangulation(double stepSize)
 			tmpLine.Vector = VectorGeometric(tmpLine.Point, tmpPoint);
 
 			// First triangle
-			Mesh.push_back(pointsBottomCircleEdge[i - 1]);
-			Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
-			Mesh.push_back(pointsBottomCircleEdge[i]);
+			Mesh.points.push_back(pointsBottomCircleEdge[i - 1]);
+			Mesh.points.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
+			Mesh.points.push_back(pointsBottomCircleEdge[i]);
+
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 
 			// Second triangle
-			Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
+			Mesh.points.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 
 			tmpLine.Point = pointsBottomCircleEdge[i];
 			tmpLine.Vector = VectorGeometric(tmpLine.Point, tmpPoint);
 
-			Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
-			Mesh.push_back(pointsBottomCircleEdge[i]);
+			Mesh.points.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
+			Mesh.points.push_back(pointsBottomCircleEdge[i]);
+
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 		}
 
 		tmpLine.Point = pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1];
 		tmpLine.Vector = VectorGeometric(tmpLine.Point, tmpPoint);
 
 		// First triangle
-		Mesh.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
-		Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
-		Mesh.push_back(pointsBottomCircleEdge[0]);
+		Mesh.points.push_back(pointsBottomCircleEdge[pointsBottomCircleEdge.size() - 1]);
+		Mesh.points.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
+		Mesh.points.push_back(pointsBottomCircleEdge[0]);
+
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 
 		// Second triangle
-		Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
+		Mesh.points.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
 
 		tmpLine.Point = pointsBottomCircleEdge[0];
 		tmpLine.Vector = VectorGeometric(tmpLine.Point, tmpPoint);
 
-		Mesh.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
-		Mesh.push_back(pointsBottomCircleEdge[0]);
+		Mesh.points.push_back(tmpLine.CreatePointOnDistance(tmpStepSize));
+		Mesh.points.push_back(pointsBottomCircleEdge[0]);
+
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 
 
 		pointsSecondCircle.swap(pointsBottomCircleEdge);

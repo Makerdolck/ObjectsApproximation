@@ -32,9 +32,12 @@ int main()
 	cout.precision(7);
 
 
-	int enteredNumber = 0, enteredVariantMax = 0;
+	int		enteredNumber		= 0, 
+			enteredVariantMax	= 0;
 
-	double accuracy = 0.000001;
+	double	accuracy			= 0.000001;
+
+	char	tmpSymbol			= ' ';
 
 	do
 	{  
@@ -113,7 +116,7 @@ int main()
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";
-			_getch();
+			tmpSymbol = _getch();
 			return 1;
 		}
 
@@ -139,7 +142,7 @@ int main()
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";
-			_getch();
+			tmpSymbol = _getch();
 			return 1;
 		}
 
@@ -166,7 +169,7 @@ int main()
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";
-			_getch();
+			tmpSymbol = _getch();
 			return 1;
 		}
 
@@ -191,7 +194,7 @@ int main()
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";
-			_getch();
+			tmpSymbol = _getch();
 			return 1;
 		}
 
@@ -214,7 +217,7 @@ int main()
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";
-			_getch();
+			tmpSymbol = _getch();
 			return 1;
 		}
 
@@ -237,7 +240,7 @@ int main()
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";
-			_getch();
+			tmpSymbol = _getch();
 			return 1;
 		}
 
@@ -261,7 +264,7 @@ int main()
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";
-			_getch();
+			tmpSymbol = _getch();
 			return 1;
 		}
 
@@ -284,7 +287,7 @@ int main()
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";
-			_getch();
+			tmpSymbol = _getch();
 			return 1;
 		}
 
@@ -311,7 +314,7 @@ int main()
 	
 	points.clear();
 	
-	_getch();
+	tmpSymbol = _getch();
 	return 0;
 }
 

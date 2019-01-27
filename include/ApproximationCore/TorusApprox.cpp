@@ -87,14 +87,14 @@ void TorusApprox::FindByPoints(PointGeometric *points, int arraySize, double acc
 
 	CenterByPoints(points, arraySize);				// Finde center point
 
-	for (int i = 0; i < spheres.size(); i++)
+	for (int i = 0; i < (int)spheres.size(); i++)
 	{
 		RadiusCircle += spheres[i].Radius;
 	}
 	RadiusCircle /= spheres.size();					// model radius in cross-section
 
 
-	for (int i = 0; i < spheres.size(); i++)
+	for (int i = 0; i < (int)spheres.size(); i++)
 	{
 		Radius += spheres[i].Line.Point.DistanceToPoint(Line.Point);
 	}

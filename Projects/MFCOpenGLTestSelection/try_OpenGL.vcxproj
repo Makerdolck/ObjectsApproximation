@@ -14,9 +14,9 @@
     <SccProjectName />
     <SccLocalPath />
     <Keyword>MFCProj</Keyword>
-    <ProjectGuid>{03405B05-4069-49CD-94EF-584F1A5CFE9C}</ProjectGuid>
+    <ProjectGuid>{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
-    <ProjectName>MFCOpenGLTest</ProjectName>
+    <ProjectName>MFCOpenGLTestSelection</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -47,26 +47,19 @@
     <OutDir>$(SolutionDir)$(Configuration)\$(ProjectName)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)__Intermidate\_$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules />
-    <CodeAnalysisRuleAssemblies />
     <IncludePath>$(SolutionDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(Platform);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\$(ProjectName)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)__Intermidate\_$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules />
-    <CodeAnalysisRuleAssemblies />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>
-      </FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
@@ -84,17 +77,17 @@
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <TypeLibraryName>.\Debug\Example.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Debug\try_OpenGL.tlb</TypeLibraryName>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0419</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug\Example.bsc</OutputFile>
+      <OutputFile>.\Debug\try_OpenGL.bsc</OutputFile>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -115,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
-      <PrecompiledHeaderOutputFile>.\Release\Example.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\Release\try_OpenGL.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>.\Release\</ObjectFileName>
@@ -124,95 +117,61 @@
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <TypeLibraryName>.\Release\Example.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release\try_OpenGL.tlb</TypeLibraryName>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0419</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release\Example.bsc</OutputFile>
+      <OutputFile>.\Release\try_OpenGL.bsc</OutputFile>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <SubSystem>Windows</SubSystem>
-      <OutputFile>.\Release\Example.exe</OutputFile>
+      <OutputFile>.\Release\try_OpenGL.exe</OutputFile>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\ApproximationCore\ApproximationApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\CircleApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\CircleGeometric.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\CmmApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\ConeApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\CylinderApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\GeomObjectApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\LineGeometric.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\LineSegmentApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\MeasureTypesEnum.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\ObjectApproxC3D.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\PlaneApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\PlaneGeometric.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\PointApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\PointGeometric.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\RectangleApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\SphereApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\TorusApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\VectorGeometric.cpp" />
-    <ClCompile Include="Example.cpp" />
-    <ClCompile Include="ExampleDoc.cpp" />
-    <ClCompile Include="ExampleView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MyOpenGL.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="try_OpenGL.cpp" />
+    <ClCompile Include="try_OpenGLDoc.cpp" />
+    <ClCompile Include="try_OpenGLView.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Example.rc" />
+    <ResourceCompile Include="try_OpenGL.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\ApproximationCore\ApproximationApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\CircleApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\CircleGeometric.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\CmmApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\ConeApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\CylinderApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\GeomObjectApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\LineGeometric.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\LineSegmentApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\MeasureTypesEnum.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\ObjectApproxC3D.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\PlaneApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\PlaneGeometric.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\PointApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\PointGeometric.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\RectangleApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\SphereApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\TorusApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\VectorGeometric.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h" />
-    <ClInclude Include="Example.h" />
-    <ClInclude Include="ExampleDoc.h" />
-    <ClInclude Include="ExampleView.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MyOpenGL.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="try_OpenGL.h" />
+    <ClInclude Include="try_OpenGLDoc.h" />
+    <ClInclude Include="try_OpenGLView.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Example.ico" />
-    <Image Include="res\ExampleDoc.ico" />
-    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\try_OpenGL.ico" />
+    <Image Include="res\try_OpenGLDoc.ico" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="res\Example.rc2" />
+    <CustomBuild Include="res\try_OpenGL.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

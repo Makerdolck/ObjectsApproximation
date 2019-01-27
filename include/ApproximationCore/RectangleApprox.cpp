@@ -4,7 +4,7 @@
 
 
 // ---																										// Constructors
-RectangleApprox::RectangleApprox() { Width = 0, Height = 0; objectApproxName = (char*)"rectangle"; }
+RectangleApprox::RectangleApprox() { Width = 0, Height = 0; objectApproxName = (char*)"rectangle"; WanderingPoints = nullptr; }
 
 RectangleApprox::~RectangleApprox() { delete [] WanderingPoints; }
 // ---										 																// Find Height, Width and MaxMin X_Y
@@ -140,13 +140,13 @@ void RectangleApprox::Triangulation(double stepSize)
 
 		for (double stepSumX = stepSize; stepSumX <= LengthX; stepSumX += tmpStepSizeX)
 		{
-			Mesh.push_back(PointGeometric(stepSumX - stepSize, stepSumY - stepSize));		// -|-
-			Mesh.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
-			Mesh.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
+			Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY - stepSize));		// -|-
+			Mesh.points.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
+			Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
 
-			Mesh.push_back(PointGeometric(stepSumX, stepSumY));								// 0|0
-			Mesh.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
-			Mesh.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
+			Mesh.points.push_back(PointGeometric(stepSumX, stepSumY));								// 0|0
+			Mesh.points.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
+			Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
 
 			if ((LengthX - stepSumX) < stepSize && (LengthX - stepSumX) != 0)
 			{
@@ -160,7 +160,7 @@ void RectangleApprox::Triangulation(double stepSize)
 		}
 	}
 
-
+	Mesh.vectorsNormal.push_back(VectorZ);
 }
 
 

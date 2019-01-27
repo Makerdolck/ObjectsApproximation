@@ -35,6 +35,7 @@
 #include "ObjectApproxC3D.h"
 
 #include "MeasureTypesEnum.h"
+#include "MeshTrianglesStructure.h"
 
 #include "GlobalFunctions.h"
 

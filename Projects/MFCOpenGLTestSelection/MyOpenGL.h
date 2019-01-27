@@ -1,0 +1,25 @@
+#ifndef __MYOPENGL_H
+#define __MYOPENGL_H
+
+//Remember to include "opengl32.lib glu32.lib" to project links!
+
+#include <gl\gl.h>
+#include <gl\glu.h>
+
+////////////////////////////////////////////////////////////////
+//Functions
+HGLRC SetUpOpenGL(HWND hWnd);
+
+////////////////////////////////////////////////////////////////
+//Classes
+class Cube
+{
+public:
+	GLdouble x,y,z;
+	BOOL selected;
+	
+	Cube();
+	virtual void Draw();
+};
+////////////////////////////////////////////////////////////////
+#endif

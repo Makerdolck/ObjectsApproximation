@@ -7,7 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCAscon", "Projects\MFCAsc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OwnCore", "Projects\OwnCore\OwnCore.vcxproj", "{C73A2F35-0F45-4A8B-A745-1AF2F4AFA85C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Example", "Projects\MFCOpenGLTest\Example.vcxproj", "{03405B05-4069-49CD-94EF-584F1A5CFE9C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCOpenGLTest", "Projects\MFCOpenGLTest\Example.vcxproj", "{03405B05-4069-49CD-94EF-584F1A5CFE9C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCOpenGLTestSelection", "Projects\MFCOpenGLTestSelection\try_OpenGL.vcxproj", "{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,12 @@ Global
 		{03405B05-4069-49CD-94EF-584F1A5CFE9C}.Release|x64.ActiveCfg = Release|Win32
 		{03405B05-4069-49CD-94EF-584F1A5CFE9C}.Release|x86.ActiveCfg = Release|Win32
 		{03405B05-4069-49CD-94EF-584F1A5CFE9C}.Release|x86.Build.0 = Release|Win32
+		{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}.Debug|x64.ActiveCfg = Debug|Win32
+		{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}.Debug|x86.ActiveCfg = Debug|Win32
+		{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}.Debug|x86.Build.0 = Debug|Win32
+		{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}.Release|x64.ActiveCfg = Release|Win32
+		{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}.Release|x86.ActiveCfg = Release|Win32
+		{39BC060D-E2CB-4E4C-A7E7-DE255E883F0E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

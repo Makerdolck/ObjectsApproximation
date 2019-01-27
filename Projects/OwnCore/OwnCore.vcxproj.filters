@@ -208,6 +208,9 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\MeshTrianglesStructure.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\DVector\Dvector.inl">

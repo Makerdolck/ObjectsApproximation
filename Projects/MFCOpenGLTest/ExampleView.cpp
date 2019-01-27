@@ -1,4 +1,4 @@
-
+п»ї
 // ExampleView.cpp : implementation of the CExampleView class
 //
 
@@ -35,12 +35,11 @@ BEGIN_MESSAGE_MAP(CExampleView, CView)
 	ON_WM_MBUTTONDOWN()
 	ON_WM_MBUTTONUP()
 	ON_COMMAND(ID_MYCOMAND_DRAWPOINT, &CExampleView::OnMycomandDrawpoint)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CExampleView construction/destruction
-
-void DrawOpenGL_Cube(double param, double cx, double cy, double cz);
 
 static GLfloat LightAmbient[] = { 0.5f, 0.5f, 0.5f, 1.0f };
 static GLfloat LightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -98,35 +97,36 @@ CExampleDoc* CExampleView::GetDocument() // non-debug version is inline
 //--------------------------------------------------------------
 //	----	Message Handlers		----	Initial Messages
 //--------------------------------------------------------------
+
 // ---																							// On Create
 int CExampleView::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-    PIXELFORMATDESCRIPTOR pfd;
-    int iPixelFormat;
-    CDC *pDC;
+	PIXELFORMATDESCRIPTOR pfd;
+	int iPixelFormat;
+	CDC* pDC;
 
-    if (CView::OnCreate(lpCreateStruct) == -1)
-        return -1;
+	if (CView::OnCreate(lpCreateStruct) == -1)
+		return -1;
 
-    // TODO: Add your specialized creation code here
-    pDC = GetDC();
-    memset(&pfd, 0, sizeof(pfd));
-    pfd.nSize = sizeof(pfd);
-    pfd.nVersion = 1;
+	// TODO: Add your specialized creation code here
+	pDC = GetDC();
+	memset(&pfd, 0, sizeof(pfd));
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
 	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;//| PFD_DOUBLEBUFFER;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-    pfd.cDepthBits = 16;
-    iPixelFormat = ChoosePixelFormat(pDC->m_hDC, &pfd);
-    SetPixelFormat(pDC->m_hDC, iPixelFormat, &pfd);
-    m_hglrc = wglCreateContext(pDC->m_hDC);
-    wglMakeCurrent(pDC->m_hDC, m_hglrc);
-    ReleaseDC(pDC);
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.iLayerType = PFD_MAIN_PLANE;
+	pfd.cDepthBits = 16;
+	iPixelFormat = ChoosePixelFormat(pDC->m_hDC, &pfd);
+	SetPixelFormat(pDC->m_hDC, iPixelFormat, &pfd);
+	m_hglrc = wglCreateContext(pDC->m_hDC);
+	wglMakeCurrent(pDC->m_hDC, m_hglrc);
+	ReleaseDC(pDC);
 
 
-	fNearPlane	= 1.0f;
-	fAspect		= 1.0f;
-	fFarPlane	= 1000.0f;
+	fNearPlane = 1.0f;
+	fAspect = 1.0f;
+	fFarPlane = 1000.0f;
 
 	m_z = (fNearPlane + fFarPlane) * 0.5f;
 
@@ -141,7 +141,7 @@ int CExampleView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
 	glMatrixMode(GL_MODELVIEW);
 
-	
+
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -173,13 +173,13 @@ void CExampleView::OnDraw(CDC* pDC)
 	//GetClientRect(&clientRect);
 	//glViewport(0, 0, clientRect.right, clientRect.bottom);
 
-	//glClearColor(1, 1, 1, 0);			// цвет фона
-	//glClear(GL_COLOR_BUFFER_BIT);      // очистка буфера цвета
+	//glClearColor(1, 1, 1, 0);			// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+	//glClear(GL_COLOR_BUFFER_BIT);      // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
 	//glEnable(GL_LINE_SMOOTH);
 
-	////glPointSize (4);					// размер точек
-	//glColor3f(0, 0, 0);				// текущий цвет примитивов
+	////glPointSize (4);					// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+	//glColor3f(0, 0, 0);				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 	//glLineWidth(20);
 
@@ -195,34 +195,38 @@ void CExampleView::OnDraw(CDC* pDC)
 	//glFlush();
 	////SwapBuffers(pDC->m_hDC);
 
+
+
 	glClearDepth(1.0f);                                  //Specifies the clear value for the depth buffer 
 	glClearColor(0.99f, 0.99f, 0.99f, 1.0f);             //Set Background Color
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  //Indicate the buffers to be cleared
 	glPushMatrix();                                      //push the current matrix stack
-	
+
 	//glFrustum(-1, 1, -1, 1, 3, 1000.0f);
-	
+
 	glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, -m_z);                      //move object far-near
 	glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);                //rotate object    
 	glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);                //around the axe
 	glRotatef(wAngleZ, 0.0f, 0.0f, 1.0f);                //specified
 
-	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+	glColor3f(0.85f, 0.85f, 0.85f);				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 
 	////DrawOpenGL_Cube(10, 15, 0, 0);
 	//DrawOpenGL_Cube(10, 0, 0, 0);
 
 
-	
-	DrawOpenGL_Cylinder();
+
+	/*DrawOpenGL_Cylinder();
 	DrawOpenGL_LineSegment();
 	DrawOpenGL_PlaneViaRectangle();
 	DrawOpenGL_Cone();
 	DrawOpenGL_Sphere();
 	DrawOpenGL_Circle();
-	DrawOpenGL_Point();
-	
+	DrawOpenGL_Point();*/
+
+
+	DrawOpenGL_SceneObjects(GL_RENDER);
 
 	////	---	---	---
 
@@ -247,6 +251,11 @@ void CExampleView::OnSize(UINT nType, int cx, int cy)
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
+
+		glnWidth = (GLsizei)cx;
+		glnHeight = (GLsizei)cy;
+		fAspect = (GLdouble)cx / cy;
+
 		gluPerspective(45.0f, (GLdouble)cx / cy, fNearPlane, fFarPlane);
 		glMatrixMode(GL_MODELVIEW);
 	}
@@ -298,16 +307,107 @@ void CExampleView::OnMouseMove(UINT nFlags, CPoint point)
 		Invalidate(FALSE);
 	}
 	
+	//RedrawWindow();
 
 	CView::OnMouseMove(nFlags, point);
 }
+
+#define BUFSIZE 512
 // ---																							// On Left Button Down
 void CExampleView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	mouse_x0 = point.x;  mouse_y0 = point.y;
 
-	Invalidate(FALSE);
+	//	---	---	---	---	---
 
+	GLuint selectBuf[BUFSIZE];
+	GLint hits;
+	GLint viewport[4];
+
+
+	/*glSelectBuffer(512, selectBuf);
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+		glRenderMode(GL_SELECT);
+
+		glInitNames();
+		glPushName(-1);
+
+		glLoadIdentity();
+		gluPickMatrix(point.x, viewport[3] - point.y, 2, 2, viewport);
+		gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
+		glMatrixMode(GL_MODELVIEW);
+			DrawOpenGL_SceneObjects(GL_SELECT);
+			hits = glRenderMode(GL_RENDER);
+		glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);*/
+
+	//glGetIntegerv(GL_VIEWPORT, viewport);
+	//glSelectBuffer(BUFSIZE, selectBuf);
+
+	//glRenderMode(GL_SELECT);				// Enter the SELECT render mode
+	//glInitNames();
+	//glPushName(-1);
+
+	//glMatrixMode(GL_PROJECTION);
+	//glPushMatrix();
+	//glLoadIdentity();
+	//gluPickMatrix((GLdouble)point.x, (GLdouble)(viewport[3] - point.y), 5.0, 5.0, viewport);
+	//gluPerspective(30.0, gldAspect, 1.0, 20.0);
+	//glMatrixMode(GL_MODELVIEW);
+
+
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glSelectBuffer(BUFSIZE, selectBuf);
+
+	glRenderMode(GL_SELECT);				// Enter the SELECT render mode
+	glInitNames();
+	glPushName(-1);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+		//glRenderMode(GL_SELECT);
+		glLoadIdentity();
+		gluPickMatrix(point.x, viewport[3] - point.y, 2, 2, viewport);
+		gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
+		glMatrixMode(GL_MODELVIEW);
+			DrawOpenGL_SceneObjects(GL_SELECT);
+		glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+
+
+	//glPopMatrix();
+	//glFlush();
+	//
+	
+	
+	hits = glRenderMode(GL_RENDER);
+
+	///*glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//glViewport(0, 0, glnWidth, glnHeight);
+	//gluPerspective(30.0, gldAspect, 1.0, 20.0);*/
+
+	//gluPerspective(45.0f, (GLdouble)cx / cy, fNearPlane, fFarPlane);
+
+	int a = 0;
+	if (hits)
+	{
+		int n = 0; double minz = selectBuf[1];
+		for (int i = 1; i < hits; i++)
+		{
+			if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
+		}
+		a = selectBuf[3 + n * 4];
+		
+	}
+	
+	
+	RedrawWindow();
+	
 	CView::OnLButtonDown(nFlags, point);
 }
 // ---																							// On Mouse Wheel
@@ -321,7 +421,7 @@ BOOL CExampleView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		m_z -= step;
 
 	Invalidate(FALSE);
-
+	//RedrawWindow();
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }
 // ---																							// On Middle Button Down
@@ -348,6 +448,31 @@ void CExampleView::OnMycomandDrawpoint()
 	Invalidate(FALSE);
 }
 
+//--------------------------------------------------------------
+//	----	Message Handlers		----	Custom Messages
+//--------------------------------------------------------------
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Set Up OpenGL Settings
+/*HGLRC */void CExampleView::SetUpOpenGL(/*HWND hWnd*/)
+{
+	//
+}
+//////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Objects in Scene
+void CExampleView::DrawOpenGL_SceneObjects(GLenum mode)
+{
+
+	if (mode == GL_SELECT)
+	{
+		glLoadName(105);
+	}
+	DrawOpenGL_Cube(10, 0, -1, 0);
+
+
+}
+///////////////////////////////////////////////////////
+
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Cube
 void CExampleView::DrawOpenGL_Cube(double param, double cx, double cy, double cz)
 {
@@ -355,6 +480,9 @@ void CExampleView::DrawOpenGL_Cube(double param, double cx, double cy, double cz
 
 	//glDisable(GL_TEXTURE_2D);
 	glBegin(GL_QUAD_STRIP);
+
+	glNormal3f(0, 0, 1);
+
 	glVertex3f(-param+cx, param + cy, param + cz);
 
 	glVertex3f(-param + cx, -param + cy, param + cz);
@@ -364,19 +492,20 @@ void CExampleView::DrawOpenGL_Cube(double param, double cx, double cy, double cz
 	glVertex3f(param + cx, -param + cy, param + cz);
 
 	glVertex3f(param + cx, param + cy, -param + cz);
-
+	glNormal3f(1, 0, 0);
 	glVertex3f(param + cx, -param + cy, -param + cz);
 
 	glVertex3f(-param + cx, param + cy, -param + cz);
-
+	glNormal3f(0, 0, 1);
 	glVertex3f(-param + cx, -param + cy, -param + cz);
 
 	glVertex3f(-param + cx, param + cy, param + cz);
-
+	glNormal3f(1, 0, 0);
 	glVertex3f(-param + cx, -param + cy, param + cz);
 
 	glEnd();
 
+	return;
 
 	glBegin(GL_QUADS);
 
@@ -429,11 +558,13 @@ void CExampleView::DrawOpenGL_Circle()
 		glLineWidth(3);
 
 		glBegin(GL_LINE_LOOP);
-		int i;
-		for (i = 0; i < circle.Mesh.size(); i++)
-		{
-			glVertex3f(circle.Mesh[i].X, circle.Mesh[i].Y, circle.Mesh[i].Z);
-		}		
+			int i;
+			for (i = 0; i < circle.Mesh.points.size(); i++)
+			{
+				glVertex3f(circle.Mesh.points[i].X, circle.Mesh.points[i].Y, circle.Mesh.points[i].Z);
+			}
+			glNormal3f(circle.Mesh.vectorsNormal[0].X, circle.Mesh.vectorsNormal[0].Y, circle.Mesh.vectorsNormal[0].Z);
+
 		glEnd();
 
 		/*glColor3d(1, 0, 0);
@@ -445,7 +576,7 @@ void CExampleView::DrawOpenGL_Circle()
 	}
 
 	glLineWidth(1);
-	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+	glColor3f(0.85f, 0.85f, 0.85f);				// С‚РµРєСѓС‰РёР№ С†РІРµС‚ РїСЂРёРјРёС‚РёРІРѕРІ
 
 	file.close();
 	points.clear();
@@ -457,7 +588,7 @@ void CExampleView::DrawOpenGL_Cylinder()
 {
 
 	std::ifstream					file;
-	CylinderApprox					cylinder;
+	CylinderApprox					cylinderApprox;
 	std::vector <PointGeometric>	points;
 	PointGeometric					point;
 	double							accuracy = 0.00001;
@@ -472,16 +603,18 @@ void CExampleView::DrawOpenGL_Cylinder()
 			//points.Add(point);
 		}
 
-		cylinder.FindByPoints(&points[0], (int)points.size(), accuracy);
+		cylinderApprox.FindByPoints(&points[0], (int)points.size(), accuracy);
 
 
 		glBegin(GL_TRIANGLES);
 		int i;
-		for (i = 2; i < cylinder.Mesh.size(); i+=3)
+		for (i = 2; i < cylinderApprox.Mesh.points.size(); i+=3)
 		{
-			glVertex3f(cylinder.Mesh[i].X, cylinder.Mesh[i].Y, cylinder.Mesh[i].Z);
-			glVertex3f(cylinder.Mesh[i - 1].X, cylinder.Mesh[i - 1].Y, cylinder.Mesh[i - 1].Z);
-			glVertex3f(cylinder.Mesh[i - 2].X, cylinder.Mesh[i - 2].Y, cylinder.Mesh[i - 2].Z);
+			glVertex3f(cylinderApprox.Mesh.points[i].X, cylinderApprox.Mesh.points[i].Y, cylinderApprox.Mesh.points[i].Z);
+			glVertex3f(cylinderApprox.Mesh.points[i - 1].X, cylinderApprox.Mesh.points[i - 1].Y, cylinderApprox.Mesh.points[i - 1].Z);
+			glVertex3f(cylinderApprox.Mesh.points[i - 2].X, cylinderApprox.Mesh.points[i - 2].Y, cylinderApprox.Mesh.points[i - 2].Z);
+			
+			glNormal3f(cylinderApprox.Mesh.vectorsNormal[i / 3].X, cylinderApprox.Mesh.vectorsNormal[i / 3].Y, cylinderApprox.Mesh.vectorsNormal[i / 3].Z);
 		}
 		glEnd();
 
@@ -496,21 +629,21 @@ void CExampleView::DrawOpenGL_Cylinder()
 
 		glColor3d(1, 0, 0);
 		glBegin(GL_LINE_LOOP);
-		for (i = 0; i < cylinder.pointsTopCircleEdge_Copy.size(); i++)
+		for (i = 0; i < cylinderApprox.pointsTopCircleEdge_Copy.size(); i++)
 		{
-			glVertex3f(cylinder.pointsTopCircleEdge_Copy[i].X, cylinder.pointsTopCircleEdge_Copy[i].Y, cylinder.pointsTopCircleEdge_Copy[i].Z);
+			glVertex3f(cylinderApprox.pointsTopCircleEdge_Copy[i].X, cylinderApprox.pointsTopCircleEdge_Copy[i].Y, cylinderApprox.pointsTopCircleEdge_Copy[i].Z);
 		}
 		glEnd();
 
 		glBegin(GL_LINE_LOOP);
-		for (i = 0; i < cylinder.pointsBottomCircleEdge_Copy.size(); i++)
+		for (i = 0; i < cylinderApprox.pointsBottomCircleEdge_Copy.size(); i++)
 		{
-			glVertex3f(cylinder.pointsBottomCircleEdge_Copy[i].X, cylinder.pointsBottomCircleEdge_Copy[i].Y, cylinder.pointsBottomCircleEdge_Copy[i].Z);
+			glVertex3f(cylinderApprox.pointsBottomCircleEdge_Copy[i].X, cylinderApprox.pointsBottomCircleEdge_Copy[i].Y, cylinderApprox.pointsBottomCircleEdge_Copy[i].Z);
 		}
 		glEnd();
 	}
 
-	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+	glColor3f(0.85f, 0.85f, 0.85f);				// С‚РµРєСѓС‰РёР№ С†РІРµС‚ РїСЂРёРјРёС‚РёРІРѕРІ
 
 	file.close();
 	points.clear();
@@ -544,12 +677,13 @@ void CExampleView::DrawOpenGL_Point()
 
 		glBegin(GL_POINTS);
 			glVertex3d(pointApprox.X + 20, pointApprox.Y + 20, pointApprox.Z + 20);
+			glNormal3f(pointApprox.Line.Vector.X, pointApprox.Line.Vector.Y, pointApprox.Line.Vector.Z);
 		glEnd();
 
 	}
 
 	glPointSize(1);
-	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+	glColor3f(0.85f, 0.85f, 0.85f);				// С‚РµРєСѓС‰РёР№ С†РІРµС‚ РїСЂРёРјРёС‚РёРІРѕРІ
 
 	file.close();
 	points.clear();
@@ -585,12 +719,13 @@ void CExampleView::DrawOpenGL_LineSegment()
 		glBegin(GL_LINES);
 			glVertex3d(lineApprox.PointStart.X, lineApprox.PointStart.Y, lineApprox.PointStart.Z);
 			glVertex3d(lineApprox.PointEnd.X, lineApprox.PointEnd.Y, lineApprox.PointEnd.Z);
+			glNormal3f(lineApprox.Vector.X, lineApprox.Vector.Y, lineApprox.Vector.Z);
 		glEnd();
 		
 	}
 
 	glLineWidth(1);
-	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+	glColor3f(0.85f, 0.85f, 0.85f);				// С‚РµРєСѓС‰РёР№ С†РІРµС‚ РїСЂРёРјРёС‚РёРІРѕРІ
 
 	file.close();
 	points.clear();
@@ -620,16 +755,18 @@ void CExampleView::DrawOpenGL_PlaneViaRectangle()
 
 		glBegin(GL_TRIANGLES);
 		int i;
-		for (i = 2; i < planeApprox.Mesh.size(); i += 3)
+		for (i = 2; i < planeApprox.Mesh.points.size(); i += 3)
 		{
-			glVertex3f(planeApprox.Mesh[i].X,		planeApprox.Mesh[i].Y,		planeApprox.Mesh[i].Z);
-			glVertex3f(planeApprox.Mesh[i - 1].X,	planeApprox.Mesh[i - 1].Y,	planeApprox.Mesh[i - 1].Z);
-			glVertex3f(planeApprox.Mesh[i - 2].X,	planeApprox.Mesh[i - 2].Y,	planeApprox.Mesh[i - 2].Z);
+			glVertex3f(planeApprox.Mesh.points[i].X,		planeApprox.Mesh.points[i].Y,		planeApprox.Mesh.points[i].Z);
+			glVertex3f(planeApprox.Mesh.points[i - 1].X,	planeApprox.Mesh.points[i - 1].Y,	planeApprox.Mesh.points[i - 1].Z);
+			glVertex3f(planeApprox.Mesh.points[i - 2].X,	planeApprox.Mesh.points[i - 2].Y,	planeApprox.Mesh.points[i - 2].Z);
+
+			glNormal3f(planeApprox.Mesh.vectorsNormal[0].X, planeApprox.Mesh.vectorsNormal[0].Y, planeApprox.Mesh.vectorsNormal[0].Z);
 		}
 		glEnd();
 	}
 
-	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+	glColor3f(0.85f, 0.85f, 0.85f);				// С‚РµРєСѓС‰РёР№ С†РІРµС‚ РїСЂРёРјРёС‚РёРІРѕРІ
 
 	file.close();
 	points.clear();
@@ -663,15 +800,17 @@ void CExampleView::DrawOpenGL_Cone()
 		file.close();
 		points.clear();
 
-		glColor3f(0.85f, 0.85f, 0.9f);				// текущий цвет примитивов
+		glColor3f(0.85f, 0.85f, 0.9f);				// С‚РµРєСѓС‰РёР№ С†РІРµС‚ РїСЂРёРјРёС‚РёРІРѕРІ
 
 		glBegin(GL_TRIANGLES);
 		int i;
-		for (i = 2; i < coneApprox.Mesh.size(); i += 3)
+		for (i = 2; i < coneApprox.Mesh.points.size(); i += 3)
 		{
-			glVertex3f(coneApprox.Mesh[i].X, coneApprox.Mesh[i].Y, coneApprox.Mesh[i].Z);
-			glVertex3f(coneApprox.Mesh[i - 1].X, coneApprox.Mesh[i - 1].Y, coneApprox.Mesh[i - 1].Z);
-			glVertex3f(coneApprox.Mesh[i - 2].X, coneApprox.Mesh[i - 2].Y, coneApprox.Mesh[i - 2].Z);
+			glVertex3f(coneApprox.Mesh.points[i].X, coneApprox.Mesh.points[i].Y, coneApprox.Mesh.points[i].Z);
+			glVertex3f(coneApprox.Mesh.points[i - 1].X, coneApprox.Mesh.points[i - 1].Y, coneApprox.Mesh.points[i - 1].Z);
+			glVertex3f(coneApprox.Mesh.points[i - 2].X, coneApprox.Mesh.points[i - 2].Y, coneApprox.Mesh.points[i - 2].Z);
+
+			glNormal3f(coneApprox.Mesh.vectorsNormal[i/3].X, coneApprox.Mesh.vectorsNormal[i / 3].Y, coneApprox.Mesh.vectorsNormal[i / 3].Z);
 		}
 		glEnd();
 	
@@ -701,7 +840,7 @@ void CExampleView::DrawOpenGL_Cone()
 
 
 	}
-	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+	glColor3f(0.85f, 0.85f, 0.85f);				// С‚РµРєСѓС‰РёР№ С†РІРµС‚ РїСЂРёРјРёС‚РёРІРѕРІ
 
 	file.close();
 	points.clear();
@@ -733,13 +872,15 @@ void CExampleView::DrawOpenGL_Sphere()
 		glColor3f(0.2f, 0.85f, 0.1f);
 		glBegin(GL_TRIANGLES);
 		int i;
-		for (i = 2; i < sphereApprox.Mesh.size() /*&&i<=dd*/; i += 3)
+		for (i = 2; i < sphereApprox.Mesh.points.size() /*&&i<=dd*/; i += 3)
 		{
 			//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
 			
-			glVertex3f(sphereApprox.Mesh[i].X, sphereApprox.Mesh[i].Y, sphereApprox.Mesh[i].Z);
-			glVertex3f(sphereApprox.Mesh[i - 1].X, sphereApprox.Mesh[i - 1].Y, sphereApprox.Mesh[i - 1].Z);
-			glVertex3f(sphereApprox.Mesh[i - 2].X, sphereApprox.Mesh[i - 2].Y, sphereApprox.Mesh[i - 2].Z);
+			glVertex3f(sphereApprox.Mesh.points[i].X, sphereApprox.Mesh.points[i].Y, sphereApprox.Mesh.points[i].Z);
+			glVertex3f(sphereApprox.Mesh.points[i - 1].X, sphereApprox.Mesh.points[i - 1].Y, sphereApprox.Mesh.points[i - 1].Z);
+			glVertex3f(sphereApprox.Mesh.points[i - 2].X, sphereApprox.Mesh.points[i - 2].Y, sphereApprox.Mesh.points[i - 2].Z);
+
+			glNormal3f(sphereApprox.Mesh.vectorsNormal[i / 3].X, sphereApprox.Mesh.vectorsNormal[i / 3].Y, sphereApprox.Mesh.vectorsNormal[i / 3].Z);
 		}
 		glEnd();
 
@@ -751,10 +892,11 @@ void CExampleView::DrawOpenGL_Sphere()
 
 	}
 
-	glColor3f(0.85f, 0.85f, 0.85f);				// текущий цвет примитивов
+	glColor3f(0.85f, 0.85f, 0.85f);				// С‚РµРєСѓС‰РёР№ С†РІРµС‚ РїСЂРёРјРёС‚РёРІРѕРІ
 
 	file.close();
 	points.clear();
 }
 ///////////////////////////////////////////////////////
+
 

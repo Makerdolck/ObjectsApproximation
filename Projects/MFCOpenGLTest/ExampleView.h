@@ -79,16 +79,24 @@ private:
 
 	int			dd;
 
-	//CDC* pDC;
+	HGLRC		hRC;
+
+	GLdouble	gldAspect;
+	GLsizei		glnWidth, 
+				glnHeight;
+
 public:
-	void DrawOpenGL_Cube(double param, double cx, double cy, double cz);
-	void DrawOpenGL_Circle();
-	void DrawOpenGL_Cylinder();
-	void DrawOpenGL_Point();
-	void DrawOpenGL_LineSegment();
-	void DrawOpenGL_PlaneViaRectangle();
-	void DrawOpenGL_Cone();
-	void DrawOpenGL_Sphere();
+	void	SetUpOpenGL(/*HWND hWnd*/);
+	void	DrawOpenGL_SceneObjects(GLenum mode);
+
+	void	DrawOpenGL_Cube(double param, double cx, double cy, double cz);
+	void	DrawOpenGL_Circle();
+	void	DrawOpenGL_Cylinder();
+	void	DrawOpenGL_Point();
+	void	DrawOpenGL_LineSegment();
+	void	DrawOpenGL_PlaneViaRectangle();
+	void	DrawOpenGL_Cone();
+	void	DrawOpenGL_Sphere();
 
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

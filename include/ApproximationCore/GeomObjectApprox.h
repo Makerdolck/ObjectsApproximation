@@ -6,6 +6,7 @@
 #include "ApproximationApprox.h"
 #include "LineGeometric.h"
 
+#include "MeshTrianglesStructure.h"
 
 class GeomObjectApprox : public ApproximationApprox
 {
@@ -18,7 +19,7 @@ public:
 	double							Radius,
 									Height;
 
-	std::vector<PointGeometric>		Mesh;
+	MeshTriangles					Mesh;
 
 protected:
 	char							*objectApproxName;

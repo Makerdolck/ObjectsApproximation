@@ -98,44 +98,44 @@ void CircleApprox::Triangulation(double stepSize)
 		p = cos(angelsSum * PI_Approx / 180.0f)*Radius;;	// X component
 		h = sin(angelsSum * PI_Approx / 180.0f)*Radius;		// Y component		
 
-		Mesh.push_back(PointGeometric(p, h, 0));
+		Mesh.points.push_back(PointGeometric(p, h, 0));
 	}
 
 	if (angelsSum < 90 || (angelsSum - angle) < 90)
 	{
-		Mesh.push_back(PointGeometric(0, Radius, 0));
+		Mesh.points.push_back(PointGeometric(0, Radius, 0));
 	}
 
 	//	---	---	Points on circle in Another quarters
 
 	std::vector<PointGeometric> pointsNPquarter, pointsNNquarter, pointsPNquarter;
 
-	int pointQuartetCount = Mesh.size();
+	int pointQuartetCount = Mesh.points.size();
 
 	for (int i = 0; i < pointQuartetCount; i++)
 	{
 		//	-X	+Y
 		if (i != 0 && i != pointQuartetCount - 1)
 			pointsNPquarter.push_back(
-				PointGeometric(Mesh[i].X*(-1), Mesh[i].Y, 0));
+				PointGeometric(Mesh.points[i].X*(-1), Mesh.points[i].Y, 0));
 		//	-X	-Y
 		pointsNNquarter.push_back(
-			PointGeometric(Mesh[i].X*(-1), Mesh[i].Y*(-1), 0));
+			PointGeometric(Mesh.points[i].X*(-1), Mesh.points[i].Y*(-1), 0));
 		//	+X	-Y
 		if (i != 0 && i != pointQuartetCount - 1)
 			pointsPNquarter.push_back(
-				PointGeometric(Mesh[i].X, Mesh[i].Y*(-1), 0));
+				PointGeometric(Mesh.points[i].X, Mesh.points[i].Y*(-1), 0));
 	}
 	//	-X	+Y
 	std::reverse(std::begin(pointsNPquarter), std::end(pointsNPquarter));
-	Mesh.insert(Mesh.end(), pointsNPquarter.begin(), pointsNPquarter.end());
+	Mesh.points.insert(Mesh.points.end(), pointsNPquarter.begin(), pointsNPquarter.end());
 	pointsNPquarter.clear();
 	//	-X	-Y
-	Mesh.insert(Mesh.end(), pointsNNquarter.begin(), pointsNNquarter.end());
+	Mesh.points.insert(Mesh.points.end(), pointsNNquarter.begin(), pointsNNquarter.end());
 	pointsNNquarter.clear();
 	//	+X	-Y
 	std::reverse(std::begin(pointsPNquarter), std::end(pointsPNquarter));
-	Mesh.insert(Mesh.end(), pointsPNquarter.begin(), pointsPNquarter.end());
+	Mesh.points.insert(Mesh.points.end(), pointsPNquarter.begin(), pointsPNquarter.end());
 	pointsPNquarter.clear();
 
 	//	---	---	Transfer points from XY plane to cylinder bottom surface 
@@ -149,14 +149,17 @@ void CircleApprox::Triangulation(double stepSize)
 
 	tmpPoint = Line.Point;	// Center point of new coordinate system
 
-	for (int i = 0; i < Mesh.size(); i++)
+	for (int i = 0; i < (int)Mesh.points.size(); i++)
 	{
-		Mesh[i] = TransferPointToNewCoordinateSystem(Mesh[i],
+		Mesh.points[i] = TransferPointToNewCoordinateSystem(Mesh.points[i],
 			tmpPoint,
 			vectorX,
 			vectorY,
 			vectorZ);
 	}
+
+	
+	Mesh.vectorsNormal.push_back(Line.Vector);
 
 	pointsNPquarter.clear();
 	pointsNNquarter.clear();

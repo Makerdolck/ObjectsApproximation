@@ -63,6 +63,8 @@ void SphereApprox::Triangulation(double stepSize)
 {
 	PointGeometric				tmpPoint;
 
+	PlaneGeometric				tmpPlane;
+
 	LineGeometric				tmpLine,
 								lineAxisZ,
 								lineAxisY;
@@ -87,7 +89,7 @@ void SphereApprox::Triangulation(double stepSize)
 
 	circleFirst.Triangulation(stepSize);
 
-	pointsMidleCircle.insert(pointsMidleCircle.begin(), circleFirst.Mesh.begin(), circleFirst.Mesh.end());
+	pointsMidleCircle.insert(pointsMidleCircle.begin(), circleFirst.Mesh.points.begin(), circleFirst.Mesh.points.end());
 
 	for (double stepSum = stepSize; stepSum <= Radius / 1.2f; stepSum += tmpStepSize)
 	{
@@ -101,9 +103,9 @@ void SphereApprox::Triangulation(double stepSize)
 		tmpLine.Point = tmpPoint;
 		tmpLine.Vector = VectorGeometric(tmpPoint, lineAxisZ.PointProjection(tmpPoint));
 
-		circleSecond.Mesh.push_back(tmpLine.CreatePointOnDistance(Radius - profileRadius));
+		circleSecond.Mesh.points.push_back(tmpLine.CreatePointOnDistance(Radius - profileRadius));
 
-		for (int i = 1; i < circleFirst.Mesh.size(); i++)
+		for (int i = 1; i < (int)circleFirst.Mesh.points.size(); i++)
 		{
 			tmpLine.Vector = lineAxisZ.Vector;
 			tmpLine.Point = pointsMidleCircle[i];
@@ -113,32 +115,45 @@ void SphereApprox::Triangulation(double stepSize)
 			tmpLine.Point = tmpPoint;
 			tmpLine.Vector = VectorGeometric(tmpPoint, lineAxisZ.PointProjection(tmpPoint));
 
-			circleSecond.Mesh.push_back(tmpLine.CreatePointOnDistance(Radius - profileRadius));
+			circleSecond.Mesh.points.push_back(tmpLine.CreatePointOnDistance(Radius - profileRadius));
 
-			Mesh.push_back(circleFirst.Mesh[i - 1]);
-			Mesh.push_back(circleFirst.Mesh[i]);
-			Mesh.push_back(circleSecond.Mesh[i - 1]);
+			Mesh.points.push_back(circleFirst.Mesh.points[i - 1]);
+			Mesh.points.push_back(circleFirst.Mesh.points[i]);
+			Mesh.points.push_back(circleSecond.Mesh.points[i - 1]);
+
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
+
 			
-			Mesh.push_back(circleFirst.Mesh[i]);
-			Mesh.push_back(circleSecond.Mesh[i]);
-			Mesh.push_back(circleSecond.Mesh[i - 1]);
+			Mesh.points.push_back(circleFirst.Mesh.points[i]);
+			Mesh.points.push_back(circleSecond.Mesh.points[i]);
+			Mesh.points.push_back(circleSecond.Mesh.points[i - 1]);
+
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 		}
 
-		Mesh.push_back(circleFirst.Mesh[0]);
-		Mesh.push_back(circleFirst.Mesh[circleFirst.Mesh.size()-1]);
-		Mesh.push_back(circleSecond.Mesh[0]);
+		Mesh.points.push_back(circleFirst.Mesh.points[0]);
+		Mesh.points.push_back(circleFirst.Mesh.points[circleFirst.Mesh.points.size()-1]);
+		Mesh.points.push_back(circleSecond.Mesh.points[0]);
 
-		Mesh.push_back(circleFirst.Mesh[circleFirst.Mesh.size()-1]);
-		Mesh.push_back(circleSecond.Mesh[circleSecond.Mesh.size()-1]);
-		Mesh.push_back(circleSecond.Mesh[0]);
-
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 
 
-		circleFirst.Mesh.clear();
+		Mesh.points.push_back(circleFirst.Mesh.points[circleFirst.Mesh.points.size()-1]);
+		Mesh.points.push_back(circleSecond.Mesh.points[circleSecond.Mesh.points.size()-1]);
+		Mesh.points.push_back(circleSecond.Mesh.points[0]);
 
-		circleFirst.Mesh.insert(circleFirst.Mesh.end(), circleSecond.Mesh.begin(), circleSecond.Mesh.end());
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 
-		circleSecond.Mesh.clear();
+
+		circleFirst.Mesh.points.clear();
+
+		circleFirst.Mesh.points.insert(circleFirst.Mesh.points.end(), circleSecond.Mesh.points.begin(), circleSecond.Mesh.points.end());
+
+		circleSecond.Mesh.points.clear();
 
 		if ((Radius - stepSum) < stepSize && (Radius - stepSum) != 0)
 		{
@@ -146,8 +161,8 @@ void SphereApprox::Triangulation(double stepSize)
 		}
 	}
 
-	circleFirst.Mesh.clear();
-	circleSecond.Mesh.clear();
+	circleFirst.Mesh.points.clear();
+	circleSecond.Mesh.points.clear();
 	pointsMidleCircle.clear();
 
 	//	---	---	---	---	---	Second half of First Hemisphere
@@ -164,15 +179,15 @@ void SphereApprox::Triangulation(double stepSize)
 
 	//	---	Transfer points from XY plane to spher's coordinate system 
 
-	for (int i = 0; i < circleFirst.Mesh.size(); i++)
+	for (int i = 0; i < (int)circleFirst.Mesh.points.size(); i++)
 	{
-		circleFirst.Mesh[i].Z = circleFirst.Mesh[i].Y;
-		circleFirst.Mesh[i].Y = 0;
+		circleFirst.Mesh.points[i].Z = circleFirst.Mesh.points[i].Y;
+		circleFirst.Mesh.points[i].Y = 0;
 	}
 
 	//	---
 
-	pointsMidleCircle.insert(pointsMidleCircle.begin(), circleFirst.Mesh.begin(), circleFirst.Mesh.end());
+	pointsMidleCircle.insert(pointsMidleCircle.begin(), circleFirst.Mesh.points.begin(), circleFirst.Mesh.points.end());
 
 	tmpStepSize = stepSize;
 
@@ -188,9 +203,9 @@ void SphereApprox::Triangulation(double stepSize)
 		tmpLine.Point = tmpPoint;
 		tmpLine.Vector = VectorGeometric(tmpPoint, lineAxisY.PointProjection(tmpPoint));
 
-		circleSecond.Mesh.push_back(tmpLine.CreatePointOnDistance(Radius - profileRadius));
+		circleSecond.Mesh.points.push_back(tmpLine.CreatePointOnDistance(Radius - profileRadius));
 
-		for (int i = 1; i < circleFirst.Mesh.size(); i++)
+		for (int i = 1; i < (int)circleFirst.Mesh.points.size(); i++)
 		{
 			tmpLine.Vector = lineAxisY.Vector;
 			tmpLine.Point = pointsMidleCircle[i];
@@ -200,32 +215,45 @@ void SphereApprox::Triangulation(double stepSize)
 			tmpLine.Point = tmpPoint;
 			tmpLine.Vector = VectorGeometric(tmpPoint, lineAxisY.PointProjection(tmpPoint));
 
-			circleSecond.Mesh.push_back(tmpLine.CreatePointOnDistance(Radius - profileRadius));
+			circleSecond.Mesh.points.push_back(tmpLine.CreatePointOnDistance(Radius - profileRadius));
 
-			Mesh.push_back(circleFirst.Mesh[i - 1]);
-			Mesh.push_back(circleFirst.Mesh[i]);
-			Mesh.push_back(circleSecond.Mesh[i - 1]);
+			Mesh.points.push_back(circleFirst.Mesh.points[i - 1]);
+			Mesh.points.push_back(circleFirst.Mesh.points[i]);
+			Mesh.points.push_back(circleSecond.Mesh.points[i - 1]);
 
-			Mesh.push_back(circleFirst.Mesh[i]);
-			Mesh.push_back(circleSecond.Mesh[i]);
-			Mesh.push_back(circleSecond.Mesh[i - 1]);
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
+
+
+			Mesh.points.push_back(circleFirst.Mesh.points[i]);
+			Mesh.points.push_back(circleSecond.Mesh.points[i]);
+			Mesh.points.push_back(circleSecond.Mesh.points[i - 1]);
+
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 		}
 
-		Mesh.push_back(circleFirst.Mesh[0]);
-		Mesh.push_back(circleFirst.Mesh[circleFirst.Mesh.size() - 1]);
-		Mesh.push_back(circleSecond.Mesh[0]);
+		Mesh.points.push_back(circleFirst.Mesh.points[0]);
+		Mesh.points.push_back(circleFirst.Mesh.points[circleFirst.Mesh.points.size() - 1]);
+		Mesh.points.push_back(circleSecond.Mesh.points[0]);
 
-		Mesh.push_back(circleFirst.Mesh[circleFirst.Mesh.size() - 1]);
-		Mesh.push_back(circleSecond.Mesh[circleSecond.Mesh.size() - 1]);
-		Mesh.push_back(circleSecond.Mesh[0]);
-
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 
 
-		circleFirst.Mesh.clear();
+		Mesh.points.push_back(circleFirst.Mesh.points[circleFirst.Mesh.points.size() - 1]);
+		Mesh.points.push_back(circleSecond.Mesh.points[circleSecond.Mesh.points.size() - 1]);
+		Mesh.points.push_back(circleSecond.Mesh.points[0]);
 
-		circleFirst.Mesh.insert(circleFirst.Mesh.end(), circleSecond.Mesh.begin(), circleSecond.Mesh.end());
+		tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+		Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
 
-		circleSecond.Mesh.clear();
+
+		circleFirst.Mesh.points.clear();
+
+		circleFirst.Mesh.points.insert(circleFirst.Mesh.points.end(), circleSecond.Mesh.points.begin(), circleSecond.Mesh.points.end());
+
+		circleSecond.Mesh.points.clear();
 
 		if ((Radius - stepSum) < stepSize && (Radius - stepSum) != 0)
 		{
@@ -235,16 +263,22 @@ void SphereApprox::Triangulation(double stepSize)
 
 	//	---	---	---	---	---	Second Hemisphere
 
-	int countPoints = Mesh.size();
+	int countPoints = Mesh.points.size();
 
 	for (int i = 0; i < countPoints; i++)
 	{
-		Mesh.push_back(Mesh[i] * (-1));
+		Mesh.points.push_back(Mesh.points[i] * (-1));
+
+		if (i % 3 == 2)
+		{
+			tmpPlane = PlaneGeometric(Mesh.points[Mesh.points.size() - 1], Mesh.points[Mesh.points.size() - 2], Mesh.points[Mesh.points.size() - 3]);
+			Mesh.vectorsNormal.push_back(tmpPlane.Line.Vector);
+		}
 	}
 
-	//	---	---	---	---	---	Transfer points from XY plane to spher's coordinate system 
+	//	---	---	---	---	---	Transfer points from XYZ system to spher's coordinate system 
 
-	PlaneGeometric tmpPlane = Line;
+	tmpPlane = Line;
 
 	tmpPoint = Line.Point;						// Center point of new coordinate system
 
@@ -254,9 +288,9 @@ void SphereApprox::Triangulation(double stepSize)
 	vectorY = VectorGeometric(0.0f, 1.0f, 0.0f);
 	vectorZ = VectorGeometric(0.0f, 0.0f, 1.0f);
 
-	for (int i = 0; i < Mesh.size(); i++)
+	for (int i = 0; i < (int)Mesh.points.size(); i++)
 	{
-		Mesh[i] = TransferPointToNewCoordinateSystem(Mesh[i],
+		Mesh.points[i] = TransferPointToNewCoordinateSystem(Mesh.points[i],
 			tmpPoint,
 			vectorX,
 			vectorY,
