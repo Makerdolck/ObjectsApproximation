@@ -5,24 +5,24 @@
 
 #include "GeomObjectApprox.h"
 #include <iostream>
-//#include "..\\vsn_scenesegment.h"
 
-class ObjectApproxC3D
+class ObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 public:
 	GeomObjectApprox	*objMath;
-	//SceneSegment		*objSS;
 
 	std::wstring		Name;
 
-	bool				flagReady;
+	bool				flagReady,
+						flagSelected;
 
+	long int			objID;
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:
-	ObjectApproxC3D();
-	~ObjectApproxC3D();
+	ObjectApprox();
+	~ObjectApprox();
 };
 
 #endif /* __OBJECT_APPROX_C3D_H__ */

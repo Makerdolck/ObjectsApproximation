@@ -93,7 +93,10 @@
     <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\ApproximationCore\ObjectApproxC3D.cpp">
+    <ClCompile Include="..\..\include\OpenGLView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
   </ItemGroup>
@@ -125,9 +128,6 @@
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\CircleApprox.h">
-      <Filter>Header Files\ApproxCore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ApproximationCore\ObjectApproxC3D.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h">
@@ -182,6 +182,12 @@
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\CylinderApprox.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OpenGLView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
   </ItemGroup>

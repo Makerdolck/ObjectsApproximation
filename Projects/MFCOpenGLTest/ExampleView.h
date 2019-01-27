@@ -2,18 +2,18 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_EXAMPLEVIEW_H__F10F716D_2B31_11D4_90AE_0010B53C9D0C__INCLUDED_)
-#define AFX_EXAMPLEVIEW_H__F10F716D_2B31_11D4_90AE_0010B53C9D0C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+#ifndef __EXAMPLE_VIEW_H__
+#define __EXAMPLE_VIEW_H__
+
 
 #include <fstream>
 
 #include <ApproximationCore/_ALLincludesCore.h>
 
-class CExampleView : public CView
+#include <OpenGLView.h>
+
+class CExampleView : public COpenGLView
 {
 protected: // create from serialization only
 	CExampleView();
@@ -86,7 +86,6 @@ private:
 				glnHeight;
 
 public:
-	void	SetUpOpenGL(/*HWND hWnd*/);
 	void	DrawOpenGL_SceneObjects(GLenum mode);
 
 	void	DrawOpenGL_Cube(double param, double cx, double cy, double cz);
@@ -104,7 +103,7 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMycomandDrawpoint();
+
 };
 
 #ifndef _DEBUG  // debug version in ExampleView.cpp
@@ -117,4 +116,4 @@ inline CExampleDoc* CExampleView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_EXAMPLEVIEW_H__F10F716D_2B31_11D4_90AE_0010B53C9D0C__INCLUDED_)
+#endif // !defined(__EXAMPLE_VIEW_H__)

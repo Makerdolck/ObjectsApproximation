@@ -66,15 +66,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="openglview.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="openglwindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="prmanager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DialogMeasure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -91,9 +82,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h">
-      <Filter>Header Files\ApproxCore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ApproximationCore\ObjectApproxC3D.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\CmmApprox.h">
@@ -156,6 +144,12 @@
     <ClInclude Include="..\..\include\ApproximationCore\GeomObjectApprox.h">
       <Filter>Header Files\ApproxCore\ApproxObjects</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OpenGLView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCAscon.cpp">
@@ -171,15 +165,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MFCAsconView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="openglwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="openglview.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="prmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DialogMeasure.cpp">
@@ -198,9 +183,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp">
-      <Filter>Source Files\ApproxCore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\include\ApproximationCore\ObjectApproxC3D.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
     <ClCompile Include="..\..\include\ApproximationCore\ApproximationApprox.cpp">
@@ -259,6 +241,12 @@
     </ClCompile>
     <ClCompile Include="..\..\include\ApproximationCore\PlaneApprox.cpp">
       <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\OpenGLView.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

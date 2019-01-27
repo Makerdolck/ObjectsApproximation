@@ -45,7 +45,7 @@ public:								// Tree Item Root
 
 	CMFCAsconView	*pView;
 
-	std::vector<ObjectApproxC3D*>	*objectsArray;
+	std::vector<ObjectApprox*>	*objectsArray;
 
 public:
 #ifdef _DEBUG

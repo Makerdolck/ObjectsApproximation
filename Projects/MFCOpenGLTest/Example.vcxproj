@@ -154,7 +154,7 @@
     <ClCompile Include="..\..\include\ApproximationCore\LineGeometric.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\LineSegmentApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\MeasureTypesEnum.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\ObjectApproxC3D.cpp" />
+    <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\PlaneApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\PlaneGeometric.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\PointApprox.cpp" />
@@ -163,6 +163,7 @@
     <ClCompile Include="..\..\include\ApproximationCore\SphereApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\TorusApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\VectorGeometric.cpp" />
+    <ClCompile Include="..\..\include\OpenGLView.cpp" />
     <ClCompile Include="Example.cpp" />
     <ClCompile Include="ExampleDoc.cpp" />
     <ClCompile Include="ExampleView.cpp" />
@@ -189,7 +190,7 @@
     <ClInclude Include="..\..\include\ApproximationCore\LineGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\LineSegmentApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\MeasureTypesEnum.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\ObjectApproxC3D.h" />
+    <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\PlaneApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\PlaneGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\PointApprox.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="..\..\include\ApproximationCore\TorusApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\VectorGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h" />
+    <ClInclude Include="..\..\include\OpenGLView.h" />
     <ClInclude Include="Example.h" />
     <ClInclude Include="ExampleDoc.h" />
     <ClInclude Include="ExampleView.h" />

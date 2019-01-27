@@ -32,7 +32,7 @@
 
 #include "CmmApprox.h"
 
-#include "ObjectApproxC3D.h"
+#include "ObjectApprox.h"
 
 #include "MeasureTypesEnum.h"
 #include "MeshTrianglesStructure.h"

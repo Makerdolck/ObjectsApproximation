@@ -63,6 +63,7 @@ void DataTreeView::Dump(CDumpContext& dc) const
 //--------------------------------------------------------------
 //	----	Message Handlers
 //--------------------------------------------------------------
+
 // ---																										// On Initial Update
 void DataTreeView::OnInitialUpdate()
 {
@@ -105,7 +106,7 @@ void DataTreeView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	if (nChar == VK_DELETE)
 	{		
-		if (pView->RemoveObject((ObjectApproxC3D*)pCtrl->GetItemData(focused_TI)))
+		if (pView->RemoveObject((ObjectApprox*)pCtrl->GetItemData(focused_TI)))
 			pCtrl->DeleteItem(focused_TI);
 	}
 
@@ -114,9 +115,9 @@ void DataTreeView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 // ---																										// On Look Object Information
 void DataTreeView::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	if ((ObjectApproxC3D*)pCtrl->GetItemData(focused_TI) != nullptr)
+	if ((ObjectApprox*)pCtrl->GetItemData(focused_TI) != nullptr)
 	{
-		DialogObjectProperties dlg(pView, (ObjectApproxC3D*)pCtrl->GetItemData(focused_TI));
+		DialogObjectProperties dlg(pView, (ObjectApprox*)pCtrl->GetItemData(focused_TI));
 		dlg.DoModal();
 	}
 	
@@ -126,10 +127,11 @@ void DataTreeView::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 //--------------------------------------------------------------
 //	----	Message Handlers		----	Custom Messages
 //--------------------------------------------------------------
+
 // ---																					// On New Object for Visualize is coming
 LRESULT DataTreeView::OnAddNewObjToTree(WPARAM wParam, LPARAM lParam)
 {
-	ObjectApproxC3D			*object;
+	ObjectApprox			*object;
 
 	if (objectsArray->back()->flagReady == true)
 		object = objectsArray->back();

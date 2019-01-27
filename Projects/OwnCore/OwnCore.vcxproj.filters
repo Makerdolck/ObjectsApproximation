@@ -108,11 +108,11 @@
     <ClCompile Include="..\..\include\ApproximationCore\MeasureTypesEnum.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\ApproximationCore\ObjectApproxC3D.cpp">
-      <Filter>Source Files\ApproxCore</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,9 +184,6 @@
     <ClInclude Include="..\..\include\ApproximationCore\GeomObjectApprox.h">
       <Filter>Header Files\ApproxCore\ApproxObjects</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\ApproximationCore\ObjectApproxC3D.h">
-      <Filter>Header Files\ApproxCore</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\ApproximationApprox.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
@@ -209,6 +206,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\MeshTrianglesStructure.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
   </ItemGroup>

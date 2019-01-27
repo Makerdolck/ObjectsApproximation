@@ -21,9 +21,9 @@ class CmmApprox
 private:
 	HINSTANCE						hLibrary;								// Digitizer Library
 
-	INIT *Init;
-	GETPOINT *GetPoint;
-	DISCONNECT *DisConnect;
+	INIT							*Init;
+	GETPOINT						*GetPoint;
+	DISCONNECT						*DisConnect;
 
 public:
 	PointGeometric					PointCurrent;

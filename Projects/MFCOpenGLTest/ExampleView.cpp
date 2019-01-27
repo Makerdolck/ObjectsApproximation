@@ -34,33 +34,22 @@ BEGIN_MESSAGE_MAP(CExampleView, CView)
 	ON_WM_SIZE()
 	ON_WM_MBUTTONDOWN()
 	ON_WM_MBUTTONUP()
-	ON_COMMAND(ID_MYCOMAND_DRAWPOINT, &CExampleView::OnMycomandDrawpoint)
+//	ON_COMMAND(ID_MYCOMAND_DRAWPOINT, &CExampleView::OnMycomandDrawpoint)
+//	ON_WM_PAINT()
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CExampleView construction/destruction
 
-static GLfloat LightAmbient[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-static GLfloat LightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-static GLfloat LightPosition[] = { -20.0f,0.0f, 20.0f, 1.0f }; 
-
 CExampleView::CExampleView()
 {
-	wAngleY = 10.0f;
-	wAngleX = 1.0f;
-	wAngleZ = 5.0f;
-
-	wTransformX = 0;
-	wTransformY = 0;
-
-	flagMiddleButtonDown = false;
-	
-	dd = 768;
+	//
 }
 
 CExampleView::~CExampleView()
 {
+	//
 }
 
 BOOL CExampleView::PreCreateWindow(CREATESTRUCT& cs)
@@ -68,9 +57,7 @@ BOOL CExampleView::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
 
-	cs.style |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-
-	return CView::PreCreateWindow(cs);
+	return COpenGLView::PreCreateWindow(cs);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -79,12 +66,12 @@ BOOL CExampleView::PreCreateWindow(CREATESTRUCT& cs)
 #ifdef _DEBUG
 void CExampleView::AssertValid() const
 {
-	CView::AssertValid();
+	COpenGLView::AssertValid();
 }
 
 void CExampleView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+	COpenGLView::Dump(dc);
 }
 
 CExampleDoc* CExampleView::GetDocument() // non-debug version is inline
@@ -101,60 +88,60 @@ CExampleDoc* CExampleView::GetDocument() // non-debug version is inline
 // ---																							// On Create
 int CExampleView::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-	PIXELFORMATDESCRIPTOR pfd;
-	int iPixelFormat;
-	CDC* pDC;
+	//PIXELFORMATDESCRIPTOR pfd;
+	//int iPixelFormat;
+	//CDC* pDC;
 
-	if (CView::OnCreate(lpCreateStruct) == -1)
-		return -1;
+	//if (CView::OnCreate(lpCreateStruct) == -1)
+	//	return -1;
 
-	// TODO: Add your specialized creation code here
-	pDC = GetDC();
-	memset(&pfd, 0, sizeof(pfd));
-	pfd.nSize = sizeof(pfd);
-	pfd.nVersion = 1;
-	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;//| PFD_DOUBLEBUFFER;
-	pfd.iPixelType = PFD_TYPE_RGBA;
-	pfd.iLayerType = PFD_MAIN_PLANE;
-	pfd.cDepthBits = 16;
-	iPixelFormat = ChoosePixelFormat(pDC->m_hDC, &pfd);
-	SetPixelFormat(pDC->m_hDC, iPixelFormat, &pfd);
-	m_hglrc = wglCreateContext(pDC->m_hDC);
-	wglMakeCurrent(pDC->m_hDC, m_hglrc);
-	ReleaseDC(pDC);
-
-
-	fNearPlane = 1.0f;
-	fAspect = 1.0f;
-	fFarPlane = 1000.0f;
-
-	m_z = (fNearPlane + fFarPlane) * 0.5f;
-
-	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
-	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
-	glEnable(GL_LIGHT1);
-	//	glEnable(GL_LIGHTING);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
-	glMatrixMode(GL_MODELVIEW);
+	//// TODO: Add your specialized creation code here
+	//pDC = GetDC();
+	//memset(&pfd, 0, sizeof(pfd));
+	//pfd.nSize = sizeof(pfd);
+	//pfd.nVersion = 1;
+	//pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;//| PFD_DOUBLEBUFFER;
+	//pfd.iPixelType = PFD_TYPE_RGBA;
+	//pfd.iLayerType = PFD_MAIN_PLANE;
+	//pfd.cDepthBits = 16;
+	//iPixelFormat = ChoosePixelFormat(pDC->m_hDC, &pfd);
+	//SetPixelFormat(pDC->m_hDC, iPixelFormat, &pfd);
+	//m_hglrc = wglCreateContext(pDC->m_hDC);
+	//wglMakeCurrent(pDC->m_hDC, m_hglrc);
+	//ReleaseDC(pDC);
 
 
+	//fNearPlane = 1.0f;
+	//fAspect = 1.0f;
+	//fFarPlane = 1000.0f;
 
-	glEnable(GL_DEPTH_TEST);
+	//m_z = (fNearPlane + fFarPlane) * 0.5f;
+
+	//glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
+	//glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
+	//glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
+	//glEnable(GL_LIGHT1);
+	////	glEnable(GL_LIGHTING);
+
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
+	//glMatrixMode(GL_MODELVIEW);
+
+
+
+	//glEnable(GL_DEPTH_TEST);
+
+	COpenGLView::OnCreate(lpCreateStruct);
 
     return 0;
 }
 // ---																							// On Destroy
 void CExampleView::OnDestroy() 
 {
-	CView::OnDestroy();
+	COpenGLView::OnDestroy();
 	
 	// TODO: Add your message handler code here
-
-    wglMakeCurrent(NULL, NULL);	
 }
 
 //--------------------------------------------------------------
@@ -164,82 +151,82 @@ void CExampleView::OnDestroy()
 // ---																							// On Draw
 void CExampleView::OnDraw(CDC* pDC)
 {
-	CRect clientRect;
+	//CRect clientRect;
 
 	CExampleDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 
-	//// TODO: add draw code for native data here
-	//GetClientRect(&clientRect);
-	//glViewport(0, 0, clientRect.right, clientRect.bottom);
+	////// TODO: add draw code for native data here
+	////GetClientRect(&clientRect);
+	////glViewport(0, 0, clientRect.right, clientRect.bottom);
 
-	//glClearColor(1, 1, 1, 0);			// ���� ����
-	//glClear(GL_COLOR_BUFFER_BIT);      // ������� ������ �����
+	////glClearColor(1, 1, 1, 0);			// ���� ����
+	////glClear(GL_COLOR_BUFFER_BIT);      // ������� ������ �����
 
-	//glEnable(GL_LINE_SMOOTH);
+	////glEnable(GL_LINE_SMOOTH);
 
-	////glPointSize (4);					// ������ �����
-	//glColor3f(0, 0, 0);				// ������� ���� ����������
+	//////glPointSize (4);					// ������ �����
+	////glColor3f(0, 0, 0);				// ������� ���� ����������
 
-	//glLineWidth(20);
+	////glLineWidth(20);
 
-	//glBegin(GL_LINE_LOOP);
-	//glVertex2f(0, 0.5);
-	//glVertex2f(0.5, -0.5);
-	//glVertex2f(-0.5, -0.5);
-	//glEnd();
-
-
-	//glDisable(GL_LINE_SMOOTH);
-
-	//glFlush();
-	////SwapBuffers(pDC->m_hDC);
+	////glBegin(GL_LINE_LOOP);
+	////glVertex2f(0, 0.5);
+	////glVertex2f(0.5, -0.5);
+	////glVertex2f(-0.5, -0.5);
+	////glEnd();
 
 
+	////glDisable(GL_LINE_SMOOTH);
 
-	glClearDepth(1.0f);                                  //Specifies the clear value for the depth buffer 
-	glClearColor(0.99f, 0.99f, 0.99f, 1.0f);             //Set Background Color
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  //Indicate the buffers to be cleared
-	glPushMatrix();                                      //push the current matrix stack
-
-	//glFrustum(-1, 1, -1, 1, 3, 1000.0f);
-
-	glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, -m_z);                      //move object far-near
-	glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);                //rotate object    
-	glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);                //around the axe
-	glRotatef(wAngleZ, 0.0f, 0.0f, 1.0f);                //specified
-
-	glColor3f(0.85f, 0.85f, 0.85f);				// ������� ���� ����������
-
-
-	////DrawOpenGL_Cube(10, 15, 0, 0);
-	//DrawOpenGL_Cube(10, 0, 0, 0);
+	////glFlush();
+	//////SwapBuffers(pDC->m_hDC);
 
 
 
-	/*DrawOpenGL_Cylinder();
-	DrawOpenGL_LineSegment();
-	DrawOpenGL_PlaneViaRectangle();
-	DrawOpenGL_Cone();
-	DrawOpenGL_Sphere();
-	DrawOpenGL_Circle();
-	DrawOpenGL_Point();*/
+	//glClearDepth(1.0f);                                  //Specifies the clear value for the depth buffer 
+	//glClearColor(0.99f, 0.99f, 0.99f, 1.0f);             //Set Background Color
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  //Indicate the buffers to be cleared
+	//glPushMatrix();                                      //push the current matrix stack
+
+	////glFrustum(-1, 1, -1, 1, 3, 1000.0f);
+
+	//glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, -m_z);                      //move object far-near
+	//glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);                //rotate object    
+	//glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);                //around the axe
+	//glRotatef(wAngleZ, 0.0f, 0.0f, 1.0f);                //specified
+
+	//glColor3f(0.85f, 0.85f, 0.85f);				// ������� ���� ����������
 
 
-	DrawOpenGL_SceneObjects(GL_RENDER);
+	//////DrawOpenGL_Cube(10, 15, 0, 0);
+	////DrawOpenGL_Cube(10, 0, 0, 0);
 
-	////	---	---	---
 
-	glPopMatrix();                                        //Pop the current matrix stack 
-	glFinish();                                           //Blocks until all OpenGL execution is complete
-	//SwapBuffers(wglGetCurrentDC());                       //Exchanges the front and back buffers 
+
+	///*DrawOpenGL_Cylinder();
+	//DrawOpenGL_LineSegment();
+	//DrawOpenGL_PlaneViaRectangle();
+	//DrawOpenGL_Cone();
+	//DrawOpenGL_Sphere();
+	//DrawOpenGL_Circle();
+	//DrawOpenGL_Point();*/
+
+
+	//DrawOpenGL_SceneObjects(GL_RENDER);
+
+	//////	---	---	---
+
+	//glPopMatrix();                                        //Pop the current matrix stack 
+	//glFinish();                                           //Blocks until all OpenGL execution is complete
+	////SwapBuffers(wglGetCurrentDC());                       //Exchanges the front and back buffers 
 }
 // ---																							// On Size
 void CExampleView::OnSize(UINT nType, int cx, int cy)
 {
-	CView::OnSize(nType, cx, cy);
+	COpenGLView::OnSize(nType, cx, cy);
 
-	if (cy > 0)
+	/*if (cy > 0)
 	{
 		glViewport(0, 0, cx, cy);
 
@@ -258,7 +245,7 @@ void CExampleView::OnSize(UINT nType, int cx, int cy)
 
 		gluPerspective(45.0f, (GLdouble)cx / cy, fNearPlane, fFarPlane);
 		glMatrixMode(GL_MODELVIEW);
-	}
+	}*/
 }
 
 //--------------------------------------------------------------
@@ -268,81 +255,94 @@ void CExampleView::OnSize(UINT nType, int cx, int cy)
 // ---																							// On Mouse Move
 void CExampleView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	//CRect rectClient;
+	////CRect rectClient;
 
-	//GetClientRect(&rectClient);
+	////GetClientRect(&rectClient);
 
-	/*m_XMousePos = (float)(2 * point.x)						 / (float)(rectClient.right) - 1;
-	m_YMousePos = (float)(2 * (rectClient.bottom - point.y)) / (float)(rectClient.bottom) - 1;*/
+	///*m_XMousePos = (float)(2 * point.x)						 / (float)(rectClient.right) - 1;
+	//m_YMousePos = (float)(2 * (rectClient.bottom - point.y)) / (float)(rectClient.bottom) - 1;*/
 
-	//InvalidateRect(NULL, FALSE);
+	////InvalidateRect(NULL, FALSE);
 
-	if (nFlags & MK_LBUTTON)
-	{
-		wAngleY += (point.x - mouse_x0);
-		wAngleX += (point.y - mouse_y0);
+	//if (nFlags & MK_LBUTTON)
+	//{
+	//	wAngleY += (point.x - mouse_x0);
+	//	wAngleX += (point.y - mouse_y0);
 
 
-		mouse_x0 = point.x;  mouse_y0 = point.y;
+	//	mouse_x0 = point.x;  mouse_y0 = point.y;
 
-		Invalidate(FALSE);
-	}
+	//	Invalidate(FALSE);
+	//}
 
-	double step = 2.0f;
-	if (flagMiddleButtonDown)
-	{
-		if (mouse_x0 - point.x < 0)
-			wTransformX += fabs(point.x - mouse_x0);
-		if(mouse_x0 - point.x > 0)
-			wTransformX -= fabs(point.x - mouse_x0);
-		
-		if (mouse_y0 - point.y < 0)
-			wTransformY -= fabs(point.y - mouse_y0);
-		if(mouse_y0 - point.y > 0)
-			wTransformY += fabs(point.y - mouse_y0);
+	//double step = 2.0f;
+	//if (flagMiddleButtonDown)
+	//{
+	//	if (mouse_x0 - point.x < 0)
+	//		wTransformX += fabs(point.x - mouse_x0);
+	//	if(mouse_x0 - point.x > 0)
+	//		wTransformX -= fabs(point.x - mouse_x0);
+	//	
+	//	if (mouse_y0 - point.y < 0)
+	//		wTransformY -= fabs(point.y - mouse_y0);
+	//	if(mouse_y0 - point.y > 0)
+	//		wTransformY += fabs(point.y - mouse_y0);
 
-		mouse_x0 = point.x;
-		mouse_y0 = point.y;
+	//	mouse_x0 = point.x;
+	//	mouse_y0 = point.y;
 
-		Invalidate(FALSE);
-	}
-	
-	//RedrawWindow();
+	//	Invalidate(FALSE);
+	//}
+	//
+	////RedrawWindow();
 
-	CView::OnMouseMove(nFlags, point);
+	COpenGLView::OnMouseMove(nFlags, point);
 }
-
-#define BUFSIZE 512
 // ---																							// On Left Button Down
 void CExampleView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	mouse_x0 = point.x;  mouse_y0 = point.y;
+	//mouse_x0 = point.x;  mouse_y0 = point.y;
 
-	//	---	---	---	---	---
+	////	---	---	---	---	---
 
-	GLuint selectBuf[BUFSIZE];
-	GLint hits;
-	GLint viewport[4];
+	//GLuint selectBuf[BUFSIZE];
+	//GLint hits;
+	//GLint viewport[4];
 
 
-	/*glSelectBuffer(512, selectBuf);
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-		glRenderMode(GL_SELECT);
+	///*glSelectBuffer(512, selectBuf);
+	//glGetIntegerv(GL_VIEWPORT, viewport);
+	//glMatrixMode(GL_PROJECTION);
+	//glPushMatrix();
+	//	glRenderMode(GL_SELECT);
 
-		glInitNames();
-		glPushName(-1);
+	//	glInitNames();
+	//	glPushName(-1);
 
-		glLoadIdentity();
-		gluPickMatrix(point.x, viewport[3] - point.y, 2, 2, viewport);
-		gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
-		glMatrixMode(GL_MODELVIEW);
-			DrawOpenGL_SceneObjects(GL_SELECT);
-			hits = glRenderMode(GL_RENDER);
-		glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);*/
+	//	glLoadIdentity();
+	//	gluPickMatrix(point.x, viewport[3] - point.y, 2, 2, viewport);
+	//	gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
+	//	glMatrixMode(GL_MODELVIEW);
+	//		DrawOpenGL_SceneObjects(GL_SELECT);
+	//		hits = glRenderMode(GL_RENDER);
+	//	glMatrixMode(GL_PROJECTION);
+	//glPopMatrix();
+	//glMatrixMode(GL_MODELVIEW);*/
+
+	////glGetIntegerv(GL_VIEWPORT, viewport);
+	////glSelectBuffer(BUFSIZE, selectBuf);
+
+	////glRenderMode(GL_SELECT);				// Enter the SELECT render mode
+	////glInitNames();
+	////glPushName(-1);
+
+	////glMatrixMode(GL_PROJECTION);
+	////glPushMatrix();
+	////glLoadIdentity();
+	////gluPickMatrix((GLdouble)point.x, (GLdouble)(viewport[3] - point.y), 5.0, 5.0, viewport);
+	////gluPerspective(30.0, gldAspect, 1.0, 20.0);
+	////glMatrixMode(GL_MODELVIEW);
+
 
 	//glGetIntegerv(GL_VIEWPORT, viewport);
 	//glSelectBuffer(BUFSIZE, selectBuf);
@@ -353,111 +353,83 @@ void CExampleView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	//glMatrixMode(GL_PROJECTION);
 	//glPushMatrix();
-	//glLoadIdentity();
-	//gluPickMatrix((GLdouble)point.x, (GLdouble)(viewport[3] - point.y), 5.0, 5.0, viewport);
-	//gluPerspective(30.0, gldAspect, 1.0, 20.0);
+	//	//glRenderMode(GL_SELECT);
+	//	glLoadIdentity();
+	//	gluPickMatrix(point.x, viewport[3] - point.y, 2, 2, viewport);
+	//	gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
+	//	glMatrixMode(GL_MODELVIEW);
+	//		DrawOpenGL_SceneObjects(GL_SELECT);
+	//	glMatrixMode(GL_PROJECTION);
+	//glPopMatrix();
 	//glMatrixMode(GL_MODELVIEW);
 
 
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	glSelectBuffer(BUFSIZE, selectBuf);
-
-	glRenderMode(GL_SELECT);				// Enter the SELECT render mode
-	glInitNames();
-	glPushName(-1);
-
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-		//glRenderMode(GL_SELECT);
-		glLoadIdentity();
-		gluPickMatrix(point.x, viewport[3] - point.y, 2, 2, viewport);
-		gluPerspective(45.0f, fAspect, fNearPlane, fFarPlane);
-		glMatrixMode(GL_MODELVIEW);
-			DrawOpenGL_SceneObjects(GL_SELECT);
-		glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-
-
-	//glPopMatrix();
-	//glFlush();
+	////glPopMatrix();
+	////glFlush();
+	////
 	//
-	
-	
-	hits = glRenderMode(GL_RENDER);
+	//
+	//hits = glRenderMode(GL_RENDER);
 
-	///*glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//glViewport(0, 0, glnWidth, glnHeight);
-	//gluPerspective(30.0, gldAspect, 1.0, 20.0);*/
+	/////*glMatrixMode(GL_PROJECTION);
+	////glLoadIdentity();
+	////glViewport(0, 0, glnWidth, glnHeight);
+	////gluPerspective(30.0, gldAspect, 1.0, 20.0);*/
 
-	//gluPerspective(45.0f, (GLdouble)cx / cy, fNearPlane, fFarPlane);
+	////gluPerspective(45.0f, (GLdouble)cx / cy, fNearPlane, fFarPlane);
 
-	int a = 0;
-	if (hits)
-	{
-		int n = 0; double minz = selectBuf[1];
-		for (int i = 1; i < hits; i++)
-		{
-			if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
-		}
-		a = selectBuf[3 + n * 4];
-		
-	}
+	//int a = 0;
+	//if (hits)
+	//{
+	//	int n = 0; double minz = selectBuf[1];
+	//	for (int i = 1; i < hits; i++)
+	//	{
+	//		if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
+	//	}
+	//	a = selectBuf[3 + n * 4];
+	//	
+	//}
+	//
+	//
+	//RedrawWindow();
 	
-	
-	RedrawWindow();
-	
-	CView::OnLButtonDown(nFlags, point);
+	COpenGLView::OnLButtonDown(nFlags, point);
 }
 // ---																							// On Mouse Wheel
 BOOL CExampleView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	double step = 15.0f;
+	//double step = 15.0f;
 
-	if (zDelta < 0)
-		m_z += step;
-	else 
-		m_z -= step;
+	//if (zDelta < 0)
+	//	m_z += step;
+	//else 
+	//	m_z -= step;
 
-	Invalidate(FALSE);
-	//RedrawWindow();
-	return CView::OnMouseWheel(nFlags, zDelta, pt);
+	//Invalidate(FALSE);
+	////RedrawWindow();
+
+	return COpenGLView::OnMouseWheel(nFlags, zDelta, pt);
 }
 // ---																							// On Middle Button Down
 void CExampleView::OnMButtonDown(UINT nFlags, CPoint point)
 {
-	flagMiddleButtonDown = true;
+	//flagMiddleButtonDown = true;
 
-	mouse_x0 = point.x;  mouse_y0 = point.y;
+	//mouse_x0 = point.x;  mouse_y0 = point.y;
 	
-	CView::OnMButtonDown(nFlags, point);
+	COpenGLView::OnMButtonDown(nFlags, point);
 }
 // ---																							// On Middle Button UP
 void CExampleView::OnMButtonUp(UINT nFlags, CPoint point)
 {
-	flagMiddleButtonDown = false;
+	//flagMiddleButtonDown = false;
 
-	CView::OnMButtonUp(nFlags, point);
-}
-// ---																							// On Mycomand Draw Point
-void CExampleView::OnMycomandDrawpoint()
-{
-	// TODO: Add your command handler code here
-	dd+=3;
-	Invalidate(FALSE);
+	COpenGLView::OnMButtonUp(nFlags, point);
 }
 
 //--------------------------------------------------------------
 //	----	Message Handlers		----	Custom Messages
 //--------------------------------------------------------------
-
-//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Set Up OpenGL Settings
-/*HGLRC */void CExampleView::SetUpOpenGL(/*HWND hWnd*/)
-{
-	//
-}
-//////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Objects in Scene
 void CExampleView::DrawOpenGL_SceneObjects(GLenum mode)
@@ -898,5 +870,4 @@ void CExampleView::DrawOpenGL_Sphere()
 	points.clear();
 }
 ///////////////////////////////////////////////////////
-
 
