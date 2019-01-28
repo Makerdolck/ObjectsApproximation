@@ -57,7 +57,7 @@ private:
 		mouseX_old,
 		mouseY_old;
 
-	float		m_z;
+	double		m_z;
 
 	GLfloat		wAngleY,
 		wAngleX,
@@ -84,10 +84,11 @@ protected:
 // Generated message map functions
 protected:
 	HGLRC	SetUpOpenGL(HWND hWnd);
-	void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
+	//void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
 	void	DrawOpenGL_Circle(GeomObjectApprox obj);
 	void	DrawOpenGL_Point(PointApprox *obj);
 	void	DrawOpenGL_LineSegment(LineSegmentApprox *obj);
+	void	DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj);
 
 
 	void	DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);

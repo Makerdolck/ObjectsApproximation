@@ -50,7 +50,7 @@ COpenGLView::COpenGLView()
 	wTransformX = 0;
 	wTransformY = 0;
 
-	fFarPlane = 500.0f;
+	fFarPlane = 1000.0f;
 
 	flagMiddleButtonDown = false;
 
@@ -183,7 +183,7 @@ void COpenGLView::OnPaint()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
-	glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, -m_z);                      //move object far-near
+	glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, (GLfloat)-m_z);                      //move object far-near
 	glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);                //rotate object    
 	glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);                //around the axe
 	glRotatef(wAngleZ, 0.0f, 0.0f, 1.0f);                //specified
@@ -236,7 +236,8 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		RedrawWindow();
 	}
 
-	double step = 1.0f;
+	GLfloat step = 1.0f;
+
 	if (flagMiddleButtonDown)
 	{
 		if (mouse_x0 - point.x < 0)
@@ -328,12 +329,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
 		}
 
-
 		a = selectBuf[3 + n * 4];
-
-		//if (a == 105)	flagCubeColor_1 = !flagCubeColor_1;
-
-		//cube[selectBuf[3 + n * 4]].selected = !cube[selectBuf[3 + n * 4]].selected;
 
 		if (objectsArray != nullptr)
 		{
@@ -345,6 +341,19 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					objApprox->flagSelected = !objApprox->flagSelected;
 				}
+			}
+		}
+	}
+	else																// Make all elements not selected
+	{
+		if (objectsArray != nullptr)
+		{
+			for (int i = 0; i < (int)objectsArray->size(); i++)
+			{
+				objApprox = objectsArray->operator[](i);
+
+				objApprox->flagSelected = false;
+
 			}
 		}
 	}
@@ -466,8 +475,7 @@ void COpenGLView::PaintScreen(GLenum mode)
 		if (mode == GL_SELECT) glLoadName(objApprox->objID);
 
 		//	---	---	---	---	---											// Draw via Triangles
-		if (objApprox->objMath->GetName() == rectangleA->GetName()	||
-			objApprox->objMath->GetName() == cylinderA->GetName()	||
+		if (objApprox->objMath->GetName() == cylinderA->GetName()	||
 			objApprox->objMath->GetName() == coneA->GetName()		||
 			objApprox->objMath->GetName() == sphereA->GetName())
 		{
@@ -488,81 +496,94 @@ void COpenGLView::PaintScreen(GLenum mode)
 		{
 			DrawOpenGL_LineSegment((LineSegmentApprox*)objApprox->objMath);
 		}
+		//	---	---	---	---	---											// Draw PlaneViaRectangle
+		if (objApprox->objMath->GetName() == rectangleA->GetName())
+		{
+			DrawOpenGL_PlaneViaRectangle(*objApprox->objMath);
+		}
 
 	}
+
+	delete pointA;
+	delete lineSegmentA;
+	delete rectangleA;
+	delete circleA;
+	delete cylinderA;
+	delete coneA;
+	delete sphereA;
 
 	glPopMatrix();
 }
 //////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Cube (Test)
-void COpenGLView::DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor)
-{
-	/*glPushMatrix();
-
-	glTranslated(0, 0, 0);*/
-
-	param /= 2;
-
-	if (flagColor)
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redColor);
-	else
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueColor);
-
-	//glDisable(GL_TEXTURE_2D);
-	glBegin(GL_QUAD_STRIP);
-
-	glNormal3f(0, 0, 1);
-
-	glVertex3f(-param + cx, param + cy, param + cz);
-
-	glVertex3f(-param + cx, -param + cy, param + cz);
-
-	glVertex3f(param + cx, param + cy, param + cz);
-
-	glVertex3f(param + cx, -param + cy, param + cz);
-
-	glVertex3f(param + cx, param + cy, -param + cz);
-	glNormal3f(1, 0, 0);
-	glVertex3f(param + cx, -param + cy, -param + cz);
-
-	glVertex3f(-param + cx, param + cy, -param + cz);
-	glNormal3f(0, 0, 1);
-	glVertex3f(-param + cx, -param + cy, -param + cz);
-
-	glVertex3f(-param + cx, param + cy, param + cz);
-	glNormal3f(1, 0, 0);
-	glVertex3f(-param + cx, -param + cy, param + cz);
-
-	glEnd();
-
-	//glPopMatrix();
-
-	return;
-
-	glBegin(GL_QUADS);
-
-	glVertex3f(-param + cx, param + cy, param + cz);
-
-	glVertex3f(param + cx, param + cy, param + cz);
-
-	glVertex3f(param + cx, param + cy, -param + cz);
-
-	glVertex3f(-param + cx, param + cy, -param + cz);
-	glEnd();
-
-	glBegin(GL_QUADS);
-	glVertex3f(-param + cx, -param + cy, param + cz);
-
-	glVertex3f(param + cx, -param + cy, param + cz);
-
-	glVertex3f(param + cx, -param + cy, -param + cz);
-
-	glVertex3f(-param + cx, -param + cy, -param + cz);
-	glEnd();
-
-}
-///////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Cube (Test)
+//void COpenGLView::DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor)
+//{
+//	/*glPushMatrix();
+//
+//	glTranslated(0, 0, 0);*/
+//
+//	param /= 2;
+//
+//	if (flagColor)
+//		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redColor);
+//	else
+//		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueColor);
+//
+//	//glDisable(GL_TEXTURE_2D);
+//	glBegin(GL_QUAD_STRIP);
+//
+//	glNormal3f(0, 0, 1);
+//
+//	glVertex3f(-param + cx, param + cy, param + cz);
+//
+//	glVertex3f(-param + cx, -param + cy, param + cz);
+//
+//	glVertex3f(param + cx, param + cy, param + cz);
+//
+//	glVertex3f(param + cx, -param + cy, param + cz);
+//
+//	glVertex3f(param + cx, param + cy, -param + cz);
+//	glNormal3f(1, 0, 0);
+//	glVertex3f(param + cx, -param + cy, -param + cz);
+//
+//	glVertex3f(-param + cx, param + cy, -param + cz);
+//	glNormal3f(0, 0, 1);
+//	glVertex3f(-param + cx, -param + cy, -param + cz);
+//
+//	glVertex3f(-param + cx, param + cy, param + cz);
+//	glNormal3f(1, 0, 0);
+//	glVertex3f(-param + cx, -param + cy, param + cz);
+//
+//	glEnd();
+//
+//	//glPopMatrix();
+//
+//	return;
+//
+//	glBegin(GL_QUADS);
+//
+//	glVertex3f(-param + cx, param + cy, param + cz);
+//
+//	glVertex3f(param + cx, param + cy, param + cz);
+//
+//	glVertex3f(param + cx, param + cy, -param + cz);
+//
+//	glVertex3f(-param + cx, param + cy, -param + cz);
+//	glEnd();
+//
+//	glBegin(GL_QUADS);
+//	glVertex3f(-param + cx, -param + cy, param + cz);
+//
+//	glVertex3f(param + cx, -param + cy, param + cz);
+//
+//	glVertex3f(param + cx, -param + cy, -param + cz);
+//
+//	glVertex3f(-param + cx, -param + cy, -param + cz);
+//	glEnd();
+//
+//}
+/////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Circle
 void COpenGLView::DrawOpenGL_Circle(GeomObjectApprox obj)
@@ -571,11 +592,11 @@ void COpenGLView::DrawOpenGL_Circle(GeomObjectApprox obj)
 
 	glBegin(GL_LINE_LOOP);
 
-	for (int i = 0; i < obj.Mesh.points.size(); i++)
-	{
-		glVertex3f(obj.Mesh.points[i].X, obj.Mesh.points[i].Y, obj.Mesh.points[i].Z);
-	}
-	glNormal3f(obj.Mesh.vectorsNormal[0].X, obj.Mesh.vectorsNormal[0].Y, obj.Mesh.vectorsNormal[0].Z);
+		for (int i = 0; i < (int)obj.Mesh.points.size(); i++)
+		{
+			glVertex3f((GLfloat)obj.Mesh.points[i].X, (GLfloat)obj.Mesh.points[i].Y, (GLfloat)obj.Mesh.points[i].Z);
+		}
+		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[0].X, (GLfloat)obj.Mesh.vectorsNormal[0].Y, (GLfloat)obj.Mesh.vectorsNormal[0].Z);
 
 	glEnd();
 
@@ -589,8 +610,8 @@ void COpenGLView::DrawOpenGL_Point(PointApprox *obj)
 	glPointSize(5);
 
 	glBegin(GL_POINTS);
-	glVertex3d(obj->X + 20, obj->Y + 20, obj->Z + 20);
-	glNormal3f(obj->Line.Vector.X, obj->Line.Vector.Y, obj->Line.Vector.Z);
+		glVertex3d((GLfloat)obj->X,				(GLfloat)obj->Y,				(GLfloat)obj->Z);
+		glNormal3f((GLfloat)obj->Line.Vector.X, (GLfloat)obj->Line.Vector.Y,	(GLfloat)obj->Line.Vector.Z);
 	glEnd();
 
 	glPointSize(1);
@@ -600,11 +621,11 @@ void COpenGLView::DrawOpenGL_Point(PointApprox *obj)
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL LineSegment
 void COpenGLView::DrawOpenGL_LineSegment(LineSegmentApprox *obj)
 {
-	glLineWidth(2);
+	glLineWidth(3);
 	glBegin(GL_LINES);
-		glVertex3d(obj->PointStart.X, obj->PointStart.Y, obj->PointStart.Z);
-		glVertex3d(obj->PointEnd.X, obj->PointEnd.Y, obj->PointEnd.Z);
-		glNormal3f(obj->Vector.X, obj->Vector.Y, obj->Vector.Z);
+		glVertex3d((GLfloat)obj->PointStart.X,	(GLfloat)obj->PointStart.Y, (GLfloat)obj->PointStart.Z);
+		glVertex3d((GLfloat)obj->PointEnd.X,	(GLfloat)obj->PointEnd.Y,	(GLfloat)obj->PointEnd.Z);
+		glNormal3f((GLfloat)obj->Vector.X,		(GLfloat)obj->Vector.Y,		(GLfloat)obj->Vector.Z);
 	glEnd();
 
 
@@ -612,23 +633,42 @@ void COpenGLView::DrawOpenGL_LineSegment(LineSegmentApprox *obj)
 }
 ///////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Object via Triangles
-void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Plane
+void COpenGLView::DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj)
 {
 	glBegin(GL_TRIANGLES);
-	for (int i = 2; i < obj.Mesh.points.size() /*&&i<=dd*/; i += 3)
+	for (int i = 2; i < (int)obj.Mesh.points.size() /*&&i<=dd*/; i += 3)
 	{
 		//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
 
-		glVertex3f(obj.Mesh.points[i].X, obj.Mesh.points[i].Y, obj.Mesh.points[i].Z);
-		glVertex3f(obj.Mesh.points[i - 1].X, obj.Mesh.points[i - 1].Y, obj.Mesh.points[i - 1].Z);
-		glVertex3f(obj.Mesh.points[i - 2].X, obj.Mesh.points[i - 2].Y, obj.Mesh.points[i - 2].Z);
+		glVertex3f((GLfloat)obj.Mesh.points[i].X,		(GLfloat)obj.Mesh.points[i].Y,		(GLfloat)obj.Mesh.points[i].Z);
+		glVertex3f((GLfloat)obj.Mesh.points[i - 1].X,	(GLfloat)obj.Mesh.points[i - 1].Y,	(GLfloat)obj.Mesh.points[i - 1].Z);
+		glVertex3f((GLfloat)obj.Mesh.points[i - 2].X,	(GLfloat)obj.Mesh.points[i - 2].Y,	(GLfloat)obj.Mesh.points[i - 2].Z);
 
-		glNormal3f(obj.Mesh.vectorsNormal[i / 3].X, obj.Mesh.vectorsNormal[i / 3].Y, obj.Mesh.vectorsNormal[i / 3].Z);
+		glNormal3f((GLfloat)obj.Line.Vector.X, (GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
 	}
 	glEnd();
 }
 ///////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Object via Triangles
+void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
+{
+	glBegin(GL_TRIANGLES);
+	for (int i = 2; i < (int)obj.Mesh.points.size() /*&&i<=dd*/; i += 3)
+	{
+		//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
+
+		glVertex3f((GLfloat)obj.Mesh.points[i].X,		(GLfloat)obj.Mesh.points[i].Y,		(GLfloat)obj.Mesh.points[i].Z);
+		glVertex3f((GLfloat)obj.Mesh.points[i - 1].X,	(GLfloat)obj.Mesh.points[i - 1].Y,	(GLfloat)obj.Mesh.points[i - 1].Z);
+		glVertex3f((GLfloat)obj.Mesh.points[i - 2].X,	(GLfloat)obj.Mesh.points[i - 2].Y,	(GLfloat)obj.Mesh.points[i - 2].Z);
+
+		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
+	}
+	glEnd();
+}
+///////////////////////////////////////////////////////
+
 
 
 
