@@ -399,11 +399,11 @@ void CTry_OpenGLView::DrawOpenGL_Cube(double param, double cx, double cy, double
 	glVertex3f(param + cx, -param + cy, -param + cz);
 
 	glVertex3f(-param + cx, param + cy, -param + cz);
-	glNormal3f(0, 0, 1);
+	glNormal3f(0, 0, -1);
 	glVertex3f(-param + cx, -param + cy, -param + cz);
 
 	glVertex3f(-param + cx, param + cy, param + cz);
-	glNormal3f(1, 0, 0);
+	glNormal3f(-1, 0, 0);
 	glVertex3f(-param + cx, -param + cy, param + cz);
 
 	glEnd();

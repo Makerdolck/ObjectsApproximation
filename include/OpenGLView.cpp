@@ -9,6 +9,13 @@ bool flagCubeColor_1 = false;
 const GLfloat redColor[] = { 1.0,0.0,0.0,1.0 };
 const GLfloat blueColor[] = { 0.0,0.0,1.0,1.0 };
 
+const GLfloat simpleElementsColor1[] = { 1.0,0.2,0.2,1.0 };
+const GLfloat simpleElementsColor2[] = { 0.0,1.0,1.0,1.0 };
+
+//GLfloat ambientLight[] = { 0.3f, 0.3f,0.3f, 1.0f };
+//GLfloat diffuseLight[] = { 0.7f, 0.7f,0.7f, 1.0f };
+//GLfloat lightPos[] = { -50.0f, 50.0f,100.0f, 1.0f };
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -56,14 +63,20 @@ COpenGLView::COpenGLView()
 
 
 	flagColor1 = true;
-	flagColor2= true; 
-	flagColor3= true; 
-	flagColor4= true; 
-	flagColor5= true; 
-	flagColor6= true; 
+	flagColor2 = true;
+	flagColor3 = true;
+	flagColor4 = true;
+	flagColor5 = true;
+	flagColor6 = true;
 	flagColor7 = true;
 
 	objectsArray = nullptr;
+
+	//m_fLineWidth = 0.05;
+	// Colors
+	m_ClearColorRed = 0.0f;
+	m_ClearColorGreen = 0.0f;
+	m_ClearColorBlue = 0.2f;
 }
 
 COpenGLView::~COpenGLView()
@@ -165,7 +178,19 @@ void COpenGLView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 	
-	// TODO: Add your message handler code here
+	GLfloat light0_direction[] = { 0.0,		0.0,	1.0,	0.0 },
+			light1_direction[] = { 0.0,		1.0,	1.0,	0.0 },
+			light2_direction[] = { 0.0,		-1.0,	1.0,	0.0 },
+			light3_direction[] = { 0.0,		1.0,	0.0,	0.0 },
+			light4_direction[] = { 0.0,		0.0,	-1.0,	0.0 };
+
+	GLfloat light_diffuse[] = { 1, 1, 1 },
+			light_diffuseMiddle[] = { 0.2f, 0.2f, 0.2f },
+			light_diffuseDark[] = { 0.0f, 0.0f, 0.0f };
+
+
+
+
 	wglMakeCurrent(dc.m_hDC,hRC);
 	
 	//**Draw GL here!
@@ -182,6 +207,28 @@ void COpenGLView::OnPaint()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHT1);
+	//glEnable(GL_LIGHT2);
+	//glEnable(GL_LIGHT3);
+	glEnable(GL_LIGHT4);
+
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
+
+	//glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuseDark);
+	//glLightfv(GL_LIGHT1, GL_POSITION, light1_direction);
+
+	//glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuseDark);
+	//glLightfv(GL_LIGHT2, GL_POSITION, light2_direction);
+
+	//glLightfv(GL_LIGHT3, GL_DIFFUSE, light_diffuseDark);
+	//glLightfv(GL_LIGHT3, GL_POSITION, light3_direction);
+
+	glLightfv(GL_LIGHT4, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT4, GL_POSITION, light4_direction);
+
+	//glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 	glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, (GLfloat)-m_z);                      //move object far-near
 	glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);                //rotate object    
@@ -191,6 +238,10 @@ void COpenGLView::OnPaint()
 	PaintScreen(GL_RENDER);
 
 	glDisable(GL_LIGHT0);
+	//glDisable(GL_LIGHT1);
+	//glDisable(GL_LIGHT2);
+	//glDisable(GL_LIGHT3);
+	glDisable(GL_LIGHT4);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
 
@@ -370,6 +421,13 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 //	----	Message Handlers		----	Custom Messages
 //--------------------------------------------------------------
 
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Make OpenGL Light
+void COpenGLView::MakeOpenGLLight()
+{
+	//
+}
+//////////////////////////////////////////////////////////
+
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Set Up OpenGL Settings
 HGLRC COpenGLView::SetUpOpenGL(HWND hWnd)
 {
@@ -415,7 +473,9 @@ HGLRC COpenGLView::SetUpOpenGL(HWND hWnd)
 		exit(1);
 	}
 
-	glCullFace(GL_BACK);
+	//glCullFace(GL_BACK);
+	glDisable(GL_CULL_FACE);
+	
 
 	hRC = wglCreateContext(hDC);
 	::ReleaseDC(hWnd, hDC);
@@ -460,16 +520,33 @@ void COpenGLView::PaintScreen(GLenum mode)
 			continue;
 
 
-		//	---	---	---	---	---										// Set color
-		if (objApprox->flagSelected)
-			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redColor);
-		else
-			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueColor);
+		
+		//	---	---	---	---	---									// Set color
 
-		if (objApprox->flagSelected)
+		if (objApprox->objMath->GetName() == cylinderA->GetName()	||
+			objApprox->objMath->GetName() == coneA->GetName()		||
+			objApprox->objMath->GetName() == sphereA->GetName()		||
+			objApprox->objMath->GetName() == rectangleA->GetName())
+		{
+			if (objApprox->flagSelected)
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redColor);
+			else
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueColor);
+		}
+		else
+		{
+			if (objApprox->flagSelected)
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, simpleElementsColor1);
+			else
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, simpleElementsColor2);
+		}
+
+
+
+		/*if (objApprox->flagSelected)
 			glColor3f(0.2f, 0.85f, 0.1f);
 		else
-			glColor3f(0.8f, 0.35f, 0.8f);
+			glColor3f(0.8f, 0.35f, 0.8f);*/
 
 		//	---	---	---	---	---										// Set name
 		if (mode == GL_SELECT) glLoadName(objApprox->objID);
@@ -592,11 +669,12 @@ void COpenGLView::DrawOpenGL_Circle(GeomObjectApprox obj)
 
 	glBegin(GL_LINE_LOOP);
 
+		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[0].X, (GLfloat)obj.Mesh.vectorsNormal[0].Y, (GLfloat)obj.Mesh.vectorsNormal[0].Z);
 		for (int i = 0; i < (int)obj.Mesh.points.size(); i++)
 		{
 			glVertex3f((GLfloat)obj.Mesh.points[i].X, (GLfloat)obj.Mesh.points[i].Y, (GLfloat)obj.Mesh.points[i].Z);
 		}
-		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[0].X, (GLfloat)obj.Mesh.vectorsNormal[0].Y, (GLfloat)obj.Mesh.vectorsNormal[0].Z);
+		
 
 	glEnd();
 
@@ -610,8 +688,10 @@ void COpenGLView::DrawOpenGL_Point(PointApprox *obj)
 	glPointSize(5);
 
 	glBegin(GL_POINTS);
+
+		//glNormal3f((GLfloat)0/*obj->Line.Vector.X*/, (GLfloat)0/*obj->Line.Vector.Y*/, (GLfloat)1/*obj->Line.Vector.Z*/);
 		glVertex3d((GLfloat)obj->X,				(GLfloat)obj->Y,				(GLfloat)obj->Z);
-		glNormal3f((GLfloat)obj->Line.Vector.X, (GLfloat)obj->Line.Vector.Y,	(GLfloat)obj->Line.Vector.Z);
+		
 	glEnd();
 
 	glPointSize(1);
@@ -623,9 +703,10 @@ void COpenGLView::DrawOpenGL_LineSegment(LineSegmentApprox *obj)
 {
 	glLineWidth(3);
 	glBegin(GL_LINES);
+		glNormal3f((GLfloat)obj->Vector.X, (GLfloat)obj->Vector.Y, (GLfloat)obj->Vector.Z);
 		glVertex3d((GLfloat)obj->PointStart.X,	(GLfloat)obj->PointStart.Y, (GLfloat)obj->PointStart.Z);
 		glVertex3d((GLfloat)obj->PointEnd.X,	(GLfloat)obj->PointEnd.Y,	(GLfloat)obj->PointEnd.Z);
-		glNormal3f((GLfloat)obj->Vector.X,		(GLfloat)obj->Vector.Y,		(GLfloat)obj->Vector.Z);
+		
 	glEnd();
 
 
@@ -637,15 +718,19 @@ void COpenGLView::DrawOpenGL_LineSegment(LineSegmentApprox *obj)
 void COpenGLView::DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj)
 {
 	glBegin(GL_TRIANGLES);
-	for (int i = 2; i < (int)obj.Mesh.points.size() /*&&i<=dd*/; i += 3)
+	for (int i = 2; i < (int)obj.Mesh.points.size(); i += 3)
 	{
 		//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
+		if (i % 2 == 0)
+			glNormal3f((GLfloat)obj.Line.Vector.X,(GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
+		if (i%2==1)
+			glNormal3f((-1)*(GLfloat)obj.Line.Vector.X, (-1) * (GLfloat)obj.Line.Vector.Y, (-1) * (GLfloat)obj.Line.Vector.Z);
 
 		glVertex3f((GLfloat)obj.Mesh.points[i].X,		(GLfloat)obj.Mesh.points[i].Y,		(GLfloat)obj.Mesh.points[i].Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i - 1].X,	(GLfloat)obj.Mesh.points[i - 1].Y,	(GLfloat)obj.Mesh.points[i - 1].Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i - 2].X,	(GLfloat)obj.Mesh.points[i - 2].Y,	(GLfloat)obj.Mesh.points[i - 2].Z);
 
-		glNormal3f((GLfloat)obj.Line.Vector.X, (GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
+		
 	}
 	glEnd();
 }
@@ -659,11 +744,13 @@ void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
 	{
 		//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
 
+		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
+		
+
 		glVertex3f((GLfloat)obj.Mesh.points[i].X,		(GLfloat)obj.Mesh.points[i].Y,		(GLfloat)obj.Mesh.points[i].Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i - 1].X,	(GLfloat)obj.Mesh.points[i - 1].Y,	(GLfloat)obj.Mesh.points[i - 1].Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i - 2].X,	(GLfloat)obj.Mesh.points[i - 2].Y,	(GLfloat)obj.Mesh.points[i - 2].Z);
 
-		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
 	}
 	glEnd();
 }

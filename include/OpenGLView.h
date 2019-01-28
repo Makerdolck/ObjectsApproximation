@@ -76,6 +76,11 @@ private:
 
 	bool flagColor1, flagColor2, flagColor3, flagColor4, flagColor5, flagColor6, flagColor7;
 
+	//FLOAT m_fLineWidth;
+	// Colors
+	float m_ClearColorRed;
+	float m_ClearColorGreen;
+	float m_ClearColorBlue;
 
 protected:
 	std::vector<ObjectApprox*>	*objectsArray;
@@ -83,6 +88,7 @@ protected:
 
 // Generated message map functions
 protected:
+	void	MakeOpenGLLight();
 	HGLRC	SetUpOpenGL(HWND hWnd);
 	//void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
 	void	DrawOpenGL_Circle(GeomObjectApprox obj);
