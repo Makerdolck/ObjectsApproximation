@@ -88,7 +88,6 @@ protected:
 
 // Generated message map functions
 protected:
-	void	MakeOpenGLLight();
 	HGLRC	SetUpOpenGL(HWND hWnd);
 	//void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
 	void	DrawOpenGL_Circle(GeomObjectApprox obj);

@@ -6,11 +6,11 @@
 #include "OpenGLView.h"
 
 bool flagCubeColor_1 = false;
-const GLfloat redColor[] = { 1.0,0.0,0.0,1.0 };
-const GLfloat blueColor[] = { 0.0,0.0,1.0,1.0 };
+const GLfloat redColor[] = { 1.0f,	0.0f,	0.0f,	1.0f };
+const GLfloat blueColor[] = { 0.0f,	0.0f,	1.0f,	1.0f };
 
-const GLfloat simpleElementsColor1[] = { 1.0,0.2,0.2,1.0 };
-const GLfloat simpleElementsColor2[] = { 0.0,1.0,1.0,1.0 };
+const GLfloat simpleElementsColor1[] = { 1.0f,	0.2f,	0.2f,	1.0f };
+const GLfloat simpleElementsColor2[] = { 0.0f,	1.0f,	1.0f,	1.0f };
 
 //GLfloat ambientLight[] = { 0.3f, 0.3f,0.3f, 1.0f };
 //GLfloat diffuseLight[] = { 0.7f, 0.7f,0.7f, 1.0f };
@@ -57,7 +57,7 @@ COpenGLView::COpenGLView()
 	wTransformX = 0;
 	wTransformY = 0;
 
-	fFarPlane = 1000.0f;
+	fFarPlane = 10000.0f;
 
 	flagMiddleButtonDown = false;
 
@@ -261,7 +261,7 @@ void COpenGLView::OnPaint()
 BOOL COpenGLView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	// TODO: Add your message handler code here and/or call default
-	double step = 5.0f;
+	double step = 3.0f+fabs(((int)m_z)/25);
 
 	if (zDelta < 0)
 		m_z += step;
@@ -287,7 +287,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		RedrawWindow();
 	}
 
-	GLfloat step = 1.0f;
+	GLfloat step = 0.5f + (GLfloat)fabs(((int)m_z) / 50);
 
 	if (flagMiddleButtonDown)
 	{
@@ -420,13 +420,6 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 //--------------------------------------------------------------
 //	----	Message Handlers		----	Custom Messages
 //--------------------------------------------------------------
-
-//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Make OpenGL Light
-void COpenGLView::MakeOpenGLLight()
-{
-	//
-}
-//////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Set Up OpenGL Settings
 HGLRC COpenGLView::SetUpOpenGL(HWND hWnd)
