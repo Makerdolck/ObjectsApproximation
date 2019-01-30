@@ -2,6 +2,8 @@
 
 #include "RectangleApprox.h"
 
+#include "GlobalFunctions.h"
+
 
 // ---																										// Constructors
 RectangleApprox::RectangleApprox() { Width = 0, Height = 0; objectApproxName = (char*)"rectangle"; WanderingPoints = nullptr; }
@@ -134,31 +136,63 @@ void RectangleApprox::Triangulation(double stepSize)
 	double	tmpStepSizeX = stepSize,
 			tmpStepSizeY = stepSize;
 
-	for (double stepSumY = stepSize; stepSumY <= HeightY; stepSumY += tmpStepSizeY)
+
+	Mesh.points.push_back(PointGeometric(minX, minY));										// -|-
+	Mesh.points.push_back(PointGeometric(maxX, minY));										// +|-
+	Mesh.points.push_back(PointGeometric(minX, maxY));										// -|+
+
+	Mesh.points.push_back(PointGeometric(maxX, maxY));										// +|+
+	Mesh.points.push_back(PointGeometric(maxX, minY));										// +|-
+	Mesh.points.push_back(PointGeometric(minX, maxY));										// -|+
+
+
+	//for (double stepSumY = stepSize; stepSumY <= HeightY; stepSumY += tmpStepSizeY)
+	//{
+	//	tmpStepSizeX = stepSize;
+	//
+	//	for (double stepSumX = stepSize; stepSumX <= LengthX; stepSumX += tmpStepSizeX)
+	//	{
+	//		Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY - stepSize));		// -|-
+	//		Mesh.points.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
+	//		Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
+	//
+	//		Mesh.points.push_back(PointGeometric(stepSumX, stepSumY));								// 0|0
+	//		Mesh.points.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
+	//		Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
+	//
+	//		if ((LengthX - stepSumX) < stepSize && (LengthX - stepSumX) != 0)
+	//		{
+	//			tmpStepSizeX = LengthX - stepSumX;
+	//		}
+	//	}
+	//
+	//	if ((HeightY - stepSumY) < stepSize && (HeightY - stepSumY) != 0)
+	//	{
+	//		tmpStepSizeY = HeightY - stepSumY;
+	//	}
+	//}
+
+
+	//	---	---	Transfer points from XY plane to cylinder bottom surface 
+
+	PlaneGeometric tmpPlane = Line;
+
+	VectorGeometric vectorZ, vectorY, vectorX;
+	vectorX = VectorX;
+	vectorZ = Line.Vector;
+	vectorY = vectorX ^ vectorZ;
+
+	PointGeometric tmpPoint = Line.Point;	// Center point of new coordinate system
+
+	for (int i = 0; i < (int)Mesh.points.size(); i++)
 	{
-		tmpStepSizeX = stepSize;
-
-		for (double stepSumX = stepSize; stepSumX <= LengthX; stepSumX += tmpStepSizeX)
-		{
-			Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY - stepSize));		// -|-
-			Mesh.points.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
-			Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
-
-			Mesh.points.push_back(PointGeometric(stepSumX, stepSumY));								// 0|0
-			Mesh.points.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
-			Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
-
-			if ((LengthX - stepSumX) < stepSize && (LengthX - stepSumX) != 0)
-			{
-				tmpStepSizeX = LengthX - stepSumX;
-			}
-		}
-
-		if ((HeightY - stepSumY) < stepSize && (HeightY - stepSumY) != 0)
-		{
-			tmpStepSizeY = HeightY - stepSumY;
-		}
+		Mesh.points[i] = TransferPointToNewCoordinateSystem(	Mesh.points[i],
+																tmpPoint,
+																vectorX,
+																vectorY,
+																vectorZ);
 	}
+
 
 	Mesh.vectorsNormal.push_back(VectorZ);
 }

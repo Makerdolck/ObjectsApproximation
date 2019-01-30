@@ -31,7 +31,6 @@ BEGIN_MESSAGE_MAP(COpenGLView, CView)
 	//{{AFX_MSG_MAP(CTry_OpenGLView)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
-	ON_WM_PAINT()
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
 	ON_WM_ERASEBKGND()
@@ -144,61 +143,27 @@ void COpenGLView::OnDestroy()
 // ---																							// On Draw
 void COpenGLView::OnDraw(CDC* pDC)
 {
-	//
-}
-// ---																							// On Size
-void COpenGLView::OnSize(UINT nType, int cx, int cy) 
-{
-	CView::OnSize(nType, cx, cy);
-	
-	// TODO: Add your message handler code here
-	HDC hDC = ::GetDC(this->m_hWnd);
-	wglMakeCurrent(hDC,hRC);
-
-	//**Write code for GL resize here!
-	// get the new size of the client window
-    // note that we size according to the height,
-    // not the smaller of the height or width.
-    glnWidth = (GLsizei)cx;
-    glnHeight = (GLsizei)cy;
-    gldAspect = (GLdouble)glnWidth/(GLdouble)glnHeight;
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glViewport(0,0,glnWidth,glnHeight);
-	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
-	//**End code for GL resize!
-
-	wglMakeCurrent( NULL, NULL );
-    ::ReleaseDC( this->m_hWnd, hDC );
-	
-}
-// ---																							// On Paint
-void COpenGLView::OnPaint() 
-{
-	CPaintDC dc(this); // device context for painting
-	
 	GLfloat light0_direction[] = { 0.0,		0.0,	1.0,	0.0 },
 			light1_direction[] = { 0.0,		1.0,	1.0,	0.0 },
 			light2_direction[] = { 0.0,		-1.0,	1.0,	0.0 },
 			light3_direction[] = { 0.0,		1.0,	0.0,	0.0 },
 			light4_direction[] = { 0.0,		0.0,	-1.0,	0.0 };
 
-	GLfloat light_diffuse[] = { 1, 1, 1 },
-			light_diffuseMiddle[] = { 0.2f, 0.2f, 0.2f },
-			light_diffuseDark[] = { 0.0f, 0.0f, 0.0f };
+	GLfloat light_diffuse[]			= { 1,		1,		1 },
+			light_diffuseMiddle[]	= { 0.2f,	0.2f,	0.2f },
+			light_diffuseDark[]		= { 0.0f,	0.0f,	0.0f };
 
 
 
 
-	wglMakeCurrent(dc.m_hDC,hRC);
-	
+	wglMakeCurrent(pDC->m_hDC, hRC);
+
 	//**Draw GL here!
 	//glClearColor(0.0,0.0,0.0,0.0);
 
 	glClearDepth(1.0f);                                  //Specifies the clear value for the depth buffer 
 	glClearColor(0.99f, 0.99f, 0.99f, 1.0f);             //Set Background Color
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -246,11 +211,36 @@ void COpenGLView::OnPaint()
 	glDisable(GL_DEPTH_TEST);
 
 	//**End code for draw GL!
+
+	SwapBuffers(pDC->m_hDC);
+	wglMakeCurrent(NULL, NULL);
+}
+// ---																							// On Size
+void COpenGLView::OnSize(UINT nType, int cx, int cy) 
+{
+	CView::OnSize(nType, cx, cy);
 	
-	SwapBuffers(dc.m_hDC);
-	wglMakeCurrent(NULL,NULL);
+	// TODO: Add your message handler code here
+	HDC hDC = ::GetDC(this->m_hWnd);
+	wglMakeCurrent(hDC,hRC);
+
+	//**Write code for GL resize here!
+	// get the new size of the client window
+    // note that we size according to the height,
+    // not the smaller of the height or width.
+    glnWidth = (GLsizei)cx;
+    glnHeight = (GLsizei)cy;
+    gldAspect = (GLdouble)glnWidth/(GLdouble)glnHeight;
 	
-	// Do not call CView::OnPaint() for painting messages
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0,0,glnWidth,glnHeight);
+	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
+	//**End code for GL resize!
+
+	wglMakeCurrent( NULL, NULL );
+    ::ReleaseDC( this->m_hWnd, hDC );
+	
 }
 
 //--------------------------------------------------------------
@@ -269,7 +259,7 @@ BOOL COpenGLView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		m_z -= step;
 
 
-	RedrawWindow();
+	Invalidate(FALSE);
 
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }
@@ -284,7 +274,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 
 		mouse_x0 = point.x;  mouse_y0 = point.y;
 
-		RedrawWindow();
+		Invalidate(FALSE);
 	}
 
 	GLfloat step = 0.5f + (GLfloat)fabs(((int)m_z) / 50);
@@ -304,7 +294,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		mouse_x0 = point.x;
 		mouse_y0 = point.y;
 
-		RedrawWindow();
+		Invalidate(FALSE);
 	}
 
 	CView::OnMouseMove(nFlags, point);
@@ -412,7 +402,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 	wglMakeCurrent(NULL, NULL);
 	::ReleaseDC(this->m_hWnd, hDC);
 
-	RedrawWindow();
+	Invalidate(FALSE);
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -661,13 +651,12 @@ void COpenGLView::DrawOpenGL_Circle(GeomObjectApprox obj)
 	glLineWidth(3);
 
 	glBegin(GL_LINE_LOOP);
-
-		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[0].X, (GLfloat)obj.Mesh.vectorsNormal[0].Y, (GLfloat)obj.Mesh.vectorsNormal[0].Z);
+		
 		for (int i = 0; i < (int)obj.Mesh.points.size(); i++)
 		{
+			glNormal3f((GLfloat)obj.Mesh.vectorsNormal[0].X, (GLfloat)obj.Mesh.vectorsNormal[0].Y, (GLfloat)obj.Mesh.vectorsNormal[0].Z);
 			glVertex3f((GLfloat)obj.Mesh.points[i].X, (GLfloat)obj.Mesh.points[i].Y, (GLfloat)obj.Mesh.points[i].Z);
-		}
-		
+		}		
 
 	glEnd();
 
@@ -698,8 +687,9 @@ void COpenGLView::DrawOpenGL_LineSegment(LineSegmentApprox *obj)
 	glBegin(GL_LINES);
 		glNormal3f((GLfloat)obj->Vector.X, (GLfloat)obj->Vector.Y, (GLfloat)obj->Vector.Z);
 		glVertex3d((GLfloat)obj->PointStart.X,	(GLfloat)obj->PointStart.Y, (GLfloat)obj->PointStart.Z);
-		glVertex3d((GLfloat)obj->PointEnd.X,	(GLfloat)obj->PointEnd.Y,	(GLfloat)obj->PointEnd.Z);
-		
+
+		glNormal3f((GLfloat)obj->Vector.X, (GLfloat)obj->Vector.Y, (GLfloat)obj->Vector.Z);
+		glVertex3d((GLfloat)obj->PointEnd.X,	(GLfloat)obj->PointEnd.Y,	(GLfloat)obj->PointEnd.Z);		
 	glEnd();
 
 
@@ -714,13 +704,19 @@ void COpenGLView::DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj)
 	for (int i = 2; i < (int)obj.Mesh.points.size(); i += 3)
 	{
 		//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
-		if (i % 2 == 0)
-			glNormal3f((GLfloat)obj.Line.Vector.X,(GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
-		if (i%2==1)
-			glNormal3f((-1)*(GLfloat)obj.Line.Vector.X, (-1) * (GLfloat)obj.Line.Vector.Y, (-1) * (GLfloat)obj.Line.Vector.Z);
+		
+		//if (i % 2 == 0)
+			//glNormal3f((GLfloat)obj.Line.Vector.X,(GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
+		/*if (i%2==1)
+			glNormal3f((-1)*(GLfloat)obj.Line.Vector.X, (-1) * (GLfloat)obj.Line.Vector.Y, (-1) * (GLfloat)obj.Line.Vector.Z);*/
 
+		glNormal3f((GLfloat)obj.Line.Vector.X, (GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i].X,		(GLfloat)obj.Mesh.points[i].Y,		(GLfloat)obj.Mesh.points[i].Z);
+
+		glNormal3f((GLfloat)obj.Line.Vector.X, (GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i - 1].X,	(GLfloat)obj.Mesh.points[i - 1].Y,	(GLfloat)obj.Mesh.points[i - 1].Z);
+
+		glNormal3f((GLfloat)obj.Line.Vector.X, (GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i - 2].X,	(GLfloat)obj.Mesh.points[i - 2].Y,	(GLfloat)obj.Mesh.points[i - 2].Z);
 
 		
@@ -738,10 +734,12 @@ void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
 		//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
 
 		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
-		
-
 		glVertex3f((GLfloat)obj.Mesh.points[i].X,		(GLfloat)obj.Mesh.points[i].Y,		(GLfloat)obj.Mesh.points[i].Z);
+		
+		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i - 1].X,	(GLfloat)obj.Mesh.points[i - 1].Y,	(GLfloat)obj.Mesh.points[i - 1].Z);
+		
+		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
 		glVertex3f((GLfloat)obj.Mesh.points[i - 2].X,	(GLfloat)obj.Mesh.points[i - 2].Y,	(GLfloat)obj.Mesh.points[i - 2].Z);
 
 	}

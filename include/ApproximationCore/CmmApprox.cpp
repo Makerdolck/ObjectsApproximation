@@ -42,9 +42,12 @@ bool CmmApprox::Connect_()
 	flagConnected = (*Init)((char*)PortStr.c_str());*/
 	//flagConnected = (*Init)((char*)"UCC.ini");
 
-	char* connectString;
-	connectString = "C:\\Program Files\\Renishaw\\UCC\\Machine\\ucc\\ucc.ini";
-	flagConnected = (*Init)(connectString);
+	//char* connectString;
+	//connectString = "C:\\Program Files\\Renishaw\\UCC\\Machine\\ucc\\ucc.ini";
+	//flagConnected = (*Init)(connectString);
+
+	name_t filename = "C:\\Program Files\\Renishaw\\UCC\\Machine\\ucc\\ucc.ini";
+	flagConnected = (*Init)(filename);
 
 	//flagConnected = (*Init)((char*)"C:\\Program Files\\Renishaw\\UCC\\Machine\\ucc\\ucc.ini"); 
 	return flagConnected;

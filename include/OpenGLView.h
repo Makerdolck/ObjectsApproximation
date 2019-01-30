@@ -102,7 +102,6 @@ protected:
 	//{{AFX_MSG(CTry_OpenGLView)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnPaint();
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

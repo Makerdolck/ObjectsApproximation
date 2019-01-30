@@ -10,7 +10,9 @@
 
 #include "PointGeometric.h"
 
-typedef BOOL(INIT)(char[5]/*, char **/);
+typedef char name_t[1024];
+
+typedef BOOL(INIT)(name_t filename/*, char **/);
 //typedef BOOL* (GETPOINT)(double*, double*, double*, short*);
 typedef BOOL* (GETPOINT)(double *x, double *y, double *z, float *b, bool &button1, bool &button2, bool &button3, short *stat, double *x_prev, double *y_prev, double *z_prev);
 typedef BOOL* (DISCONNECT)();
