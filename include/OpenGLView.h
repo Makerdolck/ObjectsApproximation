@@ -13,7 +13,6 @@
 class COpenGLView : public CView
 {
 protected: // create from serialization only
-	void PaintScreen(GLenum mode);
 	COpenGLView();
 	DECLARE_DYNCREATE(COpenGLView)
 
@@ -37,38 +36,39 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:
-
-
 private:
-	GLdouble gldAspect;
-	GLsizei glnWidth, glnHeight;
-	HGLRC hRC;
-	double r;
+	GLdouble	gldAspect;
+	GLsizei		glnWidth, 
+				glnHeight;
+
+	HGLRC		hRC;
+	double		r;
 
 
-	HGLRC m_hglrc;
+	HGLRC		m_hglrc;
 
 	bool		flagMiddleButtonDown;
 
 	int			mouse_x0,
-		mouse_y0,
+				mouse_y0,
 
-		mouseX_old,
-		mouseY_old;
+				mouseX_old,
+				mouseY_old;
 
 	double		m_z;
 
 	GLfloat		wAngleY,
-		wAngleX,
-		wAngleZ,
+				wAngleX,
+				wAngleZ,
 
-		fNearPlane,
-		fFarPlane,
-		fAspect,
+				fNearPlane,
+				fFarPlane,
+				fAspect,
 
-		wTransformX,
-		wTransformY;
+				wTransformX,
+				wTransformY,			
+
+				angleLook;
 
 	CRect       m_oldRect;
 
@@ -82,13 +82,24 @@ private:
 	float m_ClearColorGreen;
 	float m_ClearColorBlue;
 
+	VectorGeometric		vectorRotationX,
+						vectorRotationY,
+						vectorRotationZ;
+
+
+
 protected:
 	std::vector<ObjectApprox*>	*objectsArray;
 
+	PointGeometric				centerOfAllObjects;
+
+	PointGeometric				pointEyeLook,
+								pointAimLook;
 
 // Generated message map functions
 protected:
 	HGLRC	SetUpOpenGL(HWND hWnd);
+	void	PaintScene(GLenum mode);
 	//void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
 	void	DrawOpenGL_Circle(GeomObjectApprox obj);
 	void	DrawOpenGL_Point(PointApprox *obj);
@@ -112,6 +123,8 @@ public:
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+//	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 
 #ifndef _DEBUG  // debug version in try_OpenGLView.cpp

@@ -40,6 +40,8 @@ BEGIN_MESSAGE_MAP(COpenGLView, CView)
 	ON_WM_MBUTTONDOWN()
 	ON_WM_MBUTTONUP()
 	ON_WM_MOUSEMOVE()
+//	ON_WM_LBUTTONUP()
+ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -49,8 +51,11 @@ COpenGLView::COpenGLView()
 {
 	m_z = 10.0f;
 
-	wAngleY = -10.0f;		//10.0f;
-	wAngleX = 15.0f;		//1.0f;
+	//wAngleY = -10.0f;		//10.0f;
+	//wAngleX = 15.0f;		//1.0f;
+	
+	wAngleY = 0.0f;		//10.0f;
+	wAngleX = 0.0f;		//1.0f;
 	wAngleZ = 0.0f;		//5.0f;
 
 	wTransformX = 0;
@@ -76,6 +81,21 @@ COpenGLView::COpenGLView()
 	m_ClearColorRed = 0.0f;
 	m_ClearColorGreen = 0.0f;
 	m_ClearColorBlue = 0.2f;
+
+
+	pointEyeLook.X = 0;
+	pointEyeLook.Y = 0;
+	pointEyeLook.Z = 100;
+
+	pointAimLook.X = 0;
+	pointAimLook.Y = 0;
+	pointAimLook.Z = 0;
+	
+	angleLook = 0;
+
+	vectorRotationX = VectorGeometric(1.f, 0.f, 0.f);
+	vectorRotationY = VectorGeometric(0.f, 1.f, 0.f);
+	vectorRotationZ = VectorGeometric(0.f, 0.f, 1.f);
 }
 
 COpenGLView::~COpenGLView()
@@ -167,7 +187,20 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);	//gluLookAt(6.0, 4.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	//gluLookAt(0.0, 0.0, 100.0, 
+	//			0.0, 0.0,	0.0, 
+	//			0.0, 1.0,	0.0);	//gluLookAt(6.0, 4.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+
+	/*gluLookAt(	xEyeLook,			1.0f,	zEyeLook,
+				xEyeLook + xPointLook, 1.0f,	zEyeLook + zPointLook,
+				0.0f,			1.0f,	0.0f);*/
+
+
+	gluLookAt(	pointEyeLook.X, pointEyeLook.Y, pointEyeLook.Z,
+				pointAimLook.X, pointAimLook.Y, pointAimLook.Z,
+				0.0f,		1.0f,		0.0f);
+
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
@@ -195,12 +228,34 @@ void COpenGLView::OnDraw(CDC* pDC)
 	//glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-	glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, (GLfloat)-m_z);                      //move object far-near
-	glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);                //rotate object    
-	glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);                //around the axe
-	glRotatef(wAngleZ, 0.0f, 0.0f, 1.0f);                //specified
 
-	PaintScreen(GL_RENDER);
+
+
+	//glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, (GLfloat)-m_z);                    //move object far-near
+
+	//glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);													//rotate object    
+	//glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);													//around the axe
+	//glRotatef(wAngleZ, 0.0f, 0.0f, 1.0f);													//specified
+	
+	//glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, (GLfloat)+m_z);
+
+	glTranslatef(centerOfAllObjects.X, centerOfAllObjects.Y, + centerOfAllObjects.Z);
+	/*glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);
+	glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);*/
+
+	glRotatef(wAngleX, vectorRotationX.X, vectorRotationX.Y, vectorRotationX.Z);
+	glRotatef(wAngleY, vectorRotationY.X, vectorRotationY.Y, vectorRotationY.Z);
+
+
+	glTranslatef(-centerOfAllObjects.X, -centerOfAllObjects.Y, -centerOfAllObjects.Z);
+
+
+	PaintScene(GL_RENDER);
+
+
+
+
+
 
 	glDisable(GL_LIGHT0);
 	//glDisable(GL_LIGHT1);
@@ -209,6 +264,8 @@ void COpenGLView::OnDraw(CDC* pDC)
 	glDisable(GL_LIGHT4);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
+
+	//glPopMatrix();
 
 	//**End code for draw GL!
 
@@ -251,12 +308,17 @@ void COpenGLView::OnSize(UINT nType, int cx, int cy)
 BOOL COpenGLView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	// TODO: Add your message handler code here and/or call default
-	double step = 3.0f+fabs(((int)m_z)/25);
+	double step = 3.0f+fabs(((int)pointEyeLook.Z)/25);
 
-	if (zDelta < 0)
+	/*if (zDelta < 0)
 		m_z += step;
 	else
-		m_z -= step;
+		m_z -= step;*/
+
+	if (zDelta < 0)
+		pointEyeLook.Z += step;
+	else
+		pointEyeLook.Z -= step;
 
 
 	Invalidate(FALSE);
@@ -269,33 +331,60 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 	if (nFlags& MK_LBUTTON)
 	{
 		wAngleY += (point.x - mouse_x0);
+
+
+
+
 		wAngleX += (point.y - mouse_y0);
-
-
-		mouse_x0 = point.x;  mouse_y0 = point.y;
 
 		Invalidate(FALSE);
 	}
 
-	GLfloat step = 0.5f + (GLfloat)fabs(((int)m_z) / 50);
+	//GLfloat step = 0.5f + (GLfloat)fabs(((int)m_z) / 50);
+	GLfloat step = 0.0f + pointEyeLook.Z / 100;
 
 	if (flagMiddleButtonDown)
 	{
+		//if (mouse_x0 - point.x < 0)
+		//	wTransformX += step;// fabs(((float)(point.x - mouse_x0)) / 2);
+		//if (mouse_x0 - point.x > 0)
+		//	wTransformX -= step;// fabs(((float)(point.x - mouse_x0)) / 2);
+
+		//if (mouse_y0 - point.y < 0)
+		//	wTransformY -= step;// fabs(((float)(point.y - mouse_y0)) / 2);
+		//if (mouse_y0 - point.y > 0)
+		//	wTransformY += step;// fabs(((float)(point.y - mouse_y0)) / 2);
+
+
+
 		if (mouse_x0 - point.x < 0)
-			wTransformX += step;// fabs(((float)(point.x - mouse_x0)) / 2);
+		{
+			pointEyeLook.X-= step;
+			pointAimLook.X -= step;
+		}
 		if (mouse_x0 - point.x > 0)
-			wTransformX -= step;// fabs(((float)(point.x - mouse_x0)) / 2);
+		{
+			pointEyeLook.X += step;
+			pointAimLook.X += step;
+		}
 
 		if (mouse_y0 - point.y < 0)
-			wTransformY -= step;// fabs(((float)(point.y - mouse_y0)) / 2);
+		{
+			pointEyeLook.Y += step;
+			pointAimLook.Y += step;
+		}
 		if (mouse_y0 - point.y > 0)
-			wTransformY += step;// fabs(((float)(point.y - mouse_y0)) / 2);
-
-		mouse_x0 = point.x;
-		mouse_y0 = point.y;
+		{
+			pointEyeLook.Y -= step;
+			pointAimLook.Y -= step;
+		}
 
 		Invalidate(FALSE);
 	}
+
+	mouse_x0 = point.x;
+	mouse_y0 = point.y;
+
 
 	CView::OnMouseMove(nFlags, point);
 }
@@ -304,7 +393,7 @@ void COpenGLView::OnMButtonDown(UINT nFlags, CPoint point)
 {
 	flagMiddleButtonDown = true;
 
-	mouse_x0 = point.x;  mouse_y0 = point.y;
+	//mouse_x0 = point.x;  mouse_y0 = point.y;
 
 	CView::OnMButtonDown(nFlags, point);
 }
@@ -344,7 +433,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 	gluPickMatrix((GLdouble)point.x, (GLdouble)(viewport[3] - point.y), 5.0, 5.0, viewport);
 	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
 	glMatrixMode(GL_MODELVIEW);
-	PaintScreen(GL_SELECT);
+	PaintScene(GL_SELECT);
 	glPopMatrix();
 	glFlush();
 
@@ -467,8 +556,8 @@ HGLRC COpenGLView::SetUpOpenGL(HWND hWnd)
 }
 //////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Paint Screen
-void COpenGLView::PaintScreen(GLenum mode)
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Paint Scene
+void COpenGLView::PaintScene(GLenum mode)
 {
 	glPushMatrix();
 
@@ -487,13 +576,13 @@ void COpenGLView::PaintScreen(GLenum mode)
 
 	ObjectApprox		*objApprox;
 
-	PointApprox			*pointA = new PointApprox();
-	LineSegmentApprox	*lineSegmentA = new LineSegmentApprox();
-	RectangleApprox		*rectangleA = new RectangleApprox();
-	CircleApprox		*circleA = new CircleApprox();
-	CylinderApprox		*cylinderA = new CylinderApprox();
-	ConeApprox			*coneA = new ConeApprox();
-	SphereApprox		*sphereA = new SphereApprox();
+	PointApprox			*pointA			= new PointApprox();
+	LineSegmentApprox	*lineSegmentA	= new LineSegmentApprox();
+	RectangleApprox		*rectangleA		= new RectangleApprox();
+	CircleApprox		*circleA		= new CircleApprox();
+	CylinderApprox		*cylinderA		= new CylinderApprox();
+	ConeApprox			*coneA			= new ConeApprox();
+	SphereApprox		*sphereA		= new SphereApprox();
 
 	for (int i = 0; i < (int)objectsArray->size(); i++)
 	{
@@ -655,7 +744,9 @@ void COpenGLView::DrawOpenGL_Circle(GeomObjectApprox obj)
 		for (int i = 0; i < (int)obj.Mesh.points.size(); i++)
 		{
 			glNormal3f((GLfloat)obj.Mesh.vectorsNormal[0].X, (GLfloat)obj.Mesh.vectorsNormal[0].Y, (GLfloat)obj.Mesh.vectorsNormal[0].Z);
-			glVertex3f((GLfloat)obj.Mesh.points[i].X, (GLfloat)obj.Mesh.points[i].Y, (GLfloat)obj.Mesh.points[i].Z);
+			glVertex3f(	(GLfloat)obj.Mesh.points[i].X /*- centerOfAllObjects.X*/, 
+						(GLfloat)obj.Mesh.points[i].Y /*- centerOfAllObjects.Y*/, 
+						(GLfloat)obj.Mesh.points[i].Z /*- centerOfAllObjects.Z*/);
 		}		
 
 	glEnd();
@@ -672,7 +763,9 @@ void COpenGLView::DrawOpenGL_Point(PointApprox *obj)
 	glBegin(GL_POINTS);
 
 		//glNormal3f((GLfloat)0/*obj->Line.Vector.X*/, (GLfloat)0/*obj->Line.Vector.Y*/, (GLfloat)1/*obj->Line.Vector.Z*/);
-		glVertex3d((GLfloat)obj->X,				(GLfloat)obj->Y,				(GLfloat)obj->Z);
+		glVertex3d(	(GLfloat)obj->X /*- centerOfAllObjects.X*/,	
+					(GLfloat)obj->Y /*- centerOfAllObjects.Y*/, 	
+					(GLfloat)obj->Z /*- centerOfAllObjects.Z*/);
 		
 	glEnd();
 
@@ -686,10 +779,14 @@ void COpenGLView::DrawOpenGL_LineSegment(LineSegmentApprox *obj)
 	glLineWidth(3);
 	glBegin(GL_LINES);
 		glNormal3f((GLfloat)obj->Vector.X, (GLfloat)obj->Vector.Y, (GLfloat)obj->Vector.Z);
-		glVertex3d((GLfloat)obj->PointStart.X,	(GLfloat)obj->PointStart.Y, (GLfloat)obj->PointStart.Z);
+		glVertex3d(	(GLfloat)obj->PointStart.X /*- centerOfAllObjects.X*/,	
+					(GLfloat)obj->PointStart.Y /*- centerOfAllObjects.Y*/,
+					(GLfloat)obj->PointStart.Z /*- centerOfAllObjects.Z*/);
 
 		glNormal3f((GLfloat)obj->Vector.X, (GLfloat)obj->Vector.Y, (GLfloat)obj->Vector.Z);
-		glVertex3d((GLfloat)obj->PointEnd.X,	(GLfloat)obj->PointEnd.Y,	(GLfloat)obj->PointEnd.Z);		
+		glVertex3d(	(GLfloat)obj->PointEnd.X /*- centerOfAllObjects.X*/,
+					(GLfloat)obj->PointEnd.Y /*- centerOfAllObjects.Y*/,	
+					(GLfloat)obj->PointEnd.Z /*- centerOfAllObjects.Z*/);
 	glEnd();
 
 
@@ -711,13 +808,19 @@ void COpenGLView::DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj)
 			glNormal3f((-1)*(GLfloat)obj.Line.Vector.X, (-1) * (GLfloat)obj.Line.Vector.Y, (-1) * (GLfloat)obj.Line.Vector.Z);*/
 
 		glNormal3f((GLfloat)obj.Line.Vector.X, (GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
-		glVertex3f((GLfloat)obj.Mesh.points[i].X,		(GLfloat)obj.Mesh.points[i].Y,		(GLfloat)obj.Mesh.points[i].Z);
+		glVertex3f(	(GLfloat)obj.Mesh.points[i].X /*- centerOfAllObjects.X*/,		
+					(GLfloat)obj.Mesh.points[i].Y /*- centerOfAllObjects.Y*/,		
+					(GLfloat)obj.Mesh.points[i].Z /*- centerOfAllObjects.Z*/);
 
 		glNormal3f((GLfloat)obj.Line.Vector.X, (GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
-		glVertex3f((GLfloat)obj.Mesh.points[i - 1].X,	(GLfloat)obj.Mesh.points[i - 1].Y,	(GLfloat)obj.Mesh.points[i - 1].Z);
+		glVertex3f(	(GLfloat)obj.Mesh.points[i - 1].X /*- centerOfAllObjects.X*/,
+					(GLfloat)obj.Mesh.points[i - 1].Y /*- centerOfAllObjects.Y*/,	
+					(GLfloat)obj.Mesh.points[i - 1].Z /*- centerOfAllObjects.Z*/);
 
 		glNormal3f((GLfloat)obj.Line.Vector.X, (GLfloat)obj.Line.Vector.Y, (GLfloat)obj.Line.Vector.Z);
-		glVertex3f((GLfloat)obj.Mesh.points[i - 2].X,	(GLfloat)obj.Mesh.points[i - 2].Y,	(GLfloat)obj.Mesh.points[i - 2].Z);
+		glVertex3f(	(GLfloat)obj.Mesh.points[i - 2].X /*- centerOfAllObjects.X*/,	
+					(GLfloat)obj.Mesh.points[i - 2].Y /*- centerOfAllObjects.Y*/,
+					(GLfloat)obj.Mesh.points[i - 2].Z /*- centerOfAllObjects.Z*/);
 
 		
 	}
@@ -734,13 +837,19 @@ void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
 		//glColor3f((double)(i%10)/10, (double)(i % 10) /10, (double)(i % 10) /10);
 
 		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
-		glVertex3f((GLfloat)obj.Mesh.points[i].X,		(GLfloat)obj.Mesh.points[i].Y,		(GLfloat)obj.Mesh.points[i].Z);
+		glVertex3f(	(GLfloat)obj.Mesh.points[i].X /*- centerOfAllObjects.X*/,		
+					(GLfloat)obj.Mesh.points[i].Y /*- centerOfAllObjects.Y*/,
+					(GLfloat)obj.Mesh.points[i].Z /*- centerOfAllObjects.Z*/);
 		
 		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
-		glVertex3f((GLfloat)obj.Mesh.points[i - 1].X,	(GLfloat)obj.Mesh.points[i - 1].Y,	(GLfloat)obj.Mesh.points[i - 1].Z);
+		glVertex3f(	(GLfloat)obj.Mesh.points[i - 1].X /*- centerOfAllObjects.X*/,
+					(GLfloat)obj.Mesh.points[i - 1].Y /*- centerOfAllObjects.Y*/,	
+					(GLfloat)obj.Mesh.points[i - 1].Z /*- centerOfAllObjects.Z*/);
 		
 		glNormal3f((GLfloat)obj.Mesh.vectorsNormal[i / 3].X, (GLfloat)obj.Mesh.vectorsNormal[i / 3].Y, (GLfloat)(GLfloat)obj.Mesh.vectorsNormal[i / 3].Z);
-		glVertex3f((GLfloat)obj.Mesh.points[i - 2].X,	(GLfloat)obj.Mesh.points[i - 2].Y,	(GLfloat)obj.Mesh.points[i - 2].Z);
+		glVertex3f(	(GLfloat)obj.Mesh.points[i - 2].X /*- centerOfAllObjects.X*/,	
+					(GLfloat)obj.Mesh.points[i - 2].Y /*- centerOfAllObjects.Y*/,	
+					(GLfloat)obj.Mesh.points[i - 2].Z /*- centerOfAllObjects.Z*/);
 
 	}
 	glEnd();
@@ -750,5 +859,65 @@ void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
 
 
 
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// On Key Down for __Test__
+void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	float fraction = 0.1f;
+
+	double radiusOfLook = pointAimLook.DistanceToPoint(pointEyeLook);
+
+	switch (nChar) {
+	case  VK_RIGHT :
+		/*angleLook -= 0.01f;
+		xPointLook = sin(angleLook);
+		zPointLook = -cos(angleLook);*/
+
+		wAngleY += 10;
+		/*vectorRotationX.X = cos(wAngleY * PI_Approx / 180.0f);
+		vectorRotationX.Z = sin(wAngleY * PI_Approx / 180.0f);*/
 
 
+		break;
+	case VK_LEFT:
+		/*angleLook += 0.01f;
+		xPointLook = sin(angleLook);
+		zPointLook = -cos(angleLook);*/
+
+		wAngleY -= 10;
+		/*vectorRotationX.X = cos(wAngleY * PI_Approx / 180.0f);
+		vectorRotationX.Z = sin(wAngleY * PI_Approx / 180.0f);*/
+
+		
+
+		break;
+	case VK_UP:
+		/*xEyeLook += xPointLook * fraction;
+		zEyeLook += zPointLook * fraction;*/
+
+		wAngleX += 10;
+		/*vectorRotationY.Y = cos(wAngleX * PI_Approx / 180.0f);
+		vectorRotationY.Z = sin(wAngleX * PI_Approx / 180.0f);*/
+
+		break;
+	case VK_DOWN:
+		/*xEyeLook -= xPointLook * fraction;
+		zEyeLook -= zPointLook * fraction;*/
+
+		wAngleX -= 10;
+	/*	vectorRotationY.Y = cos(wAngleX * PI_Approx / 180.0f);
+		vectorRotationY.Z = sin(wAngleX * PI_Approx / 180.0f);*/
+
+		break;
+	}
+
+	
+	pointEyeLook.X = pointAimLook.X + radiusOfLook * sin(wAngleX * PI_Approx / 180.0f) * sin(wAngleY * PI_Approx / 180.0f);
+	pointEyeLook.Y = pointAimLook.Y + radiusOfLook * cos(wAngleX * PI_Approx / 180.0f);
+	pointEyeLook.Z = pointAimLook.Z + radiusOfLook * sin(wAngleX * PI_Approx / 180.0f) * cos(wAngleY * PI_Approx / 180.0f);
+
+	Invalidate(FALSE);
+
+	CView::OnKeyDown(nChar, nRepCnt, nFlags);
+}
