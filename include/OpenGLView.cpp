@@ -239,15 +239,15 @@ void COpenGLView::OnDraw(CDC* pDC)
 	
 	//glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, (GLfloat)+m_z);
 
-	glTranslatef(centerOfAllObjects.X, centerOfAllObjects.Y, + centerOfAllObjects.Z);
+	glTranslatef((GLfloat)centerOfAllObjects.X, (GLfloat)centerOfAllObjects.Y, (GLfloat)centerOfAllObjects.Z);
 	/*glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);
 	glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);*/
 
-	glRotatef(wAngleX, vectorRotationX.X, vectorRotationX.Y, vectorRotationX.Z);
-	glRotatef(wAngleY, vectorRotationY.X, vectorRotationY.Y, vectorRotationY.Z);
+	glRotatef(wAngleX, (GLfloat)vectorRotationX.X, (GLfloat)vectorRotationX.Y, (GLfloat)vectorRotationX.Z);
+	glRotatef(wAngleY, (GLfloat)vectorRotationY.X, (GLfloat)vectorRotationY.Y, (GLfloat)vectorRotationY.Z);
 
 
-	glTranslatef(-centerOfAllObjects.X, -centerOfAllObjects.Y, -centerOfAllObjects.Z);
+	glTranslatef((GLfloat )-centerOfAllObjects.X, (GLfloat)-centerOfAllObjects.Y, (GLfloat)-centerOfAllObjects.Z);
 
 
 	PaintScene(GL_RENDER);
@@ -330,18 +330,17 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (nFlags& MK_LBUTTON)
 	{
+		double radiusOfLook = pointAimLook.DistanceToPoint(pointEyeLook);
+
 		wAngleY += (point.x - mouse_x0);
-
-
-
-
 		wAngleX += (point.y - mouse_y0);
+
 
 		Invalidate(FALSE);
 	}
 
 	//GLfloat step = 0.5f + (GLfloat)fabs(((int)m_z) / 50);
-	GLfloat step = 0.0f + pointEyeLook.Z / 100;
+	GLfloat step = 0.0f + (GLfloat)pointEyeLook.Z / 100;
 
 	if (flagMiddleButtonDown)
 	{
@@ -913,9 +912,9 @@ void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	
-	pointEyeLook.X = pointAimLook.X + radiusOfLook * sin(wAngleX * PI_Approx / 180.0f) * sin(wAngleY * PI_Approx / 180.0f);
-	pointEyeLook.Y = pointAimLook.Y + radiusOfLook * cos(wAngleX * PI_Approx / 180.0f);
 	pointEyeLook.Z = pointAimLook.Z + radiusOfLook * sin(wAngleX * PI_Approx / 180.0f) * cos(wAngleY * PI_Approx / 180.0f);
+	pointEyeLook.Y = pointAimLook.Y + radiusOfLook * sin(wAngleX * PI_Approx / 180.0f) * sin(wAngleY * PI_Approx / 180.0f);	
+	pointEyeLook.X = pointAimLook.X + radiusOfLook * cos(wAngleX * PI_Approx / 180.0f);
 
 	Invalidate(FALSE);
 

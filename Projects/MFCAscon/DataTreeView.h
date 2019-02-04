@@ -28,6 +28,8 @@ class DataTreeView : public CTreeView
 
 protected:
 	DataTreeView();           // protected constructor used by dynamic creation
+	
+public:
 	virtual ~DataTreeView();
 
 public:								// Tree Item Root
