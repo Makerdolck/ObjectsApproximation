@@ -650,7 +650,7 @@ void COpenGLView::PaintScene(GLenum mode)
 			DrawOpenGL_PlaneViaRectangle(*objApprox->objMath);
 		}
 
-	}
+	}	
 
 	delete pointA;
 	delete lineSegmentA;

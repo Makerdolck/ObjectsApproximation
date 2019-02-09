@@ -3,6 +3,7 @@
 #include "CylinderApprox.h"
 
 #include "GlobalFunctions.h"
+#include "CircleGeometric.h"
 #include <algorithm>
 
 // ---																										// Constructors
@@ -20,12 +21,22 @@ double CylinderApprox::FunctionApprox(PointGeometric *points, int arraySize)		//
 
 void CylinderApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
 {
-	CenterByPoints(points, arraySize);		// Find center point
+	//CenterByPoints(points, arraySize);		// Find center point
+
+	//Line.Point = CircleGeometric(points[0], points[1], points[2]).Point;
+
+	CircleGeometric	circleBottom(points[0], points[1], points[2]);									// first cross-section
+	CircleGeometric	circleTop(points[arraySize - 1], points[arraySize - 2], points[arraySize - 3]);	// last cross-section
+	PointGeometric pointsForFindCenter[2];
+	pointsForFindCenter[0] = circleBottom.Point;
+	pointsForFindCenter[1] = circleTop.Point;
+
+	CenterByPoints(pointsForFindCenter, 2);
 
 	PointGeometric tmpCenter = Line.Point;
 
 	VectorGeometric	vector1(points[0], points[1]),
-		vector2(points[0], points[2]);
+					vector2(points[0], points[2]);
 
 	Line.Vector = vector1 ^ vector2;
 

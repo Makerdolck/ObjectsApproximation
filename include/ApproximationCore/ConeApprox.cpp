@@ -87,6 +87,17 @@ void ConeApprox::FindByPoints(PointGeometric *points, int arraySize, double accu
 	
 	CircleGeometric	circleBottom(points[0], points[1], points[2]);									// first cross-section
 	CircleGeometric	circleTop(points[arraySize - 1], points[arraySize - 2], points[arraySize - 3]);	// last cross-section
+	
+	CircleGeometric tmpCircle;
+
+	if (circleBottom.Radius < circleTop.Radius)
+	{
+		tmpCircle = circleBottom;
+		circleBottom = circleTop;
+		circleTop = tmpCircle;
+
+	}
+
 
 	PointGeometric pointsForFindCenter[2];
 	pointsForFindCenter[0] = circleBottom.Point;
@@ -95,12 +106,14 @@ void ConeApprox::FindByPoints(PointGeometric *points, int arraySize, double accu
 	CenterByPoints(pointsForFindCenter, 2);
 
 	///////////		Find primary Vector
-	VectorGeometric	vector1(points[0], points[1]),
+	/*VectorGeometric	vector1(points[0], points[1]),
 					vector2(points[0], points[2]);
 
-	Line.Vector = vector1 ^ vector2;
+	Line.Vector = vector1 ^ vector2;*/
 
-	Line.Normalize();										// Vector Normalization
+	Line.Vector = VectorGeometric(circleBottom.Point, circleTop.Point);
+
+	//Line.Normalize();										// Vector Normalization
 	
 	///////////		Find primary Angle
 
@@ -237,7 +250,9 @@ void ConeApprox::FindByPoints(PointGeometric *points, int arraySize, double accu
 	HeightPhantom = Radius * pow(tan(Angle * PI_Approx / 180), -1);
 
 	//
-	
+
+	PointBottomSurfaceCenter = Line.CreatePointOnDistance(Height / 2, false);
+
 	PointTopSurfaceCenter = LineGeometric(PointBottomSurfaceCenter, Line.Vector).CreatePointOnDistance(Height);
 
 	//	---	---	--- Triangulation
@@ -276,7 +291,7 @@ void ConeApprox::Triangulation(double stepSize)
 	if (angelsSum < 90 || (angelsSum - angle) < 90)
 	{
 		pointsBottomCircleEdge.push_back(PointGeometric(0, Radius, 0));
-	}
+	}	
 
 	//	---	---	Points on circle in Another quarters
 

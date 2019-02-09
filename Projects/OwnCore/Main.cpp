@@ -113,6 +113,7 @@ int main()
 	case 1:
 
 		file.open("dataCylinder.txt");
+		//file.open("data_Cylinder_0.txt");
 		if (!file.is_open())
 		{
 			cout << "Problem with opening file...";

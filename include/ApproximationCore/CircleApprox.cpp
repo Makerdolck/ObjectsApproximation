@@ -138,7 +138,7 @@ void CircleApprox::Triangulation(double stepSize)
 	Mesh.points.insert(Mesh.points.end(), pointsPNquarter.begin(), pointsPNquarter.end());
 	pointsPNquarter.clear();
 
-	//	---	---	Transfer points from XY plane to cylinder bottom surface 
+	//	---	---	Transfer points from XY plane to circle bottom surface 
 
 	PlaneGeometric tmpPlane = Line;
 
