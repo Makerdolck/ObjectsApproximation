@@ -154,6 +154,7 @@ void ConeApprox::FindByPoints(PointGeometric *points, int arraySize, double accu
 	delete tmpVector;
 	
 	FindHeight(points, arraySize);
+	//Height = pointOnLineMin.DistanceToPoint(pointOnLineMax);
 
 	double		Catheter = fabs(Line.DistanceToPoint(PointMax) - Line.DistanceToPoint(PointMin));
 

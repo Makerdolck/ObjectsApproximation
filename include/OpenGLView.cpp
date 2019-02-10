@@ -95,7 +95,10 @@ COpenGLView::COpenGLView()
 
 	vectorRotationX = VectorGeometric(1.f, 0.f, 0.f);
 	vectorRotationY = VectorGeometric(0.f, 1.f, 0.f);
-	vectorRotationZ = VectorGeometric(0.f, 0.f, 1.f);
+	//vectorRotationZ = VectorGeometric(0.f, 0.f, 1.f);
+	vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);
+
+	pointRotationForYAxis = PointGeometric(0.f, 100.f, pointEyeLook.Z);
 }
 
 COpenGLView::~COpenGLView()
@@ -196,10 +199,11 @@ void COpenGLView::OnDraw(CDC* pDC)
 				xEyeLook + xPointLook, 1.0f,	zEyeLook + zPointLook,
 				0.0f,			1.0f,	0.0f);*/
 
-
 	gluLookAt(	pointEyeLook.X, pointEyeLook.Y, pointEyeLook.Z,
 				pointAimLook.X, pointAimLook.Y, pointAimLook.Z,
 				0.0f,		1.0f,		0.0f);
+
+
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -251,6 +255,22 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 
 	PaintScene(GL_RENDER);
+
+
+
+	//glBegin(GL_TRIANGLES);
+	//
+	//	glVertex3f(-10, -10, 0);
+	//	glVertex3f(-10, 10, 0);
+	//	glVertex3f(10, -10, 0);
+
+	//	glVertex3f(10, 10, 0);
+	//	glVertex3f(-10, 10, 0);
+	//	glVertex3f(10, -10, 0);
+
+	//glEnd();
+
+
 
 
 
@@ -330,10 +350,152 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (nFlags& MK_LBUTTON)
 	{
-		double radiusOfLook = pointAimLook.DistanceToPoint(pointEyeLook);
+		//double radiusOfLook = pointAimLook.DistanceToPoint(pointEyeLook);
 
 		wAngleY += (point.x - mouse_x0);
 		wAngleX += (point.y - mouse_y0);
+
+		////PointGeometric pOld, pNew;
+		////HDC hDC = ::GetDC(this->m_hWnd);
+		////wglMakeCurrent(hDC, hRC);
+		////pOld = GetOGLPos(mouse_x0, mouse_y0);
+		////pNew = GetOGLPos(point.x, point.y);
+		////wglMakeCurrent(NULL, NULL);
+		////::ReleaseDC(this->m_hWnd, hDC);
+		////LineGeometric linee(pointEyeLook, VectorGeometric(pOld, pNew));
+		////pointEyeLook = linee.CreatePointOnDistance(20);
+
+
+		// Second Method
+
+		////////PointGeometric pOld, pNew;
+		////////pOld = PointGeometric(mouse_x0, mouse_y0);
+		////////pNew = PointGeometric(point.x, point.y);
+
+		////////VectorGeometric vectorOffset(pOld, pNew), tmpVectorOffset(pOld, pNew);
+
+		////////vectorOffset.X = vectorRotationX.X * tmpVectorOffset.X + vectorRotationY.X * tmpVectorOffset.Y + vectorRotationZ.X * tmpVectorOffset.Z;
+		////////vectorOffset.Y = vectorRotationX.Y * tmpVectorOffset.X + vectorRotationY.Y * tmpVectorOffset.Y + vectorRotationZ.Y * tmpVectorOffset.Z;
+		////////vectorOffset.Z = vectorRotationX.Z * tmpVectorOffset.X + vectorRotationY.Z * tmpVectorOffset.Y + vectorRotationZ.Z * tmpVectorOffset.Z;
+
+
+		////////LineGeometric lineOffset(pointEyeLook, vectorOffset);
+		////////
+		////////pointEyeLook = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
+
+		////////lineOffset.Point = pointRotationForYAxis;
+		////////pointRotationForYAxis = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
+
+
+		////////// --- Vectors Recalculation
+
+		////////vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
+
+		////////PlaneGeometric planeOfCamera(pointEyeLook, vectorRotationZ);
+
+		////////pointRotationForYAxis = planeOfCamera.PointProjection(pointRotationForYAxis);
+
+		////////lineOffset.Point = pointEyeLook;
+		////////lineOffset.Vector = VectorGeometric(pointEyeLook, pointRotationForYAxis);
+
+		////////pointRotationForYAxis = lineOffset.CreatePointOnDistance(100);
+
+		////////vectorRotationY = VectorGeometric(pointEyeLook, pointRotationForYAxis);				// Vector Y
+
+		////////vectorRotationX = vectorRotationZ ^ vectorRotationY;								// Vector X
+		////////
+
+
+
+		// Third Method
+
+		//PointGeometric pOld, pNew;
+		//pOld = PointGeometric(mouse_x0, mouse_y0);
+		//pNew = PointGeometric(point.x, point.y);
+
+		//// ---																						// Changing		Y-vector
+		//if (pOld.X == pNew.X)
+		//{
+		//	LineGeometric lineOffset;
+
+		//	if (pOld.Y < pNew.Y)
+		//	{
+		//		lineOffset = LineGeometric(pointEyeLook, vectorRotationY);
+
+		//	}
+		//	else
+		//	{
+		//		lineOffset = LineGeometric(pointEyeLook, vectorRotationY * (-1));
+
+		//	}
+
+		//	pointEyeLook = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
+
+		//	vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
+
+		//	vectorRotationY = vectorRotationZ ^ vectorRotationX;
+		//}
+		//// ---																						// Changing		Y-vector
+		//if (pOld.Y == pNew.Y)
+		//{
+		//	LineGeometric lineOffset;
+
+		//	if (pOld.X < pNew.X)
+		//	{
+		//		lineOffset = LineGeometric(pointEyeLook, vectorRotationX);
+
+		//	}
+		//	else
+		//	{
+		//		lineOffset = LineGeometric(pointEyeLook, vectorRotationX * (-1));
+
+		//	}
+
+		//	pointEyeLook = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
+
+		//	vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
+
+		//	vectorRotationX = vectorRotationZ ^ vectorRotationY;
+		//}
+
+
+		// Another Method
+
+
+		////VectorGeometric vectorOffset(pOld, pNew), tmpVectorOffset(pOld, pNew);
+
+		////vectorOffset.X = vectorRotationX.X * tmpVectorOffset.X + vectorRotationY.X * tmpVectorOffset.Y + vectorRotationZ.X * tmpVectorOffset.Z;
+		////vectorOffset.Y = vectorRotationX.Y * tmpVectorOffset.X + vectorRotationY.Y * tmpVectorOffset.Y + vectorRotationZ.Y * tmpVectorOffset.Z;
+		////vectorOffset.Z = vectorRotationX.Z * tmpVectorOffset.X + vectorRotationY.Z * tmpVectorOffset.Y + vectorRotationZ.Z * tmpVectorOffset.Z;
+
+
+		////LineGeometric lineOffset(pointEyeLook, vectorOffset);
+
+		////pointEyeLook = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
+
+		////lineOffset.Point = pointRotationForYAxis;
+		////pointRotationForYAxis = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
+
+
+		////// --- Vectors Recalculation
+
+		////vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
+
+		////PlaneGeometric planeOfCamera(pointEyeLook, vectorRotationZ);
+
+		////pointRotationForYAxis = planeOfCamera.PointProjection(pointRotationForYAxis);
+
+		////lineOffset.Point = pointEyeLook;
+		////lineOffset.Vector = VectorGeometric(pointEyeLook, pointRotationForYAxis);
+
+		////pointRotationForYAxis = lineOffset.CreatePointOnDistance(100);
+
+		////vectorRotationY = VectorGeometric(pointEyeLook, pointRotationForYAxis);				// Vector Y
+
+		////vectorRotationX = vectorRotationZ ^ vectorRotationY;								// Vector X
+
+
+
 
 
 		Invalidate(FALSE);
@@ -408,6 +570,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	mouse_x0 = point.x;  mouse_y0 = point.y;
 
+	
 
 	#define BUFSIZE 512
 
@@ -418,6 +581,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	HDC hDC = ::GetDC(this->m_hWnd);
 	wglMakeCurrent(hDC, hRC);
+
 
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glSelectBuffer(BUFSIZE, selectBuf);
@@ -919,4 +1083,47 @@ void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	Invalidate(FALSE);
 
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+
+
+
+
+PointGeometric COpenGLView::GetOGLPos(int x, int y)       //Получение координат по клику возвращает вектор
+{
+	GLint viewport[4];
+	GLdouble modelview[16];
+	GLdouble projection[16];
+	GLfloat winX, winY, winZ;
+	GLdouble posX, posY, posZ;
+	VectorGeometric posnear;
+	VectorGeometric posfar;
+	
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	for (int i = 0; i < 16; i++)
+	{
+		if (modelview[i] < 0.00001 && modelview[i]>0)modelview[i] = 0;
+		if (projection[i] < 0.00001 && projection[i]>0)projection[i] = 0;
+	}
+
+	winX = (float)x;
+	winY = (float)viewport[3] - (float)y;
+	glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+
+	//gluUnProject(winX, winY, (-1)*winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+
+	// точка на ближайшей отсекающей плоскости
+	gluUnProject(winX, winY, 0.0, modelview, projection, viewport, &posnear.X, &posnear.Y, &posnear.Z);
+	// точка на дальней отсекающей плоскости
+	gluUnProject(winX, winY, -1.0, modelview, projection, viewport, &posfar.X, &posfar.Y, &posfar.Z);
+	VectorGeometric mouseRay = posfar - posnear; // вектор под мышой
+	VectorGeometric n = VectorGeometric(pointEyeLook, pointAimLook); //VectorGeometric(0.0, 0.0, 1.0);//нормаль к плоскости x=0;y=0;z=1;
+	float t = (n * (-mouseRay)) / (n * mouseRay);
+	VectorGeometric pos = posnear + mouseRay * t; // собственно точка пересечения
+
+	return PointGeometric(pos.X, pos.Y, pos.Z);;
+	//return PointGeometric(posX, posY, posZ);
 }

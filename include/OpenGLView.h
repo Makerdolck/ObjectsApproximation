@@ -10,6 +10,24 @@
 #include <fstream>
 #include <ApproximationCore/_ALLincludesCore.h>
 
+//class Vector4D
+//{
+//	VectorGeometric vector;
+//	double w;
+//
+//public :
+//	Vector4D(double x, double y, double z, double w_);
+//
+//};
+//Vector4D::Vector4D(double x, double y, double z, double w_)
+//{
+//	vector.X = x;
+//	vector.Y = y;
+//	vector.Z = z;
+//	w = w_;
+//}
+
+
 class COpenGLView : public CView
 {
 protected: // create from serialization only
@@ -86,6 +104,7 @@ private:
 						vectorRotationY,
 						vectorRotationZ;
 
+	PointGeometric		pointRotationForYAxis;
 
 
 protected:
@@ -109,6 +128,8 @@ protected:
 
 	void	DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);
 
+
+	PointGeometric  GetOGLPos(int x, int y);
 
 	//{{AFX_MSG(CTry_OpenGLView)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
