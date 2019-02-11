@@ -42,6 +42,7 @@ BEGIN_MESSAGE_MAP(COpenGLView, CView)
 	ON_WM_MOUSEMOVE()
 //	ON_WM_LBUTTONUP()
 ON_WM_KEYDOWN()
+ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -98,7 +99,7 @@ COpenGLView::COpenGLView()
 	//vectorRotationZ = VectorGeometric(0.f, 0.f, 1.f);
 	vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);
 
-	pointRotationForYAxis = PointGeometric(0.f, 100.f, pointEyeLook.Z);
+	distanceAimEye = pointAimLook.DistanceToPoint(pointEyeLook);
 }
 
 COpenGLView::~COpenGLView()
@@ -199,9 +200,10 @@ void COpenGLView::OnDraw(CDC* pDC)
 				xEyeLook + xPointLook, 1.0f,	zEyeLook + zPointLook,
 				0.0f,			1.0f,	0.0f);*/
 
-	gluLookAt(	pointEyeLook.X, pointEyeLook.Y, pointEyeLook.Z,
-				pointAimLook.X, pointAimLook.Y, pointAimLook.Z,
-				0.0f,		1.0f,		0.0f);
+	gluLookAt(	pointEyeLook.X,		pointEyeLook.Y,		pointEyeLook.Z,
+				pointAimLook.X,		pointAimLook.Y,		pointAimLook.Z,
+				vectorRotationY.X,	vectorRotationY.Y,	vectorRotationY.Z);
+				//0.0f,		1.0f,		0.0f);
 
 
 
@@ -247,8 +249,8 @@ void COpenGLView::OnDraw(CDC* pDC)
 	/*glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);
 	glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);*/
 
-	glRotatef(wAngleX, (GLfloat)vectorRotationX.X, (GLfloat)vectorRotationX.Y, (GLfloat)vectorRotationX.Z);
-	glRotatef(wAngleY, (GLfloat)vectorRotationY.X, (GLfloat)vectorRotationY.Y, (GLfloat)vectorRotationY.Z);
+	//glRotatef(wAngleX, (GLfloat)vectorRotationX.X, (GLfloat)vectorRotationX.Y, (GLfloat)vectorRotationX.Z);
+	//glRotatef(wAngleY, (GLfloat)vectorRotationY.X, (GLfloat)vectorRotationY.Y, (GLfloat)vectorRotationY.Z);
 
 
 	glTranslatef((GLfloat )-centerOfAllObjects.X, (GLfloat)-centerOfAllObjects.Y, (GLfloat)-centerOfAllObjects.Z);
@@ -260,12 +262,22 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 	//glBegin(GL_TRIANGLES);
 	//
+	//	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redColor);
+
+	//	glNormal3f(0.f, 0.f, 1.f);
 	//	glVertex3f(-10, -10, 0);
+	//	glNormal3f(0.f, 0.f, 1.f);
 	//	glVertex3f(-10, 10, 0);
+	//	glNormal3f(0.f, 0.f, 1.f);
 	//	glVertex3f(10, -10, 0);
 
+	//	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueColor);
+
+	//	glNormal3f(0.f, 0.f, 1.f);
 	//	glVertex3f(10, 10, 0);
+	//	glNormal3f(0.f, 0.f, 1.f);
 	//	glVertex3f(-10, 10, 0);
+	//	glNormal3f(0.f, 0.f, 1.f);
 	//	glVertex3f(10, -10, 0);
 
 	//glEnd();
@@ -329,16 +341,27 @@ BOOL COpenGLView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	// TODO: Add your message handler code here and/or call default
 	double step = 3.0f+fabs(((int)pointEyeLook.Z)/25);
+	LineGeometric		lineOffset = LineGeometric(pointAimLook, vectorRotationZ * (-1));
 
 	/*if (zDelta < 0)
 		m_z += step;
 	else
 		m_z -= step;*/
 
+
+
 	if (zDelta < 0)
-		pointEyeLook.Z += step;
+	{
+		distanceAimEye += step;
+		//pointEyeLook.Z += step;
+	}	
 	else
-		pointEyeLook.Z -= step;
+	{
+		distanceAimEye -= step;
+		//pointEyeLook.Z -= step;
+	}
+
+	pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
 
 
 	Invalidate(FALSE);
@@ -352,157 +375,78 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		//double radiusOfLook = pointAimLook.DistanceToPoint(pointEyeLook);
 
-		wAngleY += (point.x - mouse_x0);
-		wAngleX += (point.y - mouse_y0);
+		//wAngleY += (point.x - mouse_x0);
+		//wAngleX += (point.y - mouse_y0);
 
-		////PointGeometric pOld, pNew;
-		////HDC hDC = ::GetDC(this->m_hWnd);
-		////wglMakeCurrent(hDC, hRC);
-		////pOld = GetOGLPos(mouse_x0, mouse_y0);
-		////pNew = GetOGLPos(point.x, point.y);
-		////wglMakeCurrent(NULL, NULL);
-		////::ReleaseDC(this->m_hWnd, hDC);
-		////LineGeometric linee(pointEyeLook, VectorGeometric(pOld, pNew));
-		////pointEyeLook = linee.CreatePointOnDistance(20);
+		
 
+		PointGeometric		pOld, pNew;
+		pOld = PointGeometric(mouse_x0, mouse_y0);
+		pNew = PointGeometric(point.x, point.y);
 
-		// Second Method
+		VectorGeometric		vectorRotationX_Old = vectorRotationX,
+							vectorRotationY_Old = vectorRotationY;
 
-		////////PointGeometric pOld, pNew;
-		////////pOld = PointGeometric(mouse_x0, mouse_y0);
-		////////pNew = PointGeometric(point.x, point.y);
+		LineGeometric		lineOffset;
 
-		////////VectorGeometric vectorOffset(pOld, pNew), tmpVectorOffset(pOld, pNew);
+		// ---																						// Changing		Y-vector
+		if (pOld.Y < pNew.Y)
+		{
+			lineOffset = LineGeometric(pointEyeLook, vectorRotationY);
 
-		////////vectorOffset.X = vectorRotationX.X * tmpVectorOffset.X + vectorRotationY.X * tmpVectorOffset.Y + vectorRotationZ.X * tmpVectorOffset.Z;
-		////////vectorOffset.Y = vectorRotationX.Y * tmpVectorOffset.X + vectorRotationY.Y * tmpVectorOffset.Y + vectorRotationZ.Y * tmpVectorOffset.Z;
-		////////vectorOffset.Z = vectorRotationX.Z * tmpVectorOffset.X + vectorRotationY.Z * tmpVectorOffset.Y + vectorRotationZ.Z * tmpVectorOffset.Z;
+		}
+		else
+		{
+			lineOffset = LineGeometric(pointEyeLook, vectorRotationY * (-1));
 
+		}
 
-		////////LineGeometric lineOffset(pointEyeLook, vectorOffset);
-		////////
-		////////pointEyeLook = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
+		pointEyeLook = lineOffset.CreatePointOnDistance(fabs(pOld.Y - pNew.Y));
 
-		////////lineOffset.Point = pointRotationForYAxis;
-		////////pointRotationForYAxis = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
+		vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
 
+		vectorRotationY = vectorRotationZ ^ vectorRotationX;
+		
+		if (vectorRotationY * vectorRotationY_Old < 0)
+		{
+			vectorRotationY = vectorRotationY * (-1);
+		}
 
-		////////// --- Vectors Recalculation
+		// ---																						// Changing		X-vector
+		if (pOld.X > pNew.X)
+		{
+			lineOffset = LineGeometric(pointEyeLook, vectorRotationX);
 
-		////////vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
+		}
+		else
+		{
+			lineOffset = LineGeometric(pointEyeLook, vectorRotationX * (-1));
 
-		////////PlaneGeometric planeOfCamera(pointEyeLook, vectorRotationZ);
+		}
 
-		////////pointRotationForYAxis = planeOfCamera.PointProjection(pointRotationForYAxis);
+		pointEyeLook = lineOffset.CreatePointOnDistance(fabs(pOld.X - pNew.X));
 
-		////////lineOffset.Point = pointEyeLook;
-		////////lineOffset.Vector = VectorGeometric(pointEyeLook, pointRotationForYAxis);
+		vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
 
-		////////pointRotationForYAxis = lineOffset.CreatePointOnDistance(100);
+		vectorRotationX = vectorRotationZ ^ vectorRotationY;
 
-		////////vectorRotationY = VectorGeometric(pointEyeLook, pointRotationForYAxis);				// Vector Y
+		if (vectorRotationX * vectorRotationX_Old < 0)
+		{
+			vectorRotationX = vectorRotationX * (-1);
+		}
 
-		////////vectorRotationX = vectorRotationZ ^ vectorRotationY;								// Vector X
-		////////
-
-
-
-		// Third Method
-
-		//PointGeometric pOld, pNew;
-		//pOld = PointGeometric(mouse_x0, mouse_y0);
-		//pNew = PointGeometric(point.x, point.y);
-
-		//// ---																						// Changing		Y-vector
-		//if (pOld.X == pNew.X)
-		//{
-		//	LineGeometric lineOffset;
-
-		//	if (pOld.Y < pNew.Y)
-		//	{
-		//		lineOffset = LineGeometric(pointEyeLook, vectorRotationY);
-
-		//	}
-		//	else
-		//	{
-		//		lineOffset = LineGeometric(pointEyeLook, vectorRotationY * (-1));
-
-		//	}
-
-		//	pointEyeLook = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
-
-		//	vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
-
-		//	vectorRotationY = vectorRotationZ ^ vectorRotationX;
-		//}
-		//// ---																						// Changing		Y-vector
-		//if (pOld.Y == pNew.Y)
-		//{
-		//	LineGeometric lineOffset;
-
-		//	if (pOld.X < pNew.X)
-		//	{
-		//		lineOffset = LineGeometric(pointEyeLook, vectorRotationX);
-
-		//	}
-		//	else
-		//	{
-		//		lineOffset = LineGeometric(pointEyeLook, vectorRotationX * (-1));
-
-		//	}
-
-		//	pointEyeLook = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
-
-		//	vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
-
-		//	vectorRotationX = vectorRotationZ ^ vectorRotationY;
-		//}
-
-
-		// Another Method
-
-
-		////VectorGeometric vectorOffset(pOld, pNew), tmpVectorOffset(pOld, pNew);
-
-		////vectorOffset.X = vectorRotationX.X * tmpVectorOffset.X + vectorRotationY.X * tmpVectorOffset.Y + vectorRotationZ.X * tmpVectorOffset.Z;
-		////vectorOffset.Y = vectorRotationX.Y * tmpVectorOffset.X + vectorRotationY.Y * tmpVectorOffset.Y + vectorRotationZ.Y * tmpVectorOffset.Z;
-		////vectorOffset.Z = vectorRotationX.Z * tmpVectorOffset.X + vectorRotationY.Z * tmpVectorOffset.Y + vectorRotationZ.Z * tmpVectorOffset.Z;
-
-
-		////LineGeometric lineOffset(pointEyeLook, vectorOffset);
-
-		////pointEyeLook = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
-
-		////lineOffset.Point = pointRotationForYAxis;
-		////pointRotationForYAxis = lineOffset.CreatePointOnDistance(pOld.DistanceToPoint(pNew));
-
-
-		////// --- Vectors Recalculation
-
-		////vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
-
-		////PlaneGeometric planeOfCamera(pointEyeLook, vectorRotationZ);
-
-		////pointRotationForYAxis = planeOfCamera.PointProjection(pointRotationForYAxis);
-
-		////lineOffset.Point = pointEyeLook;
-		////lineOffset.Vector = VectorGeometric(pointEyeLook, pointRotationForYAxis);
-
-		////pointRotationForYAxis = lineOffset.CreatePointOnDistance(100);
-
-		////vectorRotationY = VectorGeometric(pointEyeLook, pointRotationForYAxis);				// Vector Y
-
-		////vectorRotationX = vectorRotationZ ^ vectorRotationY;								// Vector X
-
-
-
+		// ---																						//distance between camera and Aim correction
+		lineOffset = LineGeometric(pointAimLook, vectorRotationZ * (-1));
+		
+		pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
 
 
 		Invalidate(FALSE);
 	}
 
 	//GLfloat step = 0.5f + (GLfloat)fabs(((int)m_z) / 50);
-	GLfloat step = 0.0f + (GLfloat)pointEyeLook.Z / 100;
+	GLfloat stepX = (GLfloat)fabs(mouse_x0 - point.x)/ 250* distanceAimEye,
+			stepY = (GLfloat)fabs(mouse_y0 - point.y)/ 250* distanceAimEye;
 
 	if (flagMiddleButtonDown)
 	{
@@ -516,28 +460,69 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		//if (mouse_y0 - point.y > 0)
 		//	wTransformY += step;// fabs(((float)(point.y - mouse_y0)) / 2);
 
+		LineGeometric		lineOffsetEye,
+							lineOffsetAim;
+
+		lineOffsetEye.Point = pointEyeLook;
+		lineOffsetAim.Point = pointAimLook;
 
 
 		if (mouse_x0 - point.x < 0)
 		{
-			pointEyeLook.X-= step;
-			pointAimLook.X -= step;
+			lineOffsetEye.Vector = vectorRotationX * (-1);
+			lineOffsetAim.Vector = vectorRotationX * (-1);
+
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepX);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepX);
+
+			lineOffsetEye.Point = pointEyeLook;
+			lineOffsetAim.Point = pointAimLook;
+
+			/*pointEyeLook.X-= step;
+			pointAimLook.X -= step;*/
 		}
 		if (mouse_x0 - point.x > 0)
 		{
-			pointEyeLook.X += step;
-			pointAimLook.X += step;
+			lineOffsetEye.Vector = vectorRotationX;
+			lineOffsetAim.Vector = vectorRotationX;
+
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepX);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepX);
+
+			lineOffsetEye.Point = pointEyeLook;
+			lineOffsetAim.Point = pointAimLook;
+
+			/*pointEyeLook.X += step;
+			pointAimLook.X += step;*/
 		}
 
 		if (mouse_y0 - point.y < 0)
 		{
-			pointEyeLook.Y += step;
-			pointAimLook.Y += step;
+			lineOffsetEye.Vector = vectorRotationY;
+			lineOffsetAim.Vector = vectorRotationY;
+
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepY);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepY);
+
+			lineOffsetEye.Point = pointEyeLook;
+			lineOffsetAim.Point = pointAimLook;
+
+			/*pointEyeLook.Y += step;
+			pointAimLook.Y += step;*/
 		}
 		if (mouse_y0 - point.y > 0)
 		{
-			pointEyeLook.Y -= step;
-			pointAimLook.Y -= step;
+			lineOffsetEye.Vector = vectorRotationY * (-1);
+			lineOffsetAim.Vector = vectorRotationY * (-1);
+
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepY);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepY);
+
+			lineOffsetEye.Point = pointEyeLook;
+			lineOffsetAim.Point = pointAimLook;
+
+			/*pointEyeLook.Y -= step;
+			pointAimLook.Y -= step;*/
 		}
 
 		Invalidate(FALSE);
@@ -570,7 +555,11 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	mouse_x0 = point.x;  mouse_y0 = point.y;
 
-	
+	CView::OnLButtonDown(nFlags, point);
+}
+// ---																							// On Right Button Down
+void COpenGLView::OnRButtonDown(UINT nFlags, CPoint point)
+{
 
 	#define BUFSIZE 512
 
@@ -611,8 +600,8 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		cube[selectBuf[3+i*4]].selected=!cube[selectBuf[3+i*4]].selected;
 	}*/
-	
-	ObjectApprox* objApprox;
+
+	ObjectApprox * objApprox;
 	int a = 0;
 	if (hits)
 	{
@@ -656,8 +645,10 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	Invalidate(FALSE);
 
-	CView::OnLButtonDown(nFlags, point);
+
+	CView::OnRButtonDown(nFlags, point);
 }
+
 
 //--------------------------------------------------------------
 //	----	Message Handlers		----	Custom Messages
@@ -1031,11 +1022,39 @@ void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	double radiusOfLook = pointAimLook.DistanceToPoint(pointEyeLook);
 
+	LineGeometric		lineOffset;
+	VectorGeometric		vectorRotationX_Old = vectorRotationX,
+						vectorRotationY_Old = vectorRotationY;
+
+
+
 	switch (nChar) {
 	case  VK_RIGHT :
 		/*angleLook -= 0.01f;
 		xPointLook = sin(angleLook);
 		zPointLook = -cos(angleLook);*/
+
+
+		lineOffset = LineGeometric(pointEyeLook, vectorRotationX * (-1));
+
+
+		pointEyeLook = lineOffset.CreatePointOnDistance(10);
+
+		vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
+
+		vectorRotationX = vectorRotationZ ^ vectorRotationY;
+
+		if (vectorRotationX* vectorRotationX_Old < 0)
+		{
+			vectorRotationX = vectorRotationX * (-1);
+		}
+
+		// ---																						//distance between camera and Aim correction
+		lineOffset = LineGeometric(pointAimLook, vectorRotationZ * (-1));
+
+		pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
+
+
 
 		wAngleY += 10;
 		/*vectorRotationX.X = cos(wAngleY * PI_Approx / 180.0f);
@@ -1052,8 +1071,6 @@ void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		/*vectorRotationX.X = cos(wAngleY * PI_Approx / 180.0f);
 		vectorRotationX.Z = sin(wAngleY * PI_Approx / 180.0f);*/
 
-		
-
 		break;
 	case VK_UP:
 		/*xEyeLook += xPointLook * fraction;
@@ -1068,6 +1085,28 @@ void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		/*xEyeLook -= xPointLook * fraction;
 		zEyeLook -= zPointLook * fraction;*/
 
+		lineOffset = LineGeometric(pointEyeLook, vectorRotationY);
+
+
+		pointEyeLook = lineOffset.CreatePointOnDistance(10);
+
+		vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
+
+		vectorRotationY = vectorRotationZ ^ vectorRotationX;
+
+		if (vectorRotationY * vectorRotationY_Old < 0)
+		{
+			vectorRotationY = vectorRotationY * (-1);
+		}
+
+		lineOffset = LineGeometric(pointAimLook, vectorRotationZ * (-1));
+
+		pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
+
+
+
+
+
 		wAngleX -= 10;
 	/*	vectorRotationY.Y = cos(wAngleX * PI_Approx / 180.0f);
 		vectorRotationY.Z = sin(wAngleX * PI_Approx / 180.0f);*/
@@ -1076,9 +1115,9 @@ void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	
-	pointEyeLook.Z = pointAimLook.Z + radiusOfLook * sin(wAngleX * PI_Approx / 180.0f) * cos(wAngleY * PI_Approx / 180.0f);
+	/*pointEyeLook.Z = pointAimLook.Z + radiusOfLook * sin(wAngleX * PI_Approx / 180.0f) * cos(wAngleY * PI_Approx / 180.0f);
 	pointEyeLook.Y = pointAimLook.Y + radiusOfLook * sin(wAngleX * PI_Approx / 180.0f) * sin(wAngleY * PI_Approx / 180.0f);	
-	pointEyeLook.X = pointAimLook.X + radiusOfLook * cos(wAngleX * PI_Approx / 180.0f);
+	pointEyeLook.X = pointAimLook.X + radiusOfLook * cos(wAngleX * PI_Approx / 180.0f);*/
 
 	Invalidate(FALSE);
 
@@ -1127,3 +1166,4 @@ PointGeometric COpenGLView::GetOGLPos(int x, int y)       //Получение координат 
 	return PointGeometric(pos.X, pos.Y, pos.Z);;
 	//return PointGeometric(posX, posY, posZ);
 }
+

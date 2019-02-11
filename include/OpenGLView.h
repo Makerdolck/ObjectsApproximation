@@ -104,9 +104,7 @@ private:
 						vectorRotationY,
 						vectorRotationZ;
 
-	PointGeometric		pointRotationForYAxis;
-
-
+	   
 protected:
 	std::vector<ObjectApprox*>	*objectsArray;
 
@@ -114,6 +112,8 @@ protected:
 
 	PointGeometric				pointEyeLook,
 								pointAimLook;
+
+	double						distanceAimEye;
 
 // Generated message map functions
 protected:
@@ -146,6 +146,7 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 //	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // debug version in try_OpenGLView.cpp
