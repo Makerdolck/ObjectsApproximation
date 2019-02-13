@@ -45,9 +45,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MFCAscon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -55,12 +52,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MainFrm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCAsconDoc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCAsconView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
@@ -150,21 +141,21 @@
     <ClInclude Include="..\..\include\OpenGLView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MFCDubrovkinView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCDubrovkinDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCDubrovkin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MFCAscon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainFrm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCAsconDoc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCAsconView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DialogMeasure.cpp">
@@ -248,11 +239,15 @@
     <ClCompile Include="..\..\include\OpenGLView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="MFCAscon.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <ClCompile Include="MFCDubrovkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCDubrovkinDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCDubrovkinView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\file_view.ico">
@@ -333,12 +328,6 @@
     <Image Include="res\writesmall.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\MFCAsconDoc.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\MFCAscon.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="res\Toolbar.bmp">
       <Filter>Resource Files</Filter>
     </Image>
@@ -360,16 +349,27 @@
     <Image Include="res\Machine.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\MFCDubrovkin.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\MFCDubrovkinDoc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\ribbon.mfcribbon-ms">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="res\MFCAscon.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\..\include\DVector\Dvector.inl">
       <Filter>Header Files\ApproxCore</Filter>
     </None>
+    <None Include="res\MFCDubrovkin.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MFCDubrovkin.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

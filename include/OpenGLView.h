@@ -128,9 +128,6 @@ protected:
 
 	void	DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);
 
-
-	PointGeometric  GetOGLPos(int x, int y);
-
 	//{{AFX_MSG(CTry_OpenGLView)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);

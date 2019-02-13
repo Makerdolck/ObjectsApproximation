@@ -28,6 +28,7 @@
     <SccAuxPath>SAK</SccAuxPath>
     <SccLocalPath>SAK</SccLocalPath>
     <SccProvider>SAK</SccProvider>
+    <ProjectName>MFCDubrovkin</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -227,9 +228,9 @@
     <ClInclude Include="DialogMeasure.h" />
     <ClInclude Include="DialogSettings.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="MFCAscon.h" />
-    <ClInclude Include="MFCAsconDoc.h" />
-    <ClInclude Include="MFCAsconView.h" />
+    <ClInclude Include="MFCDubrovkin.h" />
+    <ClInclude Include="MFCDubrovkinDoc.h" />
+    <ClInclude Include="MFCDubrovkinView.h" />
     <ClInclude Include="DataTreeView.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -263,9 +264,9 @@
     <ClCompile Include="DialogMeasure.cpp" />
     <ClCompile Include="DialogSettings.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="MFCAscon.cpp" />
-    <ClCompile Include="MFCAsconDoc.cpp" />
-    <ClCompile Include="MFCAsconView.cpp" />
+    <ClCompile Include="MFCDubrovkin.cpp" />
+    <ClCompile Include="MFCDubrovkinDoc.cpp" />
+    <ClCompile Include="MFCDubrovkinView.cpp" />
     <ClCompile Include="DataTreeView.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -275,7 +276,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MFCAscon.rc" />
+    <ResourceCompile Include="MFCDubrovkin.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\buttons.bmp" />
@@ -297,8 +298,8 @@
     <Image Include="res\main.bmp" />
     <Image Include="res\menuimages.bmp" />
     <Image Include="res\menuimages_hc.bmp" />
-    <Image Include="res\MFCAscon.ico" />
-    <Image Include="res\MFCAsconDoc.ico" />
+    <Image Include="res\MFCDubrovkin.ico" />
+    <Image Include="res\MFCDubrovkinDoc.ico" />
     <Image Include="res\output_wnd.ico" />
     <Image Include="res\output_wnd_hc.ico" />
     <Image Include="res\properties.bmp" />
@@ -316,7 +317,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\DVector\Dvector.inl" />
-    <None Include="res\MFCAscon.rc2" />
+    <None Include="res\MFCDubrovkin.rc2" />
     <None Include="res\ribbon.mfcribbon-ms" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

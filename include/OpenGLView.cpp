@@ -389,6 +389,9 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 
 		LineGeometric		lineOffset;
 
+		double	stepOffsetX = distanceAimEye * sqrt(2) * fabs(pOld.X - pNew.X) / (glnWidth / 8.f),
+				stepOffsetY = distanceAimEye * sqrt(2) * fabs(pOld.Y - pNew.Y) / (glnHeight / 8.f);
+
 		// ---																						// Changing		Y-vector
 		if (pOld.Y < pNew.Y)
 		{
@@ -401,7 +404,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 
 		}
 
-		pointEyeLook = lineOffset.CreatePointOnDistance(fabs(pOld.Y - pNew.Y));
+		pointEyeLook = lineOffset.CreatePointOnDistance(stepOffsetY);
 
 		vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
 
@@ -424,7 +427,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 
 		}
 
-		pointEyeLook = lineOffset.CreatePointOnDistance(fabs(pOld.X - pNew.X));
+		pointEyeLook = lineOffset.CreatePointOnDistance(stepOffsetX);
 
 		vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
 
@@ -445,8 +448,8 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 	}
 
 	//GLfloat step = 0.5f + (GLfloat)fabs(((int)m_z) / 50);
-	GLfloat stepX = (GLfloat)fabs(mouse_x0 - point.x)/ 250* distanceAimEye,
-			stepY = (GLfloat)fabs(mouse_y0 - point.y)/ 250* distanceAimEye;
+	//GLfloat stepX = (GLfloat)fabs(mouse_x0 - point.x)/ 250* distanceAimEye,
+	//		stepY = (GLfloat)fabs(mouse_y0 - point.y)/ 250* distanceAimEye;
 
 	if (flagMiddleButtonDown)
 	{
@@ -466,14 +469,22 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		lineOffsetEye.Point = pointEyeLook;
 		lineOffsetAim.Point = pointAimLook;
 
+		PointGeometric		pOld, pNew;
+		pOld = PointGeometric(mouse_x0, mouse_y0);
+		pNew = PointGeometric(point.x, point.y);
+
+
+		double	stepOffsetX = distanceAimEye * fabs(pOld.X - pNew.X) / (glnWidth / 2.f),
+				stepOffsetY = distanceAimEye * fabs(pOld.Y - pNew.Y) / (glnHeight / 2.f);
+
 
 		if (mouse_x0 - point.x < 0)
 		{
 			lineOffsetEye.Vector = vectorRotationX * (-1);
 			lineOffsetAim.Vector = vectorRotationX * (-1);
 
-			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepX);
-			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepX);
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetX);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetX);
 
 			lineOffsetEye.Point = pointEyeLook;
 			lineOffsetAim.Point = pointAimLook;
@@ -486,8 +497,8 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 			lineOffsetEye.Vector = vectorRotationX;
 			lineOffsetAim.Vector = vectorRotationX;
 
-			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepX);
-			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepX);
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetX);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetX);
 
 			lineOffsetEye.Point = pointEyeLook;
 			lineOffsetAim.Point = pointAimLook;
@@ -501,8 +512,8 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 			lineOffsetEye.Vector = vectorRotationY;
 			lineOffsetAim.Vector = vectorRotationY;
 
-			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepY);
-			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepY);
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetY);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetY);
 
 			lineOffsetEye.Point = pointEyeLook;
 			lineOffsetAim.Point = pointAimLook;
@@ -515,8 +526,8 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 			lineOffsetEye.Vector = vectorRotationY * (-1);
 			lineOffsetAim.Vector = vectorRotationY * (-1);
 
-			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepY);
-			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepY);
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetY);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetY);
 
 			lineOffsetEye.Point = pointEyeLook;
 			lineOffsetAim.Point = pointAimLook;
@@ -1122,48 +1133,5 @@ void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	Invalidate(FALSE);
 
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
-}
-
-
-
-
-
-PointGeometric COpenGLView::GetOGLPos(int x, int y)       //Получение координат по клику возвращает вектор
-{
-	GLint viewport[4];
-	GLdouble modelview[16];
-	GLdouble projection[16];
-	GLfloat winX, winY, winZ;
-	GLdouble posX, posY, posZ;
-	VectorGeometric posnear;
-	VectorGeometric posfar;
-	
-	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-	glGetDoublev(GL_PROJECTION_MATRIX, projection);
-	glGetIntegerv(GL_VIEWPORT, viewport);
-
-	for (int i = 0; i < 16; i++)
-	{
-		if (modelview[i] < 0.00001 && modelview[i]>0)modelview[i] = 0;
-		if (projection[i] < 0.00001 && projection[i]>0)projection[i] = 0;
-	}
-
-	winX = (float)x;
-	winY = (float)viewport[3] - (float)y;
-	glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-
-	//gluUnProject(winX, winY, (-1)*winZ, modelview, projection, viewport, &posX, &posY, &posZ);
-
-	// точка на ближайшей отсекающей плоскости
-	gluUnProject(winX, winY, 0.0, modelview, projection, viewport, &posnear.X, &posnear.Y, &posnear.Z);
-	// точка на дальней отсекающей плоскости
-	gluUnProject(winX, winY, -1.0, modelview, projection, viewport, &posfar.X, &posfar.Y, &posfar.Z);
-	VectorGeometric mouseRay = posfar - posnear; // вектор под мышой
-	VectorGeometric n = VectorGeometric(pointEyeLook, pointAimLook); //VectorGeometric(0.0, 0.0, 1.0);//нормаль к плоскости x=0;y=0;z=1;
-	float t = (n * (-mouseRay)) / (n * mouseRay);
-	VectorGeometric pos = posnear + mouseRay * t; // собственно точка пересечения
-
-	return PointGeometric(pos.X, pos.Y, pos.Z);;
-	//return PointGeometric(posX, posY, posZ);
 }
 

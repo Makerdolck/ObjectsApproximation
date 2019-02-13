@@ -15,7 +15,7 @@
 \***************************************************************************/
 
 #include "stdafx.h"
-#include "MFCAscon.h"
+#include "MFCDubrovkin.h"
 #include "DataTreeView.h"
 
 #include "DialogObjectProperties.h"
