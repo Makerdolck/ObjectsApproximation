@@ -1,0 +1,372 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="DataTreeView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogMachine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogMeasure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogObjectProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCDubrovkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCDubrovkinDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCDubrovkinView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\OpenGLView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CircleGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\VectorGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\PointGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\PlaneGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\LineGeometric.cpp">
+      <Filter>Source Files\ApproxCore\Geometric</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CircleApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\PlaneApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\PointApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\RectangleApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\LineSegmentApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\GeomObjectApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ConeApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CylinderApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\SphereApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\TorusApprox.cpp">
+      <Filter>Source Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CmmApprox.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\DVector\Dvector.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\MeasureTypesEnum.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ApproximationApprox.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DataTreeView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogMachine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogMeasure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogObjectProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCDubrovkin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCDubrovkinDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCDubrovkinView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OpenGLView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CircleGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\LineGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\PlaneGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\PointGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\VectorGeometric.h">
+      <Filter>Header Files\ApproxCore\Geometric</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CircleApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\LineSegmentApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\PlaneApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\PointApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\RectangleApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\FlatGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ConeApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CylinderApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\SphereApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\TorusApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects\VolumeGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ApproximationApprox.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CmmApprox.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DVector\Dvector.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\MeasureTypesEnum.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\GeomObjectApprox.h">
+      <Filter>Header Files\ApproxCore\ApproxObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h">
+      <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\buttons.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_view.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_view_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\crystalapp.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\file_view_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\file_view.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\filelarge.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\filesmall.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icons.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Machine.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\main.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\MFCDubrovkin.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\MFCDubrovkinDoc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\output_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\output_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Settings.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar256.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ToolbarAscon.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\writelarge.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\writesmall.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\MFCDubrovkin.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ribbon.mfcribbon-ms">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\include\DVector\Dvector.inl">
+      <Filter>Header Files\ApproxCore</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{5640fa4b-3dcb-479e-b604-728aa91cd673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{9c9d0361-4a06-410f-bd23-5f0825ac54f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4c3782e3-5fcd-423a-a0d9-c268341459b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore">
+      <UniqueIdentifier>{a5a921bd-74ac-47ec-b31b-cc9070552317}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore\ApproxObjects">
+      <UniqueIdentifier>{bbc02302-ba0e-4a8e-84f2-3a6ac2ab559a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore\Geometric">
+      <UniqueIdentifier>{eb0bc597-93c6-4047-ab8b-327930aa0cf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore\ApproxObjects\FlatGeometry">
+      <UniqueIdentifier>{56fc8c30-5d13-4877-bb23-3d74ac6058f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ApproxCore\ApproxObjects\VolumeGeometry">
+      <UniqueIdentifier>{4ec24817-123c-4ff1-84e1-385a20636221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore">
+      <UniqueIdentifier>{715563ba-c312-46d3-864d-e00f5e9e460b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore\ApproxObjects">
+      <UniqueIdentifier>{189a91c5-89ad-421b-87a2-3b15c051b4f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore\Geometric">
+      <UniqueIdentifier>{dfca8070-89fe-4e7d-a554-9fc9e66c9922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore\ApproxObjects\FlatGeometry">
+      <UniqueIdentifier>{04d472a4-54dd-46f9-9284-2a5fc7754071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ApproxCore\ApproxObjects\VolumeGeometry">
+      <UniqueIdentifier>{771215ab-a36a-4e30-8b33-96e3b739a1d2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MFCDubrovkin.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
