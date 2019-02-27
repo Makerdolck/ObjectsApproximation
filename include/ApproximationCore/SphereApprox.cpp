@@ -61,6 +61,10 @@ void SphereApprox::FindByPoints(PointGeometric *points, int arraySize, double ac
 // ---																										// Triangulation
 void SphereApprox::Triangulation(double stepSize)
 {
+	Mesh.points.clear();
+	Mesh.vectorsNormal.clear();
+
+
 	PointGeometric				tmpPoint;
 
 	PlaneGeometric				tmpPlane;

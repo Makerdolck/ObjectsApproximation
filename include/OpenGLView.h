@@ -10,6 +10,11 @@
 #include <fstream>
 #include <ApproximationCore/_ALLincludesCore.h>
 
+#include <OutSource/Matrix.h>
+
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
 //class Vector4D
 //{
 //	VectorGeometric vector;
@@ -75,11 +80,11 @@ private:
 
 	double		m_z;
 
-	GLfloat		wAngleY,
+	GLsizei		wAngleY,
 				wAngleX,
-				wAngleZ,
+				wAngleZ;
 
-				fNearPlane,
+	GLfloat		fNearPlane,
 				fFarPlane,
 				fAspect,
 
@@ -90,9 +95,15 @@ private:
 
 	CRect       m_oldRect;
 
-	int			dd;
+	int			dd,
+				rotationStep,
+				rotationAngleX,
+				rotationAngleY;
 
-	bool flagColor1, flagColor2, flagColor3, flagColor4, flagColor5, flagColor6, flagColor7;
+	bool	flagColor1, flagColor2, flagColor3, flagColor4, flagColor5, flagColor6, flagColor7,
+			flagShiftPressed,
+			flagRotateAxisX,
+			flagRotateAxisY;
 
 	//FLOAT m_fLineWidth;
 	// Colors
@@ -113,13 +124,25 @@ protected:
 	PointGeometric				pointEyeLook,
 								pointAimLook;
 
-	double						distanceAimEye;
+	double						distanceAimEye,
+								offsetView_X,
+								offsetView_Y;
+
+	float						BoxTrans[16];
+	float						rotx = 0,
+								roty = 0,
+								prev_rotx = 0,
+								prev_roty = 0;
+	int							prev_x, prev_y;
+
+	float						coordinateDifferenceX,
+								coordinateDifferenceY;
 
 // Generated message map functions
 protected:
 	HGLRC	SetUpOpenGL(HWND hWnd);
 	void	PaintScene(GLenum mode);
-	//void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
+	void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
 	void	DrawOpenGL_Circle(GeomObjectApprox obj);
 	void	DrawOpenGL_Point(PointApprox *obj);
 	void	DrawOpenGL_LineSegment(LineSegmentApprox *obj);
@@ -141,9 +164,8 @@ public:
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-//	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 
 #ifndef _DEBUG  // debug version in try_OpenGLView.cpp

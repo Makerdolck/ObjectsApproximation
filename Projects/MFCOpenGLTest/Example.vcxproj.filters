@@ -99,6 +99,9 @@
     <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\OutSource\Matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Example.rc">
@@ -189,6 +192,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h">
       <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OutSource\Matrix.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

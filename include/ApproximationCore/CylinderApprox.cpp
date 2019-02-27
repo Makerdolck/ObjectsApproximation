@@ -28,8 +28,8 @@ void CylinderApprox::FindByPoints(PointGeometric *points, int arraySize, double 
 	CircleGeometric	circleBottom(points[0], points[1], points[2]);									// first cross-section
 	CircleGeometric	circleTop(points[arraySize - 1], points[arraySize - 2], points[arraySize - 3]);	// last cross-section
 	PointGeometric pointsForFindCenter[2];
-	pointsForFindCenter[0] = circleBottom.Point;
-	pointsForFindCenter[1] = circleTop.Point;
+	pointsForFindCenter[0] = circleBottom.Line.Point;
+	pointsForFindCenter[1] = circleTop.Line.Point;
 
 	CenterByPoints(pointsForFindCenter, 2);
 
@@ -136,6 +136,10 @@ void CylinderApprox::FindByPoints(PointGeometric *points, int arraySize, double 
 // ---																										// Triangulation
 void CylinderApprox::Triangulation(double stepSize)
 {
+	Mesh.points.clear();
+	Mesh.vectorsNormal.clear();
+
+
 	LineGeometric	tmpLine;
 	PointGeometric	tmpPoint;
 
@@ -170,7 +174,7 @@ void CylinderApprox::Triangulation(double stepSize)
 
 	std::vector<PointGeometric> pointsNPquarter, pointsNNquarter, pointsPNquarter;
 
-	int pointQuartetCount = pointsBottomCircleEdge.size();
+	int pointQuartetCount = (int)pointsBottomCircleEdge.size();
 
 	for (int i = 0; i < pointQuartetCount; i++)
 	{

@@ -130,6 +130,10 @@ void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double
 // ---																										// Triangulation
 void RectangleApprox::Triangulation(double stepSize)
 {
+	Mesh.points.clear();
+	Mesh.vectorsNormal.clear();
+
+
 	double	LengthX = fabs(minX) + fabs(maxX),
 			HeightY = fabs(minY) + fabs(maxY);
 

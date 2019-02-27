@@ -3,14 +3,16 @@
 #ifndef __CIRCLE_GEOMETRIC_H__
 #define __CIRCLE_GEOMETRIC_H__
 
-#include "PointGeometric.h"
-#include "..\\DVector\\Dvector.h"
+//#include "PointGeometric.h"
+#include "LineGeometric.h"
+//#include "..\\DVector\\Dvector.h"
 
 class CircleGeometric
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 public:
-	PointGeometric	Point;
+	LineGeometric	Line;
+	//PointGeometric	Point;
 
 	double			Radius;
 

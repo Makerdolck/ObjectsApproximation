@@ -78,6 +78,9 @@ void CircleApprox::FindByPoints(PointGeometric *points, int arraySize, double ac
 // ---																										// Triangulation
 void CircleApprox::Triangulation(double stepSize)
 {
+	Mesh.points.clear();
+	Mesh.vectorsNormal.clear();
+
 	PointGeometric	tmpPoint;
 
 	//	---	---	---	--- Lateral Surface
@@ -110,7 +113,7 @@ void CircleApprox::Triangulation(double stepSize)
 
 	std::vector<PointGeometric> pointsNPquarter, pointsNNquarter, pointsPNquarter;
 
-	int pointQuartetCount = Mesh.points.size();
+	int pointQuartetCount = (int)Mesh.points.size();
 
 	for (int i = 0; i < pointQuartetCount; i++)
 	{

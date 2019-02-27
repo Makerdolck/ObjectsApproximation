@@ -47,7 +47,7 @@
     <OutDir>$(SolutionDir)$(Configuration)\$(ProjectName)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)__Intermidate\_$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(SolutionDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(Platform);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,6 +137,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\OutSource\facet_utils.cpp" />
+    <ClCompile Include="..\..\include\OutSource\matrix.cpp" />
+    <ClCompile Include="..\..\include\OutSource\vector.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MyOpenGL.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -158,6 +161,9 @@
     <ResourceCompile Include="try_OpenGL.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\OutSource\facet_utils.h" />
+    <ClInclude Include="..\..\include\OutSource\matrix.h" />
+    <ClInclude Include="..\..\include\OutSource\vector.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyOpenGL.h" />
     <ClInclude Include="Resource.h" />

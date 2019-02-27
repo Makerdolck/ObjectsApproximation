@@ -82,9 +82,6 @@
     <ClCompile Include="..\..\include\ApproximationCore\CmmApprox.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\DVector\Dvector.cpp">
-      <Filter>Source Files\ApproxCore</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
@@ -96,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp">
       <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\OutSource\Matrix.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,9 +189,6 @@
     <ClInclude Include="..\..\include\ApproximationCore\CmmApprox.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\DVector\Dvector.h">
-      <Filter>Header Files\ApproxCore</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
@@ -203,6 +200,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h">
       <Filter>Header Files\ApproxCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OutSource\Matrix.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -318,9 +318,6 @@
     </None>
     <None Include="res\ribbon.mfcribbon-ms">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\include\DVector\Dvector.inl">
-      <Filter>Header Files\ApproxCore</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

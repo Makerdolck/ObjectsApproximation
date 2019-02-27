@@ -100,8 +100,8 @@ void ConeApprox::FindByPoints(PointGeometric *points, int arraySize, double accu
 
 
 	PointGeometric pointsForFindCenter[2];
-	pointsForFindCenter[0] = circleBottom.Point;
-	pointsForFindCenter[1] = circleTop.Point;
+	pointsForFindCenter[0] = circleBottom.Line.Point;
+	pointsForFindCenter[1] = circleTop.Line.Point;
 
 	CenterByPoints(pointsForFindCenter, 2);
 
@@ -111,7 +111,7 @@ void ConeApprox::FindByPoints(PointGeometric *points, int arraySize, double accu
 
 	Line.Vector = vector1 ^ vector2;*/
 
-	Line.Vector = VectorGeometric(circleBottom.Point, circleTop.Point);
+	Line.Vector = VectorGeometric(circleBottom.Line.Point, circleTop.Line.Point);
 
 	//Line.Normalize();										// Vector Normalization
 	
@@ -263,6 +263,10 @@ void ConeApprox::FindByPoints(PointGeometric *points, int arraySize, double accu
 // ---																										// Triangulation
 void ConeApprox::Triangulation(double stepSize)
 {
+	Mesh.points.clear();
+	Mesh.vectorsNormal.clear();
+
+
 	LineGeometric				tmpLine;
 	PointGeometric				tmpPoint;
 
@@ -298,7 +302,7 @@ void ConeApprox::Triangulation(double stepSize)
 
 	std::vector<PointGeometric> pointsNPquarter, pointsNNquarter, pointsPNquarter;
 
-	int pointQuartetCount = pointsBottomCircleEdge.size();
+	int pointQuartetCount = (int)pointsBottomCircleEdge.size();
 
 	for (int i = 0; i < pointQuartetCount; i++)
 	{
@@ -469,7 +473,7 @@ void ConeApprox::Triangulation(double stepSize)
 
 	//	---	---	Points on circle in Another quarters
 
-	pointQuartetCount = pointsTopCircleEdge.size();
+	pointQuartetCount = (int)pointsTopCircleEdge.size();
 
 	for (int i = 0; i < pointQuartetCount; i++)
 	{

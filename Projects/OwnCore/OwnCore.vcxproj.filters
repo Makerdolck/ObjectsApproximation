@@ -99,9 +99,6 @@
     <ClCompile Include="..\..\include\ApproximationCore\CmmApprox.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\DVector\Dvector.cpp">
-      <Filter>Source Files\ApproxCore</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
@@ -190,9 +187,6 @@
     <ClInclude Include="..\..\include\ApproximationCore\CmmApprox.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\DVector\Dvector.h">
-      <Filter>Header Files\ApproxCore</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
@@ -211,10 +205,5 @@
     <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\include\DVector\Dvector.inl">
-      <Filter>Header Files\ApproxCore</Filter>
-    </None>
   </ItemGroup>
 </Project>

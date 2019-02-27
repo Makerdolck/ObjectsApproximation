@@ -164,6 +164,7 @@
     <ClCompile Include="..\..\include\ApproximationCore\TorusApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\VectorGeometric.cpp" />
     <ClCompile Include="..\..\include\OpenGLView.cpp" />
+    <ClCompile Include="..\..\include\OutSource\Matrix.cpp" />
     <ClCompile Include="Example.cpp" />
     <ClCompile Include="ExampleDoc.cpp" />
     <ClCompile Include="ExampleView.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\..\include\ApproximationCore\VectorGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h" />
     <ClInclude Include="..\..\include\OpenGLView.h" />
+    <ClInclude Include="..\..\include\OutSource\Matrix.h" />
     <ClInclude Include="Example.h" />
     <ClInclude Include="ExampleDoc.h" />
     <ClInclude Include="ExampleView.h" />
