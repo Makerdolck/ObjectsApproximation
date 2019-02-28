@@ -177,6 +177,8 @@
     <ClCompile Include="..\..\include\ApproximationCore\SphereApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\TorusApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\VectorGeometric.cpp" />
+    <ClCompile Include="..\..\include\OutSource\DVector\Dvector.cpp" />
+    <ClCompile Include="..\..\include\OutSource\Reference.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -215,7 +217,12 @@
     <ClInclude Include="..\..\include\ApproximationCore\TorusApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\VectorGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h" />
+    <ClInclude Include="..\..\include\OutSource\DVector\Dvector.h" />
+    <ClInclude Include="..\..\include\OutSource\Reference.h" />
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\OutSource\DVector\Dvector.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

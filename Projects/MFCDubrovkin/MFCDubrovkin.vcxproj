@@ -222,7 +222,9 @@
     <ClInclude Include="..\..\include\ApproximationCore\VectorGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h" />
     <ClInclude Include="..\..\include\OpenGLView.h" />
+    <ClInclude Include="..\..\include\OutSource\DVector\Dvector.h" />
     <ClInclude Include="..\..\include\OutSource\Matrix.h" />
+    <ClInclude Include="..\..\include\OutSource\Reference.h" />
     <ClInclude Include="DialogObjectProperties.h" />
     <ClInclude Include="DialogMachine.h" />
     <ClInclude Include="DialogMeasure.h" />
@@ -258,7 +260,9 @@
     <ClCompile Include="..\..\include\ApproximationCore\TorusApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\VectorGeometric.cpp" />
     <ClCompile Include="..\..\include\OpenGLView.cpp" />
+    <ClCompile Include="..\..\include\OutSource\DVector\Dvector.cpp" />
     <ClCompile Include="..\..\include\OutSource\Matrix.cpp" />
+    <ClCompile Include="..\..\include\OutSource\Reference.cpp" />
     <ClCompile Include="DialogObjectProperties.cpp" />
     <ClCompile Include="DialogMachine.cpp" />
     <ClCompile Include="DialogMeasure.cpp" />
@@ -316,6 +320,7 @@
     <Image Include="res\writesmall.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\include\OutSource\DVector\Dvector.inl" />
     <None Include="res\MFCDubrovkin.rc2" />
     <None Include="res\ribbon.mfcribbon-ms" />
   </ItemGroup>

@@ -97,6 +97,12 @@
     <ClCompile Include="..\..\include\OutSource\Matrix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\OutSource\DVector\Dvector.cpp">
+      <Filter>Source Files\OutSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\OutSource\Reference.cpp">
+      <Filter>Source Files\OutSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -203,6 +209,12 @@
     </ClInclude>
     <ClInclude Include="..\..\include\OutSource\Matrix.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OutSource\DVector\Dvector.h">
+      <Filter>Header Files\OutSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OutSource\Reference.h">
+      <Filter>Header Files\OutSource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +331,9 @@
     <None Include="res\ribbon.mfcribbon-ms">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\include\OutSource\DVector\Dvector.inl">
+      <Filter>Header Files\OutSource</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -359,6 +374,12 @@
     </Filter>
     <Filter Include="Header Files\ApproxCore\ApproxObjects\VolumeGeometry">
       <UniqueIdentifier>{771215ab-a36a-4e30-8b33-96e3b739a1d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OutSource">
+      <UniqueIdentifier>{672103a7-c62a-4b53-b6be-02802b735ceb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OutSource">
+      <UniqueIdentifier>{c118cf91-6bb0-4b8a-a5e4-a4b28518ab23}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
