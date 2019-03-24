@@ -221,9 +221,6 @@
     <ClInclude Include="..\..\include\OutSource\Reference.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\include\OutSource\DVector\Dvector.inl" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -224,9 +224,4 @@
       <Filter>Header Files\OutSource</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\include\OutSource\DVector\Dvector.inl">
-      <Filter>Header Files\OutSource</Filter>
-    </None>
-  </ItemGroup>
 </Project>

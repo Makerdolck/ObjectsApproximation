@@ -331,9 +331,6 @@
     <None Include="res\ribbon.mfcribbon-ms">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\include\OutSource\DVector\Dvector.inl">
-      <Filter>Header Files\OutSource</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
