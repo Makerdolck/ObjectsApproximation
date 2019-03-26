@@ -31,6 +31,8 @@ public:
 
 	PointGeometric	operator+(VectorGeometric vector);		// Point + Vector		(displacement by direction of vector)
 	PointGeometric	operator-(VectorGeometric vector);		// Point - Vector		(displacement against direction of vector)
+
+	bool			operator==(PointGeometric point);		// Point == Point
 };
 
 #endif /* __POINT_GEOMETRIC_H__ */ 

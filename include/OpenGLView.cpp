@@ -208,23 +208,12 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	//gluLookAt(0.0, 0.0, 100.0, 
-	//			0.0, 0.0,	0.0, 
-	//			0.0, 1.0,	0.0);	//gluLookAt(6.0, 4.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-
-	/*gluLookAt(	xEyeLook,			1.0f,	zEyeLook,
-				xEyeLook + xPointLook, 1.0f,	zEyeLook + zPointLook,
-				0.0f,			1.0f,	0.0f);*/
 
 	gluLookAt(	pointEyeLook.X,		pointEyeLook.Y,		pointEyeLook.Z,
 				pointAimLook.X,		pointAimLook.Y,		pointAimLook.Z,
-				//vectorRotationY.X,	vectorRotationY.Y,	vectorRotationY.Z);
 				0.0f,		1.0f,		0.0f);
 
-
-
-
+	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -248,55 +237,11 @@ void COpenGLView::OnDraw(CDC* pDC)
 	glLightfv(GL_LIGHT4, GL_DIFFUSE, light_diffuse);
 	glLightfv(GL_LIGHT4, GL_POSITION, light4_direction);
 
-	//glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 
-
-
-	//glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, (GLfloat)-m_z);                    //move object far-near
-
-	//glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);													//rotate object    
-	//glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);													//around the axe
-	//glRotatef(wAngleZ, 0.0f, 0.0f, 1.0f);													//specified
-	
-	//glTranslatef(0.0f + wTransformX, 0.0f + wTransformY, (GLfloat)+m_z);
-
-	//wAngleX %= 360;
-	//wAngleY %= 360;
-
-
 	glTranslatef((GLfloat)centerOfAllObjects.X, (GLfloat)centerOfAllObjects.Y, (GLfloat)centerOfAllObjects.Z);
-	///*glRotatef(wAngleX, 1.0f, 0.0f, 0.0f);
-	//glRotatef(wAngleY, 0.0f, 1.0f, 0.0f);*/
-
-
-	//vectorRotationX.Normalize();
-	//vectorRotationY.Normalize();
-	//glm::vec3 vectr;
-	//
-
-	//glRotatef(wAngleX, (GLfloat)vectorRotationX.X, (GLfloat)vectorRotationX.Y, (GLfloat)vectorRotationX.Z);
-
-	//vectr = glm::rotate(glm::vec3(vectorRotationY.X, vectorRotationY.Y, vectorRotationY.Z),
-	//					(float)(rotationAngleX * PI_Approx / 180.f),
-	//					glm::vec3(vectorRotationX.X, vectorRotationX.Y, vectorRotationX.Z));
-
-	//vectorRotationY = VectorGeometric(RoundingOf(vectr.x, 5), RoundingOf(vectr.y, 5), RoundingOf(vectr.z, 5));
-
-	//
-
-	//glRotatef(wAngleY, (GLfloat)vectorRotationY.X, (GLfloat)vectorRotationY.Y, (GLfloat)vectorRotationY.Z);
-
-
-
-	//vectr = glm::rotate(glm::vec3(vectorRotationX.X, vectorRotationX.Y, vectorRotationX.Z),
-	//					(float)(rotationAngleY* PI_Approx / 180.f),
-	//					glm::vec3(vectorRotationY.X, vectorRotationY.Y, vectorRotationY.Z));
-
-	//vectorRotationX = VectorGeometric(RoundingOf(vectr.x,5), RoundingOf(vectr.y, 5), RoundingOf(vectr.z, 5));
-
-
+	
 
 	float trans[16];
 	
@@ -310,11 +255,8 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 		MatrixCopy(trans, BoxTrans);  //saving last transformation
 		MatrixTranspose(trans); //making row-major for openGL
-
-
 	}
-
-
+	
 	if (flagRotateAxisX)
 	{
 		//coordinateDifferenceX
@@ -324,8 +266,6 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 		MatrixCopy(trans, BoxTrans);  //saving last transformation
 		MatrixTranspose(trans); //making row-major for openGL
-
-
 	}
 
 	glMultMatrixf(trans);
@@ -333,61 +273,13 @@ void COpenGLView::OnDraw(CDC* pDC)
 	prev_roty = roty;
 
 
-
-
-
 	glTranslatef((GLfloat )-centerOfAllObjects.X, (GLfloat)-centerOfAllObjects.Y, (GLfloat)-centerOfAllObjects.Z);
-
-
-
-
-
-	
 
 
 	PaintScene(GL_RENDER);
 
 
-
 	//DrawOpenGL_Cube(10, 0, 0, 0, true);            // Draws a sphere with translation <100, 0, 0>
-
-
-
-
-	//rotationAngleX = 0;
-	//rotationAngleY = 0;
-
-
-
-
-
-	//glBegin(GL_TRIANGLES);
-	//
-	//	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redColor);
-
-	//	glNormal3f(0.f, 0.f, 1.f);
-	//	glVertex3f(-10, -10, 0);
-	//	glNormal3f(0.f, 0.f, 1.f);
-	//	glVertex3f(-10, 10, 0);
-	//	glNormal3f(0.f, 0.f, 1.f);
-	//	glVertex3f(10, -10, 0);
-
-	//	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueColor);
-
-	//	glNormal3f(0.f, 0.f, 1.f);
-	//	glVertex3f(10, 10, 0);
-	//	glNormal3f(0.f, 0.f, 1.f);
-	//	glVertex3f(-10, 10, 0);
-	//	glNormal3f(0.f, 0.f, 1.f);
-	//	glVertex3f(10, -10, 0);
-
-	//glEnd();
-
-
-
-
-
-
 
 
 	glDisable(GL_LIGHT0);
@@ -397,7 +289,7 @@ void COpenGLView::OnDraw(CDC* pDC)
 	glDisable(GL_LIGHT4);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
-
+	glDisable(GL_POINT_SMOOTH);
 	//glPopMatrix();
 
 	//**End code for draw GL!
@@ -493,157 +385,12 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 			flagRotateAxisX = false;
 		//rotx += (point.y - prev_y) * 0.5;
 
-
-
-
-
-		////double radiusOfLook = pointAimLook.DistanceToPoint(pointEyeLook);
-
-		////wAngleY += (point.x - mouse_x0);
-		////wAngleX += (point.y - mouse_y0);
-
-		//LineGeometric		lineOffset;
-
-		//////	--- ---	---	---	---	---	---	Transfer view to center
-
-		//////PointGeometric tmpPointAimLook = pointAimLook;
-
-		////pointAimLook = centerOfAllObjects;
-
-		////lineOffset.Point = pointEyeLook;
-		//////	---														// offset on X 
-		////lineOffset.Vector = vectorRotationX;
-
-		////pointEyeLook = lineOffset.CreatePointOnDistance((-1) * offsetView_X);
-
-		//////	---														// offset on Y
-		////lineOffset.Point = pointEyeLook;
-		////lineOffset.Vector = vectorRotationY;
-
-		////pointEyeLook = lineOffset.CreatePointOnDistance((-1)*offsetView_Y);
-
-		////Invalidate(FALSE);		//We ready rotate it correctly
-		//////RedrawWindow();
-
-
-
-		////	---	Rotation
-
-		//PointGeometric		pOld, pNew;
-		//pOld = PointGeometric(mouse_x0, mouse_y0);
-		//pNew = PointGeometric(point.x, point.y);
-
-		//VectorGeometric		vectorRotationX_Old = vectorRotationX,
-		//					vectorRotationY_Old = vectorRotationY;
-
-		//
-
-		//double	stepOffsetX = distanceAimEye * sqrt(2) * fabs(pOld.X - pNew.X) / (glnWidth / 8.f),
-		//		stepOffsetY = distanceAimEye * sqrt(2) * fabs(pOld.Y - pNew.Y) / (glnHeight / 8.f);
-
-		//// ---																						// Changing		Y-vector
-		//if (pOld.Y < pNew.Y)
-		//{
-		//	lineOffset = LineGeometric(pointEyeLook, vectorRotationY);
-
-		//}
-		//else
-		//{
-		//	lineOffset = LineGeometric(pointEyeLook, vectorRotationY * (-1));
-
-		//}
-
-		//pointEyeLook = lineOffset.CreatePointOnDistance(stepOffsetY);
-
-		//vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
-
-		//vectorRotationY = vectorRotationZ ^ vectorRotationX;
-		//
-		//if (vectorRotationY * vectorRotationY_Old < 0)
-		//{
-		//	vectorRotationY = vectorRotationY * (-1);
-		//}
-
-		//// ---																						// Changing		X-vector
-		//if (pOld.X > pNew.X)
-		//{
-		//	lineOffset = LineGeometric(pointEyeLook, vectorRotationX);
-
-		//}
-		//else
-		//{
-		//	lineOffset = LineGeometric(pointEyeLook, vectorRotationX * (-1));
-
-		//}
-
-		//pointEyeLook = lineOffset.CreatePointOnDistance(stepOffsetX);
-
-		//vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
-
-		//vectorRotationX = vectorRotationZ ^ vectorRotationY;
-
-		//if (vectorRotationX * vectorRotationX_Old < 0)
-		//{
-		//	vectorRotationX = vectorRotationX * (-1);
-		//}
-
-		//// ---																						//distance between camera and Aim correction
-		//lineOffset = LineGeometric(pointAimLook, vectorRotationZ * (-1));
-		//
-		//pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
-
-		//////	--- ---	---	---	---	---	---	Transfer view back
-
-		////RedrawWindow();
-
-		////lineOffset.Point = pointAimLook;
-		//////	---														// offset AimLook on X 
-		////lineOffset.Vector = vectorRotationX;
-
-		////pointAimLook = lineOffset.CreatePointOnDistance(offsetView_X);
-
-		//////	---														// offset AimLook on Y
-		////lineOffset.Point = pointAimLook;
-		////lineOffset.Vector = vectorRotationY;
-
-		////pointAimLook = lineOffset.CreatePointOnDistance(offsetView_Y);
-
-		//////	---	----	----	---
-
-		////lineOffset.Point = pointEyeLook;
-		//////	---														// offset EyeLook on X 
-		////lineOffset.Vector = vectorRotationX;
-
-		////pointEyeLook = lineOffset.CreatePointOnDistance(offsetView_X);
-
-		//////	---														// offset EyeLook on Y
-		////lineOffset.Point = pointEyeLook;
-		////lineOffset.Vector = vectorRotationY;
-
-		////pointEyeLook = lineOffset.CreatePointOnDistance(offsetView_Y);
-
-
-
 		Invalidate(FALSE);		//The end
 
 	}
 
-	//GLfloat step = 0.5f + (GLfloat)fabs(((int)m_z) / 50);
-	//GLfloat stepX = (GLfloat)fabs(mouse_x0 - point.x)/ 250* distanceAimEye,
-	//		stepY = (GLfloat)fabs(mouse_y0 - point.y)/ 250* distanceAimEye;
-
 	if (flagMiddleButtonDown)
 	{
-		//if (mouse_x0 - point.x < 0)
-		//	wTransformX += step;// fabs(((float)(point.x - mouse_x0)) / 2);
-		//if (mouse_x0 - point.x > 0)
-		//	wTransformX -= step;// fabs(((float)(point.x - mouse_x0)) / 2);
-
-		//if (mouse_y0 - point.y < 0)
-		//	wTransformY -= step;// fabs(((float)(point.y - mouse_y0)) / 2);
-		//if (mouse_y0 - point.y > 0)
-		//	wTransformY += step;// fabs(((float)(point.y - mouse_y0)) / 2);
-
 		LineGeometric		lineOffsetEye,
 							lineOffsetAim;
 
@@ -671,9 +418,6 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 			lineOffsetAim.Point = pointAimLook;
 
 			offsetView_X -= stepOffsetX;
-
-			/*pointEyeLook.X-= step;
-			pointAimLook.X -= step;*/
 		}
 		if (mouse_x0 - point.x > 0)
 		{
@@ -687,9 +431,6 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 			lineOffsetAim.Point = pointAimLook;
 
 			offsetView_X = stepOffsetX;
-
-			/*pointEyeLook.X += step;
-			pointAimLook.X += step;*/
 		}
 
 		if (mouse_y0 - point.y < 0)
@@ -704,9 +445,6 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 			lineOffsetAim.Point = pointAimLook;
 
 			offsetView_Y += stepOffsetY;
-
-			/*pointEyeLook.Y += step;
-			pointAimLook.Y += step;*/
 		}
 		if (mouse_y0 - point.y > 0)
 		{
@@ -720,9 +458,6 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 			lineOffsetAim.Point = pointAimLook;
 
 			offsetView_Y -= stepOffsetY;
-
-			/*pointEyeLook.Y -= step;
-			pointAimLook.Y -= step;*/
 		}
 
 		Invalidate(FALSE);

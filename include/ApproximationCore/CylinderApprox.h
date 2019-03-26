@@ -10,6 +10,7 @@ class CylinderApprox : public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 public:
+	bool						IsHole;
 	PointGeometric				PointBottomSurfaceCenter;
 
 	std::vector<PointGeometric> pointsTopCircleEdge_Copy;

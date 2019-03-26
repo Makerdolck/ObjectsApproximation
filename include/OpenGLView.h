@@ -12,27 +12,6 @@
 
 #include <OutSource/Matrix.h>
 
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-//class Vector4D
-//{
-//	VectorGeometric vector;
-//	double w;
-//
-//public :
-//	Vector4D(double x, double y, double z, double w_);
-//
-//};
-//Vector4D::Vector4D(double x, double y, double z, double w_)
-//{
-//	vector.X = x;
-//	vector.Y = y;
-//	vector.Z = z;
-//	w = w_;
-//}
-
-
 class COpenGLView : public CView
 {
 protected: // create from serialization only

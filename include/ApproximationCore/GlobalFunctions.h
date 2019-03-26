@@ -5,8 +5,6 @@
 
 #include "PointGeometric.h"
 
-#include <math.h>
-
 double			RoundingOf(	double	value, 
 							int		accuracy);	
 
@@ -14,6 +12,11 @@ void			GaussMethod(double	**coefficients,
 							double	*freeCoefficients, 
 							int		dimension, 
 							double	*result);
+
+void			KramerMethod(	double** gaussCoefficients,
+								double* gaussFreeCoefficients,
+								double* gaussResult,
+								int D);
 
 PointGeometric	TransferPointToNewCoordinateSystem(	PointGeometric	point, 
 													PointGeometric	pointCenterNewCoordinateSystem,

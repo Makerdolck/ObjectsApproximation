@@ -1,6 +1,9 @@
 #include "stdafx.h"
-#include<iostream>
+
 #include "GlobalFunctions.h"
+
+#include <iostream>
+#include <math.h>
 
 // ---																										// Rounding Of
 double RoundingOf(double value, int accuracy)
@@ -36,6 +39,35 @@ void GaussMethod(double **coefficients, double *freeCoefficients, int dimension,
 		result[k] = (freeCoefficients[k] - d) / coefficients[k][k]; // формула (4)
 	}
 }
+// ---																										// Kramer Method
+void KramerMethod(double** gaussCoefficients, double* gaussFreeCoefficients, double* gaussResult, int D)
+{
+
+	double D1	= gaussFreeCoefficients[0] * gaussCoefficients[1][1] * gaussCoefficients[2][2] 
+				+ gaussCoefficients[0][1] * gaussCoefficients[1][2] * gaussFreeCoefficients[2] 
+				+ gaussFreeCoefficients[1] * gaussCoefficients[2][1] * gaussCoefficients[0][2]
+				- gaussFreeCoefficients[2] * gaussCoefficients[1][1] * gaussCoefficients[0][2]
+				- gaussFreeCoefficients[1] * gaussCoefficients[0][1] * gaussCoefficients[2][2]
+				- gaussFreeCoefficients[0] * gaussCoefficients[2][1] * gaussCoefficients[1][2];
+
+	double D2	= gaussCoefficients[0][0] * gaussFreeCoefficients[1] * gaussCoefficients[2][2]
+				+ gaussFreeCoefficients[0] * gaussCoefficients[1][2] * gaussCoefficients[2][0]
+				+ gaussCoefficients[1][0] * gaussFreeCoefficients[2] * gaussCoefficients[0][2]
+				- gaussCoefficients[2][0] * gaussFreeCoefficients[1] * gaussCoefficients[0][2]
+				- gaussCoefficients[1][0] * gaussFreeCoefficients[0] * gaussCoefficients[2][2]
+				- gaussCoefficients[0][0] * gaussFreeCoefficients[2] * gaussCoefficients[1][2];
+
+	double D3	= gaussCoefficients[0][0] * gaussCoefficients[1][1] * gaussFreeCoefficients[2]
+				+ gaussCoefficients[0][1] * gaussFreeCoefficients[1] * gaussCoefficients[2][0]
+				+ gaussCoefficients[1][0] * gaussCoefficients[2][1] * gaussFreeCoefficients[0]
+				- gaussCoefficients[2][0] * gaussCoefficients[1][1] * gaussFreeCoefficients[0]
+				- gaussCoefficients[1][0] * gaussCoefficients[0][1] * gaussFreeCoefficients[2]
+				- gaussCoefficients[0][0] * gaussCoefficients[2][1] * gaussFreeCoefficients[1];
+
+	gaussResult[0] = D1 / D;
+	gaussResult[1] = D2 / D;
+	gaussResult[2] = D3 / D;
+}
 // ---																										// Transfer Point To New CoordinateSystem
 PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
 													PointGeometric	pointCenterNewCoordinateSystem,
@@ -46,9 +78,9 @@ PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
 	PointGeometric	pointResult,
 					pointCenter = pointCenterNewCoordinateSystem;
 
-	double	gaussFreeCoefficients[3], 
-			gaussResult[3],
-			**gaussCoefficients = new double*[3];
+	double			gaussFreeCoefficients[3], 
+					gaussResult[3],
+					**gaussCoefficients = new double*[3];
 
 	for (int i = 0; i < 3; i++)
 		gaussCoefficients[i] = new double[3];
@@ -63,18 +95,24 @@ PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
 	gaussCoefficients[2][0] = vectorZ.X;	gaussCoefficients[2][1] = vectorZ.Y;	gaussCoefficients[2][2] = vectorZ.Z;
 	gaussFreeCoefficients[2] = point.Z + pointCenter.X*vectorZ.X + pointCenter.Y*vectorZ.Y + pointCenter.Z*vectorZ.Z;
 
-	GaussMethod(gaussCoefficients, &gaussFreeCoefficients[0], 3, &gaussResult[0]);
-
+	double D	= gaussCoefficients[0][0] * gaussCoefficients[1][1] * gaussCoefficients[2][2]
+				+ gaussCoefficients[0][1] * gaussCoefficients[1][2] * gaussCoefficients[2][0]
+				+ gaussCoefficients[1][0] * gaussCoefficients[2][1] * gaussCoefficients[0][2]
+				- gaussCoefficients[2][0] * gaussCoefficients[1][1] * gaussCoefficients[0][2]
+				- gaussCoefficients[1][0] * gaussCoefficients[0][1] * gaussCoefficients[2][2]
+				- gaussCoefficients[0][0] * gaussCoefficients[2][1] * gaussCoefficients[1][2];
+	
+	if (D != 0)
+		KramerMethod(gaussCoefficients, &gaussFreeCoefficients[0], &gaussResult[0], D);
+	else
+		GaussMethod(gaussCoefficients, &gaussFreeCoefficients[0], 3, &gaussResult[0]);
 
 	pointResult = PointGeometric(gaussResult[0], gaussResult[1], gaussResult[2]);
 
 
 	for (int i = 0; i < 3; i++)
 		delete [] gaussCoefficients[i];
-
 	delete [] gaussCoefficients;
-
-
 
 	return pointResult;
 }

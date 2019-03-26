@@ -70,3 +70,14 @@ PointGeometric PointGeometric::operator-(VectorGeometric vector)
 	point.Z = Z - vector.Z;
 	return point;
 }
+// ---																										// Point == Point
+bool PointGeometric::operator==(PointGeometric point)
+{
+	if (X != point.X)
+		return (false);
+	if (Y != point.Y)
+		return (false);
+	if (Z != point.Z)
+		return (false);
+	return (true);
+}
