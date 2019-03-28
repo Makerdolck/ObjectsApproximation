@@ -22,12 +22,6 @@
 
 #include <ApproximationCore/_ALLincludesCore.h>
 
-#define GLM_ENABLE_EXPERIMENTAL 
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-
 using namespace std; 
 
 
@@ -35,12 +29,6 @@ int main()
 {
 	cout.setf(ios::fixed);
 	cout.precision(7);
-	
-	
-	VectorGeometric vector = VectorGeometric(1, -1, 0), axis = VectorGeometric(1, 1, 0);
-
-	glm::vec3 vectr = glm::rotate(glm::vec3(vector.X, vector.Y, vector.Z), (float) (90.f * PI_Approx / 180.f), glm::vec3(axis.X, axis.Y, axis.Z));
-
 
 
 	int		enteredNumber		= 0, 
