@@ -56,9 +56,9 @@ COpenGLView::COpenGLView()
 	//wAngleY = -10.0f;		//10.0f;
 	//wAngleX = 15.0f;		//1.0f;
 	
-	wAngleY = 0.0f;		//10.0f;
-	wAngleX = 0.0f;		//1.0f;
-	wAngleZ = 0.0f;		//5.0f;
+	wAngleY = 0;		//10.0f;
+	wAngleX = 0;		//1.0f;
+	wAngleZ = 0;		//5.0f;
 
 	wTransformX = 0;
 	wTransformY = 0;
@@ -370,7 +370,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			flagRotateAxisY = true;
 			//coordinateDifferenceX = point.x - prev_x;
-			roty += (point.x - prev_x) * 0.5;
+			roty += (float)((point.x - prev_x) * 0.5);
 		}
 		else
 			flagRotateAxisY = false;
@@ -379,7 +379,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			flagRotateAxisX = true;
 			//coordinateDifferenceY = point.y - prev_y;
-			rotx += (point.y - prev_y) * 0.5;
+			rotx += (float)((point.y - prev_y) * 0.5);
 		}
 		else
 			flagRotateAxisX = false;
@@ -779,25 +779,25 @@ void COpenGLView::DrawOpenGL_Cube(double param, double cx, double cy, double cz,
 
 	glNormal3f(0, 0, 1);
 
-	glVertex3f(-param + cx, param + cy, param + cz);
+	glVertex3f((float)(-param + cx), (float)(param + cy), (float)(param + cz));
 
-	glVertex3f(-param + cx, -param + cy, param + cz);
+	glVertex3f((float)(-param + cx), (float)(-param + cy), (float)(param + cz));
 
-	glVertex3f(param + cx, param + cy, param + cz);
+	glVertex3f((float)(param + cx), (float)(param + cy), (float)(param + cz));
 
-	glVertex3f(param + cx, -param + cy, param + cz);
+	glVertex3f((float)(param + cx), (float)(-param + cy), (float)(param + cz));
 
-	glVertex3f(param + cx, param + cy, -param + cz);
+	glVertex3f((float)(param + cx), (float)(param + cy), (float)(-param + cz));
 	glNormal3f(1, 0, 0);
-	glVertex3f(param + cx, -param + cy, -param + cz);
+	glVertex3f((float)(param + cx), (float)(-param + cy), (float)(-param + cz));
 
-	glVertex3f(-param + cx, param + cy, -param + cz);
+	glVertex3f((float)(-param + cx), (float)(param + cy), (float)(-param + cz));
 	glNormal3f(0, 0, 1);
-	glVertex3f(-param + cx, -param + cy, -param + cz);
+	glVertex3f((float)(-param + cx), (float)(-param + cy), (float)(-param + cz));
 
-	glVertex3f(-param + cx, param + cy, param + cz);
+	glVertex3f((float)(-param + cx), (float)(param + cy), (float)(param + cz));
 	glNormal3f(1, 0, 0);
-	glVertex3f(-param + cx, -param + cy, param + cz);
+	glVertex3f((float)(-param + cx), (float)(-param + cy), (float)(param + cz));
 
 	glEnd();
 
@@ -807,23 +807,23 @@ void COpenGLView::DrawOpenGL_Cube(double param, double cx, double cy, double cz,
 
 	glBegin(GL_QUADS);
 
-	glVertex3f(-param + cx, param + cy, param + cz);
+	glVertex3f((float)(-param + cx), (float)(param + cy), (float)(param + cz));
 
-	glVertex3f(param + cx, param + cy, param + cz);
+	glVertex3f((float)(param + cx), (float)(param + cy), (float)(param + cz));
 
-	glVertex3f(param + cx, param + cy, -param + cz);
+	glVertex3f((float)(param + cx), (float)(param + cy), (float)(-param + cz));
 
-	glVertex3f(-param + cx, param + cy, -param + cz);
+	glVertex3f((float)(-param + cx), (float)(param + cy), (float)(-param + cz));
 	glEnd();
 
 	glBegin(GL_QUADS);
-	glVertex3f(-param + cx, -param + cy, param + cz);
+	glVertex3f((float)(-param + cx), (float)(-param + cy), (float)(param + cz));
 
-	glVertex3f(param + cx, -param + cy, param + cz);
+	glVertex3f((float)(param + cx), (float)(-param + cy), (float)(param + cz));
 
-	glVertex3f(param + cx, -param + cy, -param + cz);
+	glVertex3f((float)(param + cx), (float)(-param + cy), (float)(-param + cz));
 
-	glVertex3f(-param + cx, -param + cy, -param + cz);
+	glVertex3f((float)(-param + cx), (float)(-param + cy), (float)(-param + cz));
 	glEnd();
 
 }

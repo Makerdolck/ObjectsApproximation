@@ -55,7 +55,7 @@ void MatrixMult(float *mat1, float *mat2, float *result)
 
 void MatrixRotateX(float *mat, float angle)
 {
-	angle = angle/180*3.141592653589793238;
+	angle = (float)(angle/180*3.141592653589793238);
 	float rot[] = {
 		1,0,0,0,
 		0,cos(angle),-sin(angle),0,
@@ -69,7 +69,7 @@ void MatrixRotateX(float *mat, float angle)
 
 void MatrixRotateY(float *mat, float angle)
 {
-	angle = angle/180*3.141592653589793238;
+	angle = (float)(angle/180*3.141592653589793238);
 	float rot[] = {
 		cos(angle),0,sin(angle),0,
 		0,1,0,0,

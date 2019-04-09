@@ -14,9 +14,11 @@ private:
 	PointGeometric	PointTopSurfaceCenter;
 
 public:
-	double	Angle,
-			RadiusSmaller,
-			HeightPhantom;
+	bool			IsHole;
+
+	double			Angle,
+					RadiusSmaller,
+					HeightPhantom;
 
 	std::vector<PointGeometric> pointsTopCircleEdge_Copy;
 	std::vector<PointGeometric> pointsBottomCircleEdge_Copy;

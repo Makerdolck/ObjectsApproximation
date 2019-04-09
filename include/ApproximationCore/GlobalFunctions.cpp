@@ -40,7 +40,7 @@ void GaussMethod(double **coefficients, double *freeCoefficients, int dimension,
 	}
 }
 // ---																										// Kramer Method
-void KramerMethod(double** gaussCoefficients, double* gaussFreeCoefficients, double* gaussResult, int D)
+void KramerMethod(double** gaussCoefficients, double* gaussFreeCoefficients, double* gaussResult, double D)
 {
 
 	double D1	= gaussFreeCoefficients[0] * gaussCoefficients[1][1] * gaussCoefficients[2][2] 
@@ -102,7 +102,7 @@ PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
 				- gaussCoefficients[1][0] * gaussCoefficients[0][1] * gaussCoefficients[2][2]
 				- gaussCoefficients[0][0] * gaussCoefficients[2][1] * gaussCoefficients[1][2];
 	
-	if (D != 0)
+	if (D > 0)	// D != 0
 		KramerMethod(gaussCoefficients, &gaussFreeCoefficients[0], &gaussResult[0], D);
 	else
 		GaussMethod(gaussCoefficients, &gaussFreeCoefficients[0], 3, &gaussResult[0]);

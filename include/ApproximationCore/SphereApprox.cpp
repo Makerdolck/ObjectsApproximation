@@ -6,7 +6,7 @@
 #include "GlobalFunctions.h"
 
 // ---																										// Constructors
-SphereApprox::SphereApprox(){ objectApproxName = (char*)"sphere"; }
+SphereApprox::SphereApprox(){ objectApproxName = (char*)"sphere"; IsHole = false; }
 
 SphereApprox::~SphereApprox(){}
 
@@ -56,7 +56,7 @@ void SphereApprox::FindByPoints(PointGeometric *points, int arraySize, double ac
 
 	//	---	---	--- Triangulation
 
-	Triangulation(0.5f);
+	//Triangulation(0.5f);
 }
 // ---																										// Triangulation
 void SphereApprox::Triangulation(double stepSize)
@@ -75,7 +75,7 @@ void SphereApprox::Triangulation(double stepSize)
 	std::vector<PointGeometric>	pointsFirstCircle,
 								pointsSecondCircle;
 
-	//	---	---	---	---	---	TODO
+	//	---	---	---	---	---
 
 	//	---	---	Finding the angle of displacement of a point along a circle (with Heron's formula)
 

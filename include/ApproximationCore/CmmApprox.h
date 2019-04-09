@@ -34,6 +34,8 @@ public:
 	int								PortNumber,
 									MachineAccuracy;
 
+	float							CompensationValue;
+
 	bool							flagConnected;
 
 

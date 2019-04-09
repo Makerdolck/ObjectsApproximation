@@ -73,7 +73,7 @@ void CircleApprox::FindByPoints(PointGeometric *points, int arraySize, double ac
 
 	//	---	---	--- Triangulation
 
-	Triangulation(1.0f);
+	//Triangulation(1.0f);
 }
 // ---																										// Triangulation
 void CircleApprox::Triangulation(double stepSize)

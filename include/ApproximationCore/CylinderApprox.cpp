@@ -131,7 +131,7 @@ void CylinderApprox::FindByPoints(PointGeometric *points, int arraySize, double 
 
 	//	---	---	--- Triangulation
 
-	Triangulation(2.0f);
+	//Triangulation(2.0f);
 }
 // ---																										// Triangulation
 void CylinderApprox::Triangulation(double stepSize)

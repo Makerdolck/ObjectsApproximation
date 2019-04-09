@@ -226,8 +226,8 @@ CDVector& CDMatrix::operator[](int nIndex)
 int CDVector::GetMainIndex()
 {
 	int i = 0;
-	float f = fabs(x);
-	if (fabs(y) > f) { i = 1; f = fabs(y); }
+	float f = (float)fabs(x);
+	if (fabs(y) > f) { i = 1; f = (float)fabs(y); }
 	if (fabs(z) > f) i = 2;
 	return i;
 }
@@ -235,8 +235,8 @@ int CDVector::GetMainIndex()
 int CDVector::GetMinorIndex()
 {
 	int i = 0;
-	float f = fabs(x);
-	if (fabs(y) < f) { i = 1; f = fabs(y); }
+	float f = (float)fabs(x);
+	if (fabs(y) < f) { i = 1; f = (float)fabs(y); }
 	if (fabs(z) < f) i = 2;
 	return i;
 }

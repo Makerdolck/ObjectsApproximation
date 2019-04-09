@@ -7,9 +7,10 @@
 // ---																										// Constructors
 CmmApprox::CmmApprox()
 {
-	PortNumber		= 1;
-	MachineAccuracy = 3;
-	flagConnected	= false;
+	PortNumber			= 1;
+	MachineAccuracy		= 3;
+	CompensationValue	= 0;
+	flagConnected		= false;
 
 	// --- Load Digitizer Library
 	hLibrary = LoadLibraryW(L"CMM.dll");

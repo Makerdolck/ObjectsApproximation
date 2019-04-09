@@ -10,7 +10,7 @@ class SphereApprox : public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 public:
-
+	bool			IsHole;
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:

@@ -125,7 +125,7 @@ void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double
 
 	//	---	---	--- Triangulation
 
-	Triangulation(1.0f);
+	//Triangulation(1.0f);
 }
 // ---																										// Triangulation
 void RectangleApprox::Triangulation(double stepSize)
