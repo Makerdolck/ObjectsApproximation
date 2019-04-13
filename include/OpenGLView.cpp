@@ -3,9 +3,16 @@
 
 #include "stdafx.h"
 
+#include <gl/GL.h>
+#include <gl/GLU.h>
+#include <gl/GLUT.h>
+#include <gl/Glaux.h>
 #include "OpenGLView.h"
 
 bool flagCubeColor_1 = false;
+
+const GLfloat blackColor[] = { 0.0f,	0.0f,	0.0f,	1.0f };
+
 const GLfloat redColor[] = { 1.0f,	0.0f,	0.0f,	1.0f };
 const GLfloat blueColor[] = { 0.0f,	0.0f,	1.0f,	1.0f };
 
@@ -191,11 +198,9 @@ void COpenGLView::OnDraw(CDC* pDC)
 			light3_direction[] = { 0.0,		1.0,	0.0,	0.0 },
 			light4_direction[] = { 0.0,		0.0,	-1.0,	0.0 };
 
-	GLfloat light_diffuse[]			= { 1,		1,		1 },
+	GLfloat light_diffuse[]			= { 1.f,		1.f,		1.f },
 			light_diffuseMiddle[]	= { 0.2f,	0.2f,	0.2f },
 			light_diffuseDark[]		= { 0.0f,	0.0f,	0.0f };
-
-
 
 
 	wglMakeCurrent(pDC->m_hDC, hRC);
@@ -204,7 +209,9 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 	glClearDepth(1.0f);                                  //Specifies the clear value for the depth buffer 
 	glClearColor(0.99f, 0.99f, 0.99f, 1.0f);             //Set Background Color
+	glColor3fv(redColor);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -213,32 +220,11 @@ void COpenGLView::OnDraw(CDC* pDC)
 				pointAimLook.X,		pointAimLook.Y,		pointAimLook.Z,
 				0.0f,		1.0f,		0.0f);
 
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	glEnable(GL_NORMALIZE);
+
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	//glEnable(GL_LIGHT1);
-	//glEnable(GL_LIGHT2);
-	//glEnable(GL_LIGHT3);
-	glEnable(GL_LIGHT4);
-
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-
-	//glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuseDark);
-	//glLightfv(GL_LIGHT1, GL_POSITION, light1_direction);
-
-	//glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuseDark);
-	//glLightfv(GL_LIGHT2, GL_POSITION, light2_direction);
-
-	//glLightfv(GL_LIGHT3, GL_DIFFUSE, light_diffuseDark);
-	//glLightfv(GL_LIGHT3, GL_POSITION, light3_direction);
-
-	glLightfv(GL_LIGHT4, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT4, GL_POSITION, light4_direction);
-
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
 
 	glTranslatef((GLfloat)centerOfAllObjects.X, (GLfloat)centerOfAllObjects.Y, (GLfloat)centerOfAllObjects.Z);
 	
@@ -282,12 +268,6 @@ void COpenGLView::OnDraw(CDC* pDC)
 	//DrawOpenGL_Cube(10, 0, 0, 0, true);            // Draws a sphere with translation <100, 0, 0>
 
 
-	glDisable(GL_LIGHT0);
-	//glDisable(GL_LIGHT1);
-	//glDisable(GL_LIGHT2);
-	//glDisable(GL_LIGHT3);
-	glDisable(GL_LIGHT4);
-	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_POINT_SMOOTH);
 	//glPopMatrix();
@@ -688,7 +668,7 @@ void COpenGLView::PaintScene(GLenum mode)
 
 
 		
-		//	---	---	---	---	---									// Set color
+		//	---	---	---	---	---										// Set color
 
 		if (objApprox->objMath->GetName() == cylinderA->GetName()	||
 			objApprox->objMath->GetName() == coneA->GetName()		||
@@ -696,16 +676,16 @@ void COpenGLView::PaintScene(GLenum mode)
 			objApprox->objMath->GetName() == rectangleA->GetName())
 		{
 			if (objApprox->flagSelected)
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redColor);
+				glColor3fv(redColor);//glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redColor);
 			else
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueColor);
+				glColor3fv(blueColor);//glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueColor);
 		}
 		else
 		{
 			if (objApprox->flagSelected)
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, simpleElementsColor1);
+				glColor3fv(simpleElementsColor1);//glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, simpleElementsColor1);
 			else
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, simpleElementsColor2);
+				glColor3fv(simpleElementsColor2);//glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, simpleElementsColor2);
 		}
 
 
@@ -718,29 +698,54 @@ void COpenGLView::PaintScene(GLenum mode)
 		//	---	---	---	---	---										// Set name
 		if (mode == GL_SELECT) glLoadName(objApprox->objID);
 
-		//	---	---	---	---	---											// Draw via Triangles
+		//	---	---	---	---	---												// Draw via Triangles
 		if (objApprox->objMath->GetName() == cylinderA->GetName()	||
 			objApprox->objMath->GetName() == coneA->GetName()		||
 			objApprox->objMath->GetName() == sphereA->GetName())
 		{
 			DrawOpenGL_ObjViaTriangles(*objApprox->objMath);
+			
+			if (objApprox->objMath->GetName() == cylinderA->GetName())
+			{
+				glColor3fv(blackColor);
+
+				glLineWidth(4);
+				DrawOpenGL_ByLineLoop(	((CylinderApprox*)(objApprox->objMath))->pointsTopCircleEdge_Copy, 
+										((CylinderApprox*)(objApprox->objMath))->Line.Vector);
+			
+				DrawOpenGL_ByLineLoop(	((CylinderApprox*)(objApprox->objMath))->pointsBottomCircleEdge_Copy,
+										((CylinderApprox*)(objApprox->objMath))->Line.Vector);
+				glLineWidth(1);
+			}
+			if (objApprox->objMath->GetName() == coneA->GetName())
+			{
+				glColor3fv(blackColor);
+
+				glLineWidth(4);
+				DrawOpenGL_ByLineLoop(	((ConeApprox*)(objApprox->objMath))->pointsTopCircleEdge_Copy,
+										((ConeApprox*)(objApprox->objMath))->Line.Vector);
+
+				DrawOpenGL_ByLineLoop(	((ConeApprox*)(objApprox->objMath))->pointsBottomCircleEdge_Copy,
+										((ConeApprox*)(objApprox->objMath))->Line.Vector);
+				glLineWidth(1);
+			}
 		}
-		//	---	---	---	---	---											// Draw Circle
+		//	---	---	---	---	---												// Draw Circle
 		if (objApprox->objMath->GetName() == circleA->GetName())
 		{
 			DrawOpenGL_Circle(*objApprox->objMath);
 		}
-		//	---	---	---	---	---											// Draw Point
+		//	---	---	---	---	---												// Draw Point
 		if (objApprox->objMath->GetName() == pointA->GetName())
 		{
 			DrawOpenGL_Point((PointApprox*)objApprox->objMath);
 		}
-		//	---	---	---	---	---											// Draw Line Segment
+		//	---	---	---	---	---												// Draw Line Segment
 		if (objApprox->objMath->GetName() == lineSegmentA->GetName())
 		{
 			DrawOpenGL_LineSegment((LineSegmentApprox*)objApprox->objMath);
 		}
-		//	---	---	---	---	---											// Draw PlaneViaRectangle
+		//	---	---	---	---	---												// Draw PlaneViaRectangle
 		if (objApprox->objMath->GetName() == rectangleA->GetName())
 		{
 			DrawOpenGL_PlaneViaRectangle(*objApprox->objMath);
@@ -826,6 +831,21 @@ void COpenGLView::DrawOpenGL_Cube(double param, double cx, double cy, double cz,
 	glVertex3f((float)(-param + cx), (float)(-param + cy), (float)(-param + cz));
 	glEnd();
 
+}
+///////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL By-Line-Loop
+void COpenGLView::DrawOpenGL_ByLineLoop(std::vector<PointGeometric> points, VectorGeometric vector)
+{
+	glBegin(GL_LINE_LOOP);
+		for (int i = 0; i < (int)points.size(); i++)
+		{
+			glNormal3f((GLfloat)vector.X, (GLfloat)vector.Y, (GLfloat)vector.Z);
+			glVertex3f(	(GLfloat)points[i].X,
+						(GLfloat)points[i].Y ,
+						(GLfloat)points[i].Z);
+		}
+	glEnd();
 }
 ///////////////////////////////////////////////////////
 
@@ -954,7 +974,7 @@ void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
 
 
 
-//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// On Key Down for __Test__
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// On Key Down for __Test__ (AND for Shift checking)
 void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default

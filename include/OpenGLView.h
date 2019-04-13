@@ -122,6 +122,7 @@ protected:
 	HGLRC	SetUpOpenGL(HWND hWnd);
 	void	PaintScene(GLenum mode);
 	void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
+	void	DrawOpenGL_ByLineLoop(std::vector<PointGeometric> points, VectorGeometric vector);
 	void	DrawOpenGL_Circle(GeomObjectApprox obj);
 	void	DrawOpenGL_Point(PointApprox *obj);
 	void	DrawOpenGL_LineSegment(LineSegmentApprox *obj);

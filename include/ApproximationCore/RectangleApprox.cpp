@@ -145,8 +145,8 @@ void RectangleApprox::Triangulation(double stepSize)
 	Mesh.points.push_back(PointGeometric(maxX, minY));										// +|-
 	Mesh.points.push_back(PointGeometric(minX, maxY));										// -|+
 
-	Mesh.points.push_back(PointGeometric(maxX, maxY));										// +|+
 	Mesh.points.push_back(PointGeometric(maxX, minY));										// +|-
+	Mesh.points.push_back(PointGeometric(maxX, maxY));										// +|+
 	Mesh.points.push_back(PointGeometric(minX, maxY));										// -|+
 
 

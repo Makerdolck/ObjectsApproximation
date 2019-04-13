@@ -367,6 +367,9 @@ void CylinderApprox::Triangulation(double stepSize)
 		pointsTopCircleEdge_Copy[i] = tmpLine.CreatePointOnDistance(Height);
 	}
 	
+
+	
+
 	
 	pointsSecondCircle.clear();
 	pointsBottomCircleEdge.clear();
