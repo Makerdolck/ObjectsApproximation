@@ -557,7 +557,6 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 				objApprox = objectsArray->operator[](i);
 
 				objApprox->flagSelected = false;
-
 			}
 		}
 	}
@@ -574,6 +573,90 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 //--------------------------------------------------------------
 //	----	Message Handlers		----	Custom Messages
 //--------------------------------------------------------------
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Get Object Under Mouse
+ObjectApprox *COpenGLView::GetObjectUnderMouse(CPoint point)
+{
+	mouse_x0 = point.x;  mouse_y0 = point.y;
+
+	prev_x = point.x;
+	prev_y = point.y;
+
+	#define BUFSIZE 512
+
+	GLuint selectBuf[BUFSIZE];
+	GLint hits;
+	GLint viewport[4];
+
+	HDC hDC = ::GetDC(this->m_hWnd);
+	wglMakeCurrent(hDC, hRC);
+
+
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glSelectBuffer(BUFSIZE, selectBuf);
+
+	glRenderMode(GL_SELECT);				// Enter the SELECT render mode
+	glInitNames();
+	glPushName(-1);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluPickMatrix((GLdouble)point.x, (GLdouble)(viewport[3] - point.y), 5.0, 5.0, viewport);
+	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
+	glMatrixMode(GL_MODELVIEW);
+	PaintScene(GL_SELECT);
+	glPopMatrix();
+	glFlush();
+
+	hits = glRenderMode(GL_RENDER);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0, 0, glnWidth, glnHeight);
+	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
+
+	/*for(int i=0;i<hits;i++)
+	{
+		cube[selectBuf[3+i*4]].selected=!cube[selectBuf[3+i*4]].selected;
+	}*/
+
+	ObjectApprox* objApprox = nullptr;
+	int a = 0;
+	if (hits)
+	{
+		int n = 0; double minz = selectBuf[1];
+		for (int i = 1; i < hits; i++)
+		{
+			if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
+		}
+
+		a = selectBuf[3 + n * 4];
+
+		if (objectsArray != nullptr)
+		{
+			for (int i = 0; i < (int)objectsArray->size(); i++)
+			{
+				objApprox = objectsArray->operator[](i);
+
+				if (objApprox->objID == a)
+				{
+					return objApprox;
+				}
+			}
+		}
+	}
+	else
+	{
+		return nullptr;
+	}
+
+	wglMakeCurrent(NULL, NULL);
+	::ReleaseDC(this->m_hWnd, hDC);
+
+	return nullptr;
+}
+//////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Set Up OpenGL Settings
 HGLRC COpenGLView::SetUpOpenGL(HWND hWnd)

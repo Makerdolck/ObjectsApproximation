@@ -119,17 +119,18 @@ protected:
 
 // Generated message map functions
 protected:
-	HGLRC	SetUpOpenGL(HWND hWnd);
-	void	PaintScene(GLenum mode);
-	void	DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
-	void	DrawOpenGL_ByLineLoop(std::vector<PointGeometric> points, VectorGeometric vector);
-	void	DrawOpenGL_Circle(GeomObjectApprox obj);
-	void	DrawOpenGL_Point(PointApprox *obj);
-	void	DrawOpenGL_LineSegment(LineSegmentApprox *obj);
-	void	DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj);
+	ObjectApprox	*GetObjectUnderMouse(CPoint point);
+	HGLRC			SetUpOpenGL(HWND hWnd);
+	void			PaintScene(GLenum mode);
+	void			DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
+	void			DrawOpenGL_ByLineLoop(std::vector<PointGeometric> points, VectorGeometric vector);
+	void			DrawOpenGL_Circle(GeomObjectApprox obj);
+	void			DrawOpenGL_Point(PointApprox *obj);
+	void			DrawOpenGL_LineSegment(LineSegmentApprox *obj);
+	void			DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj);
 
 
-	void	DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);
+	void			DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);
 
 	//{{AFX_MSG(CTry_OpenGLView)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

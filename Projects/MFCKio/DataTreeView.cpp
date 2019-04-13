@@ -27,7 +27,8 @@ IMPLEMENT_DYNCREATE(DataTreeView, CTreeView)
 
 DataTreeView::DataTreeView()
 {
-	pCtrl = &GetTreeCtrl();
+	pCtrl				= &GetTreeCtrl();
+	focused_TI			= nullptr;
 }
 
 DataTreeView::~DataTreeView()
@@ -40,6 +41,7 @@ BEGIN_MESSAGE_MAP(DataTreeView, CTreeView)
 	ON_NOTIFY_REFLECT(TVN_SELCHANGED,	&DataTreeView::OnSelChanged)
 	ON_WM_KEYUP()
 	ON_NOTIFY_REFLECT(NM_DBLCLK, &DataTreeView::OnNMDblclk)
+	ON_NOTIFY_REFLECT(NM_CLICK, &DataTreeView::OnNMClick)
 END_MESSAGE_MAP()
 
 
@@ -97,7 +99,19 @@ void DataTreeView::OnSelChanged(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
 
+	if ((focused_TI != nullptr) &&( (ObjectApprox*)pCtrl->GetItemData(focused_TI) != nullptr))
+	{
+		((ObjectApprox*)pCtrl->GetItemData(focused_TI))->flagSelected = false;
+		pView->Invalidate(FALSE);
+	}
+
 	focused_TI = pNMTreeView->itemNew.hItem;
+	
+	if ((ObjectApprox*)pCtrl->GetItemData(focused_TI) != nullptr)
+	{
+		((ObjectApprox*)pCtrl->GetItemData(focused_TI))->flagSelected = true;
+		pView->Invalidate(FALSE);
+	}
 
 	*pResult = 0;
 }
@@ -126,6 +140,17 @@ void DataTreeView::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 		dlg.DoModal();
 	}
 	
+	*pResult = 0;
+}
+// ---																										// On Click on TreeElement
+void DataTreeView::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	if ((ObjectApprox*)pCtrl->GetItemData(focused_TI) != nullptr)
+	{
+		((ObjectApprox*)pCtrl->GetItemData(focused_TI))->flagSelected = true;
+		pView->Invalidate(FALSE);
+	}
+
 	*pResult = 0;
 }
 
@@ -212,4 +237,3 @@ LRESULT DataTreeView::OnAddNewObjToTree(WPARAM wParam, LPARAM lParam)
 
 	return 0L;
 }
-
