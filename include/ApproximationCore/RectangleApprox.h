@@ -12,8 +12,7 @@ class RectangleApprox :	public GeomObjectApprox
 private:
 	PlaneApprox		Plane;
 
-	VectorGeometric VectorY,
-					VectorZ;
+	VectorGeometric VectorZ;
 
 	double			maxX,
 					minX,
@@ -24,7 +23,8 @@ private:
 					*WanderingPoints;
 
 public:
-	VectorGeometric	VectorX;
+	VectorGeometric	VectorY,
+					VectorX;
 
 	double			Width;
 

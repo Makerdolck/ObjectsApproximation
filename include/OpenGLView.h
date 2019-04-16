@@ -129,6 +129,7 @@ protected:
 	void			DrawOpenGL_LineSegment(LineSegmentApprox *obj);
 	void			DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj);
 
+	void			GetWorldCoord(int ix, int iy, GLdouble fz, PointGeometric& coord);
 
 	void			DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);
 

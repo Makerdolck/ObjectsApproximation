@@ -127,4 +127,6 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 
 	Point  = Line.Point;
 	Vector = Line.Vector;
+
+	Height = PointStart.DistanceToPoint(PointEnd);
 }

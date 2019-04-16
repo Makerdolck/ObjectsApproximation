@@ -9,6 +9,14 @@
 #include <gl/Glaux.h>
 #include "OpenGLView.h"
 
+GLdouble		m_dModelViewMatrix[16];
+GLdouble		m_dProjectionMatrix[16];
+GLint			m_iViewport[4];
+
+GLint		viewport_test[4];
+GLdouble	modelview_test[16];
+GLdouble	projection_test[16];
+
 bool flagCubeColor_1 = false;
 
 const GLfloat blackColor[] = { 0.0f,	0.0f,	0.0f,	1.0f };
@@ -70,7 +78,8 @@ COpenGLView::COpenGLView()
 	wTransformX = 0;
 	wTransformY = 0;
 
-	fFarPlane = 10000.0f;
+	fNearPlane	= 1.f;
+	fFarPlane	= 10000.0f;
 
 	flagMiddleButtonDown = false;
 
@@ -226,6 +235,7 @@ void COpenGLView::OnDraw(CDC* pDC)
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 
+
 	glTranslatef((GLfloat)centerOfAllObjects.X, (GLfloat)centerOfAllObjects.Y, (GLfloat)centerOfAllObjects.Z);
 	
 
@@ -261,6 +271,9 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 	glTranslatef((GLfloat )-centerOfAllObjects.X, (GLfloat)-centerOfAllObjects.Y, (GLfloat)-centerOfAllObjects.Z);
 
+	glGetDoublev(GL_MODELVIEW_MATRIX, m_dModelViewMatrix);
+
+	//DrawOpenGL_Cube(20, 0, 0, 0, false);
 
 	PaintScene(GL_RENDER);
 
@@ -297,8 +310,12 @@ void COpenGLView::OnSize(UINT nType, int cx, int cy)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0,0,glnWidth,glnHeight);
-	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
+	gluPerspective(30.0, gldAspect, fNearPlane, fFarPlane);
 	//**End code for GL resize!
+
+	glGetDoublev(GL_PROJECTION_MATRIX, m_dProjectionMatrix);
+	glGetIntegerv(GL_VIEWPORT, m_iViewport);
+
 
 	wglMakeCurrent( NULL, NULL );
     ::ReleaseDC( this->m_hWnd, hDC );
@@ -369,7 +386,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 
 	}
 
-	if (flagMiddleButtonDown)
+	if (false)	//flagMiddleButtonDown
 	{
 		LineGeometric		lineOffsetEye,
 							lineOffsetAim;
@@ -384,7 +401,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 
 		double	stepOffsetX = distanceAimEye * fabs(pOld.X - pNew.X) / (glnWidth / 2.f),
 				stepOffsetY = distanceAimEye * fabs(pOld.Y - pNew.Y) / (glnHeight / 2.f);
-
+		
 
 		if (mouse_x0 - point.x < 0)
 		{
@@ -443,6 +460,102 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		Invalidate(FALSE);
 	}
 
+	if (flagMiddleButtonDown)
+	{
+		PointGeometric mouseNewInWorld;
+		PointGeometric mouseOldInWorld;
+
+		GetWorldCoord(point.x, point.y, 0, mouseNewInWorld);
+		GetWorldCoord(mouse_x0, mouse_y0, 0, mouseOldInWorld);
+	
+		double	stepOffsetX,
+				stepOffsetY;
+
+		PointGeometric	point0_0(0, 0, 0),
+						pointX_0(glnWidth, 0, 0),
+						point0_Y(0, glnHeight, 0);
+
+		GetWorldCoord(point0_0.X, point0_0.Y, 0, point0_0);
+		GetWorldCoord(pointX_0.X, pointX_0.Y, 0, pointX_0);
+		GetWorldCoord(point0_Y.X, point0_Y.Y, 0, point0_Y);
+
+		VectorGeometric vectorX(point0_0, pointX_0),
+						vectorY(point0_0, point0_Y);
+			
+
+		LineGeometric		lineOffsetEye,
+							lineOffsetAim;
+
+		LineGeometric lineTmp(point0_0, vectorX);
+		stepOffsetX = lineTmp.PointProjection(mouseNewInWorld).DistanceToPoint(lineTmp.PointProjection(mouseOldInWorld));
+
+		lineTmp.Vector	= vectorY;
+		stepOffsetY		= lineTmp.PointProjection(mouseNewInWorld).DistanceToPoint(lineTmp.PointProjection(mouseOldInWorld));
+		
+
+		lineOffsetEye.Point = pointEyeLook;
+		lineOffsetAim.Point = pointAimLook;
+		
+
+		if (mouse_x0 - point.x < 0)
+		{
+			lineOffsetEye.Vector = vectorRotationX * (-1);
+			lineOffsetAim.Vector = vectorRotationX * (-1);
+
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetX);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetX);
+
+			lineOffsetEye.Point = pointEyeLook;
+			lineOffsetAim.Point = pointAimLook;
+
+			offsetView_X -= stepOffsetX;
+		}
+		if (mouse_x0 - point.x > 0)
+		{
+			lineOffsetEye.Vector = vectorRotationX;
+			lineOffsetAim.Vector = vectorRotationX;
+
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetX);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetX);
+
+			lineOffsetEye.Point = pointEyeLook;
+			lineOffsetAim.Point = pointAimLook;
+
+			offsetView_X = stepOffsetX;
+		}
+
+		if (mouse_y0 - point.y < 0)
+		{
+			lineOffsetEye.Vector = vectorRotationY;
+			lineOffsetAim.Vector = vectorRotationY;
+
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetY);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetY);
+
+			lineOffsetEye.Point = pointEyeLook;
+			lineOffsetAim.Point = pointAimLook;
+
+			offsetView_Y += stepOffsetY;
+		}
+		if (mouse_y0 - point.y > 0)
+		{
+			lineOffsetEye.Vector = vectorRotationY * (-1);
+			lineOffsetAim.Vector = vectorRotationY * (-1);
+
+			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetY);
+			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetY);
+
+			lineOffsetEye.Point = pointEyeLook;
+			lineOffsetAim.Point = pointAimLook;
+
+			offsetView_Y -= stepOffsetY;
+		}
+
+		Invalidate(FALSE);
+
+	}
+
+
 	mouse_x0 = point.x;
 	mouse_y0 = point.y;
 
@@ -483,70 +596,12 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 	}
 
-	#define BUFSIZE 512
-
-	// TODO: Add your message handler code here and/or call default
-	GLuint selectBuf[BUFSIZE];
-	GLint hits;
-	GLint viewport[4];
-
-	HDC hDC = ::GetDC(this->m_hWnd);
-	wglMakeCurrent(hDC, hRC);
-
-
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	glSelectBuffer(BUFSIZE, selectBuf);
-
-	glRenderMode(GL_SELECT);				// Enter the SELECT render mode
-	glInitNames();
-	glPushName(-1);
-
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	gluPickMatrix((GLdouble)point.x, (GLdouble)(viewport[3] - point.y), 5.0, 5.0, viewport);
-	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
-	glMatrixMode(GL_MODELVIEW);
-	PaintScene(GL_SELECT);
-	glPopMatrix();
-	glFlush();
-
-	hits = glRenderMode(GL_RENDER);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glViewport(0, 0, glnWidth, glnHeight);
-	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
-
-	/*for(int i=0;i<hits;i++)
-	{
-		cube[selectBuf[3+i*4]].selected=!cube[selectBuf[3+i*4]].selected;
-	}*/
-
-	ObjectApprox * objApprox;
+	
+	ObjectApprox *objApprox = GetObjectUnderMouse(point);
 	int a = 0;
-	if (hits)
+	if (objApprox != nullptr)
 	{
-		int n = 0; double minz = selectBuf[1];
-		for (int i = 1; i < hits; i++)
-		{
-			if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
-		}
-
-		a = selectBuf[3 + n * 4];
-
-		if (objectsArray != nullptr)
-		{
-			for (int i = 0; i < (int)objectsArray->size(); i++)
-			{
-				objApprox = objectsArray->operator[](i);
-
-				if (objApprox->objID == a)
-				{
-					objApprox->flagSelected = !objApprox->flagSelected;
-				}
-			}
-		}
+		objApprox->flagSelected = !objApprox->flagSelected;
 	}
 	else																// Make all elements not selected
 	{
@@ -561,11 +616,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 	}
 
-	wglMakeCurrent(NULL, NULL);
-	::ReleaseDC(this->m_hWnd, hDC);
-
 	Invalidate(FALSE);
-
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -573,6 +624,32 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 //--------------------------------------------------------------
 //	----	Message Handlers		----	Custom Messages
 //--------------------------------------------------------------
+
+// ---																							// On Middle Button Down
+void COpenGLView::GetWorldCoord(int ix, int iy, GLdouble fz, PointGeometric& coord)
+{
+	GLdouble x, y, z, winX, winY, winZ;
+
+	winX = (GLdouble)ix;
+	winY = (GLdouble)m_iViewport[3] - iy;
+
+	fz += pointEyeLook.DistanceToPoint(pointAimLook);
+
+	// Calculate the winZ coordinate:
+	// Compensate for perspective view
+	winZ = 0.5 + (((fFarPlane + fNearPlane) - (2 * fFarPlane * fNearPlane) / fz)) / (2 * (fFarPlane - fNearPlane));
+
+	// Unproject the point
+	gluUnProject(winX, winY, winZ,
+		m_dModelViewMatrix,
+		m_dProjectionMatrix,
+		m_iViewport,
+		&x, &y, &z);
+
+	coord.X = x;
+	coord.Y = y;
+	coord.Z = z;
+}
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Get Object Under Mouse
 ObjectApprox *COpenGLView::GetObjectUnderMouse(CPoint point)
@@ -603,7 +680,7 @@ ObjectApprox *COpenGLView::GetObjectUnderMouse(CPoint point)
 	glPushMatrix();
 	glLoadIdentity();
 	gluPickMatrix((GLdouble)point.x, (GLdouble)(viewport[3] - point.y), 5.0, 5.0, viewport);
-	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
+	gluPerspective(30.0, gldAspect, fNearPlane, fFarPlane);
 	glMatrixMode(GL_MODELVIEW);
 	PaintScene(GL_SELECT);
 	glPopMatrix();
@@ -614,7 +691,7 @@ ObjectApprox *COpenGLView::GetObjectUnderMouse(CPoint point)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, glnWidth, glnHeight);
-	gluPerspective(30.0, gldAspect, 1.0, fFarPlane);
+	gluPerspective(30.0, gldAspect, fNearPlane, fFarPlane);
 
 	/*for(int i=0;i<hits;i++)
 	{
@@ -1056,7 +1133,6 @@ void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
 
 
 
-
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// On Key Down for __Test__ (AND for Shift checking)
 void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
@@ -1159,3 +1235,4 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);
 }
+
