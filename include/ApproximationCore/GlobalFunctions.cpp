@@ -5,6 +5,7 @@
 #include <iostream>
 #include <math.h>
 
+
 // ---																										// Rounding Of
 double RoundingOf(double value, int accuracy)
 {

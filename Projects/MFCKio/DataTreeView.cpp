@@ -40,8 +40,8 @@ BEGIN_MESSAGE_MAP(DataTreeView, CTreeView)
 
 	ON_NOTIFY_REFLECT(TVN_SELCHANGED,	&DataTreeView::OnSelChanged)
 	ON_WM_KEYUP()
-	ON_NOTIFY_REFLECT(NM_DBLCLK, &DataTreeView::OnNMDblclk)
-	ON_NOTIFY_REFLECT(NM_CLICK, &DataTreeView::OnNMClick)
+	ON_NOTIFY_REFLECT(NM_DBLCLK,		&DataTreeView::OnNMDblclk)
+	ON_NOTIFY_REFLECT(NM_CLICK,			&DataTreeView::OnNMClick)
 END_MESSAGE_MAP()
 
 
@@ -76,7 +76,7 @@ void DataTreeView::OnInitialUpdate()
 	TIR_Points			= pCtrl->InsertItem(L"Точки");
 	pCtrl->SetItemData(TIR_Points,		(DWORD)nullptr);
 
-	TIR_LineSegments	= pCtrl->InsertItem(L"Лини");
+	TIR_LineSegments	= pCtrl->InsertItem(L"Линии");
 	pCtrl->SetItemData(TIR_LineSegments,(DWORD)nullptr);
 
 	TIR_Planes			= pCtrl->InsertItem(L"Плоскости");
@@ -121,7 +121,10 @@ void DataTreeView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_DELETE)
 	{		
 		if (pView->RemoveObject((ObjectApprox*)pCtrl->GetItemData(focused_TI)))
+		{
 			pCtrl->DeleteItem(focused_TI);
+			pView->RecalculateCenterOfAllObjects();
+		}
 	}
 	if (nChar == 'F')		// 'F' is pressed
 	{

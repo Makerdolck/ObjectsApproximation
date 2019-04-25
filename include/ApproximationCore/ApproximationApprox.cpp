@@ -12,10 +12,12 @@ double ApproximationApprox::FunctionApprox(PointGeometric *points, int arraySize
 //----------------------------------------------------------------------------- 
 void ApproximationApprox::Approximation(PointGeometric *points, int arraySize, double accuracy, VectorGeometric *vector, double *value)
 {
-	double step = 0.05;
-	bool negativeDirection = false;
+	double	step = 0.05;
 
-	double deviationSum, deviationSumOld;
+	bool	negativeDirection = false;
+
+	double	deviationSum, 
+			deviationSumOld;
 
 	deviationSum = FunctionApprox(points, arraySize);
 

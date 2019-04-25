@@ -14,11 +14,6 @@ private:
 
 	VectorGeometric VectorZ;
 
-	double			maxX,
-					minX,
-					maxY,
-					minY;
-
 	PointGeometric	WanderingCenter,
 					*WanderingPoints;
 
@@ -26,7 +21,11 @@ public:
 	VectorGeometric	VectorY,
 					VectorX;
 
-	double			Width;
+	double			Width,
+					maxX,
+					minX,
+					maxY,
+					minY;
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:
@@ -34,7 +33,7 @@ public:
 	~RectangleApprox();
 
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
-	void			Triangulation(double stepSize = 1.0f);
+	void			Triangulation(double inAccuracy = 1.0f);
 
 private:
 	void			FindWidthHeightMinMaxXY(PointGeometric *points, int arraySize);

@@ -11,10 +11,11 @@ class CylinderApprox : public GeomObjectApprox
 //	--- --- --- --- --- --- --- --- ---	// Properties
 public:
 	bool						IsHole;
-	PointGeometric				PointBottomSurfaceCenter;
+	PointGeometric				PointBottomSurfaceCenter,
+								PointTopSurfaceCenter;
 
-	std::vector<PointGeometric> pointsTopCircleEdge_Copy;
-	std::vector<PointGeometric> pointsBottomCircleEdge_Copy;
+	std::vector<PointGeometric> pointsTopCircleEdge;
+	std::vector<PointGeometric> pointsBottomCircleEdge;
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:
@@ -22,7 +23,7 @@ public:
 	~CylinderApprox();
 
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
-	void			Triangulation(double stepSize = 1.0f);
+	void			Triangulation(double inAccuracy = 1.0f);
 
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);

@@ -4,7 +4,10 @@
 
 
 // ---																										// Constructors
-LineSegmentApprox::LineSegmentApprox() { objectApproxName = (char*)"lineSegment"; }
+LineSegmentApprox::LineSegmentApprox()
+{
+	objectApproxName = (char*)"lineSegment";
+}
 
 LineSegmentApprox::~LineSegmentApprox(){}
 // ---																										// Distance to Point
@@ -21,10 +24,10 @@ PointGeometric LineSegmentApprox::PointProjection(PointGeometric point)
 double LineSegmentApprox::FunctionApprox(PointGeometric *points, int arraySize)
 {
 	double sum = 0;
+
 	for (int i = 0; i < arraySize; i++)
-		sum +=	pow(
-					DistanceToPoint(points[i])
-				, 2);
+		sum +=	pow(DistanceToPoint(points[i]), 2);
+
 	return sum;
 }
 
@@ -37,10 +40,11 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 
 	///////////		Start Approximation
 
-	double	globalDeviation = 0,
-			globalDeviationOld = 0;
+	double	globalDeviation		= 0,
+			globalDeviationOld	= 0;
 
-	double	*vectorMCoordinate1, *vectorMCoordinate2;
+	double	*vectorMCoordinate1 = nullptr, 
+			*vectorMCoordinate2 = nullptr;
 
 	// Find Max vector Element
 	if ((fabs(Line.Vector.X) > fabs(Line.Vector.Y)) && (fabs(Line.Vector.X) > fabs(Line.Vector.Z)))
@@ -70,21 +74,15 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 	do {
 		globalDeviationOld = globalDeviation;
 
-		///////////
-
-		//Approximation(points, accuracy, &lineCenterM.Line.Vector.X);	// Changing X - vector
-		//Approximation(points, accuracy, &lineCenterM.Line.Vector.Y);	// Changing Y - vector
-		//Approximation(points, accuracy, &lineCenterM.Line.Vector.Z);	// Changing Z - vector
 
 		Approximation(points, arraySize, accuracy, &Line.Vector, vectorMCoordinate1);	// Changing 1 - vector
 		Approximation(points, arraySize, accuracy, &Line.Vector, vectorMCoordinate2);	// Changing 2 - vector
-
-
+		
 		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.X);		// Changing X - center
 		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.Y);		// Changing Y - center
 		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.Z);		// Changing Z - center
 
-																				///////
+
 		globalDeviation = FunctionApprox(points, arraySize);
 
 	} while (fabs(globalDeviation - globalDeviationOld) > accuracy);
@@ -93,21 +91,23 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 	Line.Point = PointProjection(tmpCenter);
 
 	//
-	PointGeometric		*_points	= points;
-						PointStart	= Line.Point,
-						PointEnd	= Line.Point;
-	VectorGeometric*	tmpVector	= nullptr;
+	std::vector<PointGeometric> _points;
+
+	PointStart	= Line.Point;
+	PointEnd	= Line.Point;
+
+	VectorGeometric		tmpVector;
+
 	double distance = 0;
 
 	for (int i = 0; i < arraySize; i++)
-		_points[i] = PointProjection(points[i]);
+		_points.push_back(PointProjection(points[i]));
 
 	for (int i = 0; i < arraySize; i++)
 	{
-		delete tmpVector;
-		tmpVector = new VectorGeometric(_points[i], Line.Point);
+		tmpVector = VectorGeometric(_points[i], Line.Point);
 
-		if ((tmpVector->X >= 0 && Line.Vector.X >= 0) || (tmpVector->X <= 0 && Line.Vector.X <= 0))
+		if ((tmpVector.X >= 0 && Line.Vector.X >= 0) || (tmpVector.X <= 0 && Line.Vector.X <= 0))
 		{
 			if (PointStart.DistanceToPoint(Line.Point) < _points[i].DistanceToPoint(Line.Point)) {
 				PointStart = _points[i];
@@ -123,10 +123,10 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 		}
 	}
 
-	delete tmpVector;
-
 	Point  = Line.Point;
 	Vector = Line.Vector;
 
 	Height = PointStart.DistanceToPoint(PointEnd);
+
+	_points.clear();
 }

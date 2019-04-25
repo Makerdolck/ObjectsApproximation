@@ -204,6 +204,7 @@
     <ClInclude Include="..\..\include\ApproximationCore\CircleApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\CircleGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\CmmApprox.h" />
+    <ClInclude Include="..\..\include\ApproximationCore\CompensationOptionNamesEnum.h" />
     <ClInclude Include="..\..\include\ApproximationCore\ConeApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\CylinderApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\GeomObjectApprox.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="..\..\include\ApproximationCore\CircleApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\CircleGeometric.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\CmmApprox.cpp" />
+    <ClCompile Include="..\..\include\ApproximationCore\CompensationOptionNamesEnum.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\ConeApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\CylinderApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\GeomObjectApprox.cpp" />

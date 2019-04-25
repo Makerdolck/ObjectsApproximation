@@ -8,6 +8,7 @@
 
 #include "MeshTrianglesStructure.h"
 
+
 class GeomObjectApprox : public ApproximationApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
@@ -30,6 +31,8 @@ public:
 	~GeomObjectApprox();
 
 	char*			GetName();
+
+	virtual void	Triangulation(double inAccuracy = 1.0f);
 
 protected:
 	virtual void	FindHeight(PointGeometric *points, int arraySize);	

@@ -5,8 +5,15 @@
 
 // ---																										// Constructors
 LineGeometric::LineGeometric(){}
-LineGeometric::LineGeometric(VectorGeometric vector) { Vector = vector; }
-LineGeometric::LineGeometric(PointGeometric point, VectorGeometric vector) { Point = point; Vector = vector; }
+LineGeometric::LineGeometric(VectorGeometric vector)
+{
+	Vector = vector; 
+}
+LineGeometric::LineGeometric(PointGeometric point, VectorGeometric vector)
+{ 
+	Point	= point; 
+	Vector	= vector; 
+}
 
 LineGeometric::~LineGeometric(){}
 // ---																										// NormaliZe
@@ -18,6 +25,7 @@ void LineGeometric::Normalize()
 PointGeometric LineGeometric::CreatePointOnDistance(double distance, bool flagPositiveDirection)
 {
 	Normalize();
+
 	if(flagPositiveDirection)
 		return Point + Vector * distance;
 	else
@@ -27,13 +35,16 @@ PointGeometric LineGeometric::CreatePointOnDistance(double distance, bool flagPo
 PointGeometric LineGeometric::PointProjection(PointGeometric point)
 {
 	double	lambda,
-		x = Vector.X,
-		y = Vector.Y,
-		z = Vector.Z;
+			x = Vector.X,
+			y = Vector.Y,
+			z = Vector.Z;
 
-	lambda =	(-1)*(x*Point.X + y * Point.Y + z * Point.Z +
-				x * (-1)*(point.X) + y * (-1)*(point.Y) + z * (-1)*(point.Z)) /
-				(x*x + y * y + z * z);
+	if ((x == y) && (y == z) && (z == 0))
+		lambda = 0;
+	else
+		lambda =	(-1)*(x*Point.X + y * Point.Y + z * Point.Z +
+					x * (-1)*(point.X) + y * (-1)*(point.Y) + z * (-1)*(point.Z)) /
+					(x*x + y * y + z * z);
 
 	PointGeometric pointProjection;
 

@@ -13,6 +13,7 @@ public:
 	PointGeometric	Point,
 					PointStart,
 					PointEnd;
+
 	VectorGeometric Vector;
 
 //	--- --- --- --- --- --- --- --- ---	// Methods

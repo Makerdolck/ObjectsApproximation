@@ -33,8 +33,7 @@ public:
 	void			operator=(PointGeometric point);		// Vector = Point
 	double			operator*(PointGeometric point);		// Vector * Point (Scalar Product)
 
-	VectorGeometric	operator*(double	   coef);			// Vector * coefficient
-
+	VectorGeometric	operator*(double coef);					// Vector * coefficient
 };
 
 

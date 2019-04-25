@@ -386,80 +386,6 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 
 	}
 
-	if (false)	//flagMiddleButtonDown
-	{
-		LineGeometric		lineOffsetEye,
-							lineOffsetAim;
-
-		lineOffsetEye.Point = pointEyeLook;
-		lineOffsetAim.Point = pointAimLook;
-
-		PointGeometric		pOld, pNew;
-		pOld = PointGeometric(mouse_x0, mouse_y0);
-		pNew = PointGeometric(point.x, point.y);
-
-
-		double	stepOffsetX = distanceAimEye * fabs(pOld.X - pNew.X) / (glnWidth / 2.f),
-				stepOffsetY = distanceAimEye * fabs(pOld.Y - pNew.Y) / (glnHeight / 2.f);
-		
-
-		if (mouse_x0 - point.x < 0)
-		{
-			lineOffsetEye.Vector = vectorRotationX * (-1);
-			lineOffsetAim.Vector = vectorRotationX * (-1);
-
-			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetX);
-			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetX);
-
-			lineOffsetEye.Point = pointEyeLook;
-			lineOffsetAim.Point = pointAimLook;
-
-			offsetView_X -= stepOffsetX;
-		}
-		if (mouse_x0 - point.x > 0)
-		{
-			lineOffsetEye.Vector = vectorRotationX;
-			lineOffsetAim.Vector = vectorRotationX;
-
-			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetX);
-			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetX);
-
-			lineOffsetEye.Point = pointEyeLook;
-			lineOffsetAim.Point = pointAimLook;
-
-			offsetView_X = stepOffsetX;
-		}
-
-		if (mouse_y0 - point.y < 0)
-		{
-			lineOffsetEye.Vector = vectorRotationY;
-			lineOffsetAim.Vector = vectorRotationY;
-
-			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetY);
-			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetY);
-
-			lineOffsetEye.Point = pointEyeLook;
-			lineOffsetAim.Point = pointAimLook;
-
-			offsetView_Y += stepOffsetY;
-		}
-		if (mouse_y0 - point.y > 0)
-		{
-			lineOffsetEye.Vector = vectorRotationY * (-1);
-			lineOffsetAim.Vector = vectorRotationY * (-1);
-
-			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetY);
-			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetY);
-
-			lineOffsetEye.Point = pointEyeLook;
-			lineOffsetAim.Point = pointAimLook;
-
-			offsetView_Y -= stepOffsetY;
-		}
-
-		Invalidate(FALSE);
-	}
-
 	if (flagMiddleButtonDown)
 	{
 		PointGeometric mouseNewInWorld;
@@ -625,7 +551,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 //	----	Message Handlers		----	Custom Messages
 //--------------------------------------------------------------
 
-// ---																							// On Middle Button Down
+// ---																							// Get World Coordinate
 void COpenGLView::GetWorldCoord(int ix, int iy, GLdouble fz, PointGeometric& coord)
 {
 	GLdouble x, y, z, winX, winY, winZ;
@@ -633,7 +559,7 @@ void COpenGLView::GetWorldCoord(int ix, int iy, GLdouble fz, PointGeometric& coo
 	winX = (GLdouble)ix;
 	winY = (GLdouble)m_iViewport[3] - iy;
 
-	fz += pointEyeLook.DistanceToPoint(pointAimLook);
+	fz += pointEyeLook.DistanceToPoint(pointAimLook);	//GetFocalLength()
 
 	// Calculate the winZ coordinate:
 	// Compensate for perspective view
@@ -649,6 +575,15 @@ void COpenGLView::GetWorldCoord(int ix, int iy, GLdouble fz, PointGeometric& coo
 	coord.X = x;
 	coord.Y = y;
 	coord.Z = z;
+}
+// ---																							// Get Screen Coordinate
+void COpenGLView::GetScreenCoord(GLdouble wX, GLdouble wY, GLdouble wZ, PointGeometric& coord)
+{
+	gluProject(	wX, wY, wZ,
+				m_dModelViewMatrix, m_dProjectionMatrix, m_iViewport,
+				&coord.X, &coord.Y, &coord.Z);
+	coord.Y = (GLdouble)m_iViewport[3] - coord.Y;
+	coord.Z += pointEyeLook.DistanceToPoint(pointAimLook);	//GetFocalLength()
 }
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Get Object Under Mouse
@@ -870,10 +805,10 @@ void COpenGLView::PaintScene(GLenum mode)
 				glColor3fv(blackColor);
 
 				glLineWidth(4);
-				DrawOpenGL_ByLineLoop(	((CylinderApprox*)(objApprox->objMath))->pointsTopCircleEdge_Copy, 
+				DrawOpenGL_ByLineLoop(	((CylinderApprox*)(objApprox->objMath))->pointsTopCircleEdge, 
 										((CylinderApprox*)(objApprox->objMath))->Line.Vector);
 			
-				DrawOpenGL_ByLineLoop(	((CylinderApprox*)(objApprox->objMath))->pointsBottomCircleEdge_Copy,
+				DrawOpenGL_ByLineLoop(	((CylinderApprox*)(objApprox->objMath))->pointsBottomCircleEdge,
 										((CylinderApprox*)(objApprox->objMath))->Line.Vector);
 				glLineWidth(1);
 			}
@@ -882,10 +817,10 @@ void COpenGLView::PaintScene(GLenum mode)
 				glColor3fv(blackColor);
 
 				glLineWidth(4);
-				DrawOpenGL_ByLineLoop(	((ConeApprox*)(objApprox->objMath))->pointsTopCircleEdge_Copy,
+				DrawOpenGL_ByLineLoop(	((ConeApprox*)(objApprox->objMath))->pointsTopCircleEdge,
 										((ConeApprox*)(objApprox->objMath))->Line.Vector);
 
-				DrawOpenGL_ByLineLoop(	((ConeApprox*)(objApprox->objMath))->pointsBottomCircleEdge_Copy,
+				DrawOpenGL_ByLineLoop(	((ConeApprox*)(objApprox->objMath))->pointsBottomCircleEdge,
 										((ConeApprox*)(objApprox->objMath))->Line.Vector);
 				glLineWidth(1);
 			}

@@ -3,12 +3,6 @@
 #ifndef __ALL_INCLUDES_APPROX_H
 #define __ALL_INCLUDES_APPROX_H
 
-//#include <ctime>
-//#include <math.h>
-////#include <afxtempl.h>
-//#include <vector>
-//#include <minmax.h>
-
 #include "ApproximationApprox.h"
 
 #include "PointGeometric.h"
@@ -35,10 +29,9 @@
 #include "ObjectApprox.h"
 
 #include "MeasureTypesEnum.h"
+#include "CompensationOptionNamesEnum.h"
 #include "MeshTrianglesStructure.h"
 
 #include "GlobalFunctions.h"
-
-//#include "..//DVector/Dvector.h"
 
 #endif /* __ALL_INCLUDES_APPROX_H */

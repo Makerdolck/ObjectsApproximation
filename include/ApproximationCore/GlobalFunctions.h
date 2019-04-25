@@ -13,10 +13,10 @@ void			GaussMethod(double	**coefficients,
 							int		dimension, 
 							double	*result);
 
-void			KramerMethod(	double** gaussCoefficients,
-								double* gaussFreeCoefficients,
-								double* gaussResult,
-								int D);
+void			KramerMethod(	double** gaussCoefficients, 
+								double* gaussFreeCoefficients, 
+								double* gaussResult, 
+								double D);
 
 PointGeometric	TransferPointToNewCoordinateSystem(	PointGeometric	point, 
 													PointGeometric	pointCenterNewCoordinateSystem,

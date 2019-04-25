@@ -12,6 +12,4 @@ struct MeshTriangles
 	std::vector<VectorGeometric>	vectorsNormal;
 };
 
-
-
 #endif /* __MESH_TRIANGLES_STRUCTURE_H__ */ 

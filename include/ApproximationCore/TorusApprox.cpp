@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <time.h>
 #include "TorusApprox.h"
 
 

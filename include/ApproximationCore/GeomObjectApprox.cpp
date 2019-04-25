@@ -4,9 +4,20 @@
 
 
 // ---																										// Constructors
-GeomObjectApprox::GeomObjectApprox() { Radius = 0.0f; Height = 0.0f; objectApproxName = nullptr; }
+GeomObjectApprox::GeomObjectApprox() 
+{
+	Radius				= 0; 
+	Height				= 0; 
+	objectApproxName	= nullptr; 
+}
 
-GeomObjectApprox::~GeomObjectApprox() { PointsForApprox.clear(); Mesh.points.clear(); Mesh.vectorsNormal.clear(); }
+GeomObjectApprox::~GeomObjectApprox() 
+{ 
+	PointsForApprox.clear(); 
+
+	Mesh.points.clear(); 
+	Mesh.vectorsNormal.clear();
+}
 // ---																										// Return the Object-Name
 char* GeomObjectApprox::GetName()
 {
@@ -18,16 +29,16 @@ void GeomObjectApprox::FindHeight(PointGeometric *points, int arraySize)
 	PointGeometric		pointMin = Line.Point,
 						pointMax = Line.Point,
 						tmpPoint;
-	VectorGeometric*	tmpVector = nullptr;
+
+	VectorGeometric		tmpVector;
 
 	for (int i = 1; i < arraySize; i++)
 	{
 		tmpPoint = Line.Vector.PointProjection(points[i], Line.Point);
 
-		delete tmpVector;
-		tmpVector = new VectorGeometric(tmpPoint, Line.Point);
+		tmpVector = VectorGeometric(tmpPoint, Line.Point);
 
-		if ((tmpVector->X >= 0 && Line.Vector.X >= 0) || (tmpVector->X <= 0 && Line.Vector.X <= 0))
+		if ((tmpVector.X >= 0 && Line.Vector.X >= 0) || (tmpVector.X <= 0 && Line.Vector.X <= 0))
 		{
 			if (pointMax.DistanceToPoint(Line.Point) < tmpPoint.DistanceToPoint(Line.Point)) {
 				pointMax = tmpPoint;
@@ -44,8 +55,6 @@ void GeomObjectApprox::FindHeight(PointGeometric *points, int arraySize)
 	}
 
 	Height = pointMin.DistanceToPoint(pointMax);
-
-	delete tmpVector;
 }
 // ---																										// Find Center
 PointGeometric GeomObjectApprox::CenterByPoints(PointGeometric *points, int arraySize)
@@ -65,3 +74,5 @@ PointGeometric GeomObjectApprox::CenterByPoints(PointGeometric *points, int arra
 
 	return PointGeometric(Line.Point.X, Line.Point.Y, Line.Point.Z);
 }
+// ---																										// Triangulation (virtual)
+void	GeomObjectApprox::Triangulation(double inAccuracy) { return; }

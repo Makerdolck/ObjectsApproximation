@@ -38,7 +38,7 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-private:
+protected:
 	GLdouble	gldAspect;
 	GLsizei		glnWidth, 
 				glnHeight;
@@ -130,6 +130,7 @@ protected:
 	void			DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj);
 
 	void			GetWorldCoord(int ix, int iy, GLdouble fz, PointGeometric& coord);
+	void			GetScreenCoord(GLdouble wX, GLdouble wY, GLdouble wZ, PointGeometric& coord);
 
 	void			DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);
 

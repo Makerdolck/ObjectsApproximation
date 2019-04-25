@@ -1,82 +1,69 @@
 #include "stdafx.h"
 
 #include "CircleApprox.h"
-
 #include "GlobalFunctions.h"
-#include <iostream>
-#include <algorithm>
+
 
 // ---																										// Constructors
-CircleApprox::CircleApprox() { objectApproxName = (char*)"circle"; }
+CircleApprox::CircleApprox()
+{
+	objectApproxName = (char*)"circle";
+}
 
 CircleApprox::~CircleApprox(){}
 // ---																										// --- APPROXIMATION ---
 double CircleApprox::FunctionApprox(PointGeometric *points, int arraySize)		// R - r
 {
 	double sum = 0;
+
 	for (int i = 0; i < arraySize; i++)
 		sum += pow(Line.Point.DistanceToPoint(points[i]) - Radius, 2);
+
 	return sum;
 }
 
 void CircleApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
 {
 	Plane.FindByPoints(&points[0], arraySize, accuracy);
-	Line	= Plane.Line;
-	
-	//VectorX = Plane.VectorX;
-	//VectorY = Plane.VectorY;
+	Line = Plane.Line;
 
-	//VectorGeometric vectorR;
+	std::vector<PointGeometric> pointsProjected;
 
 	for (int i = 0; i < arraySize; i++)
-	{
-		points[i] = Plane.PointProjection(points[i]);
+		pointsProjected.push_back(Plane.PointProjection(points[i]));
 
-		//vectorR = VectorGeometric(Line.Point, points[i], false);
-
-		//points[i].X = vectorR * VectorX;
-		//points[i].Y = vectorR * VectorY;
-		//points[i].Z = 0;				// vectorR * Line.Vector;
-	}
-
-	CenterByPoints(points, arraySize);
+	CenterByPoints(&pointsProjected[0], arraySize);
 
 	for (int i = 0; i < arraySize; i++)
-	{
-		Radius += Line.Point.DistanceToPoint(points[i]);
-	}
+		Radius += Line.Point.DistanceToPoint(pointsProjected[i]);
+
 	Radius /= (double)arraySize;
 
 	///////////		Start Approximation
 
-	double	globalDeviation = 0,
-			globalDeviationOld = 0;
+	double	globalDeviation		= 0,
+			globalDeviationOld	= 0;
 
 
-	globalDeviation = FunctionApprox(points, arraySize);
+	globalDeviation = FunctionApprox(&pointsProjected[0], arraySize);
 
 	do {
 		globalDeviationOld = globalDeviation;
 
-		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.X);	// Changing X - center
-		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.Y);	// Changing Y - center
-		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.Z);	// Changing Z - center
 
-		Approximation(points, arraySize, accuracy, &Line.Vector, &Radius);	// Radius
+		Approximation(&pointsProjected[0], arraySize, accuracy, &Line.Vector, &Line.Point.X);	// Changing X - center
+		Approximation(&pointsProjected[0], arraySize, accuracy, &Line.Vector, &Line.Point.Y);	// Changing Y - center
+		Approximation(&pointsProjected[0], arraySize, accuracy, &Line.Vector, &Line.Point.Z);	// Changing Z - center
 
-																			///////
+		Approximation(&pointsProjected[0], arraySize, accuracy, &Line.Vector, &Radius);	// Radius
 
-		globalDeviation = FunctionApprox(points, arraySize);
+
+		globalDeviation = FunctionApprox(&pointsProjected[0], arraySize);
 
 	} while (fabs(globalDeviation - globalDeviationOld) > accuracy);
-
-	//	---	---	--- Triangulation
-
-	//Triangulation(1.0f);
 }
 // ---																										// Triangulation
-void CircleApprox::Triangulation(double stepSize)
+void CircleApprox::Triangulation(double inAccuracy)
 {
 	Mesh.points.clear();
 	Mesh.vectorsNormal.clear();
@@ -87,21 +74,21 @@ void CircleApprox::Triangulation(double stepSize)
 
 	//	---	---	--- Points on bottom Circle
 
-	//	---	---	Finding the angle of displacement of a point along a circle (with Heron's formula)
+	//	---	---	Finding the angle of displacement of a point along a circle
 
-	double p = (Radius + Radius + stepSize) / 2;
-	double h = 2 * sqrt(p*(p - Radius)*(p - Radius)*(p - stepSize)) / Radius;
-
-	double angle = (asin(h / Radius) * 180.0 / PI_Approx), angelsSum;
+	double	angle		= acos((Radius - inAccuracy) / Radius) * 180.f / PI_Approx,
+			angelsSum,
+			xCompon,
+			yCompon;
 
 	//	---	---	Points on circle in Positive quarter:		+X	+Y
 
 	for (angelsSum = 0.0f; angelsSum <= 90; angelsSum += angle)
 	{
-		p = cos(angelsSum * PI_Approx / 180.0f)*Radius;;	// X component
-		h = sin(angelsSum * PI_Approx / 180.0f)*Radius;		// Y component		
+		xCompon = cos(angelsSum * PI_Approx / 180.0f) * Radius;;		// X component
+		yCompon = sin(angelsSum * PI_Approx / 180.0f) * Radius;			// Y component		
 
-		Mesh.points.push_back(PointGeometric(p, h, 0));
+		Mesh.points.push_back(PointGeometric(xCompon, yCompon, 0));
 	}
 
 	if (angelsSum < 90 || (angelsSum - angle) < 90)
@@ -155,10 +142,10 @@ void CircleApprox::Triangulation(double stepSize)
 	for (int i = 0; i < (int)Mesh.points.size(); i++)
 	{
 		Mesh.points[i] = TransferPointToNewCoordinateSystem(Mesh.points[i],
-			tmpPoint,
-			vectorX,
-			vectorY,
-			vectorZ);
+															tmpPoint,
+															vectorX,
+															vectorY,
+															vectorZ);
 	}
 
 	

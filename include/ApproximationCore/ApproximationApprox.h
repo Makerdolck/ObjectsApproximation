@@ -3,12 +3,8 @@
 #ifndef __APPROXIMATION_APPROX_H__
 #define __APPROXIMATION_APPROX_H__
 
-//#include <afxtempl.h>
-#include <math.h>
 #include <vector>
-#include <time.h>
 
-#include "PointGeometric.h"
 #include "VectorGeometric.h"
 
 ////////////////////////////////		Approximation

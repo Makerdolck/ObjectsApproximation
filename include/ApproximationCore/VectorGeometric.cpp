@@ -9,6 +9,7 @@ VectorGeometric::VectorGeometric(double x, double y, double z, bool flagNormaliz
 	X = x;
 	Y = y;
 	Z = z;
+
 	if (flagNormalize)
 		Normalize();
 }
@@ -17,6 +18,7 @@ VectorGeometric::VectorGeometric(PointGeometric pointStart, PointGeometric point
 	X = pointEnd.X - pointStart.X;
 	Y = pointEnd.Y - pointStart.Y;
 	Z = pointEnd.Z - pointStart.Z;
+
 	if (flagNormalize)
 		Normalize();
 }
@@ -26,6 +28,10 @@ VectorGeometric::~VectorGeometric(){}
 void VectorGeometric::Normalize()
 {
 	double length = sqrt(pow(X, 2) + pow(Y, 2) + pow(Z, 2));
+
+	if (length == 0)
+		return;
+
 	X /= length;
 	Y /= length;
 	Z /= length;
@@ -35,9 +41,9 @@ PointGeometric VectorGeometric::PointProjection(PointGeometric pointOut, PointGe
 {
 	double lambda;
 
-	lambda = (-1)*(X*pointOn.X + Y * pointOn.Y + Z * pointOn.Z +
-		X * (-1)*(pointOut.X) + Y * (-1)*(pointOut.Y) + Z * (-1)*(pointOut.Z)) /
-		(X*X + Y * Y + Z * Z);
+	lambda =	(-1)*(X*pointOn.X + Y * pointOn.Y + Z * pointOn.Z +
+				X * (-1)*(pointOut.X) + Y * (-1)*(pointOut.Y) + Z * (-1)*(pointOut.Z)) /
+				(X*X + Y * Y + Z * Z);
 
 	PointGeometric pointProjection;
 
@@ -72,9 +78,11 @@ double VectorGeometric::operator*(VectorGeometric vector)
 VectorGeometric VectorGeometric::operator*(double coef)
 {
 	VectorGeometric vector;
+
 	vector.X = X * coef;
 	vector.Y = Y * coef;
 	vector.Z = Z * coef;
+
 	return vector;
 }
 // ---																										// Vector + Vector

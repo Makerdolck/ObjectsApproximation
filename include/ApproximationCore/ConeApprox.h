@@ -9,19 +9,18 @@
 class ConeApprox : public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
-private:
+public:
 	PointGeometric	PointBottomSurfaceCenter;
 	PointGeometric	PointTopSurfaceCenter;
 
-public:
 	bool			IsHole;
 
 	double			Angle,
 					RadiusSmaller,
 					HeightPhantom;
 
-	std::vector<PointGeometric> pointsTopCircleEdge_Copy;
-	std::vector<PointGeometric> pointsBottomCircleEdge_Copy;
+	std::vector<PointGeometric> pointsTopCircleEdge;
+	std::vector<PointGeometric> pointsBottomCircleEdge;
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:
@@ -29,7 +28,7 @@ public:
 	~ConeApprox();
 
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
-	void			Triangulation(double stepSize = 1.0f);
+	void			Triangulation(double inAccuracy = 1.0f);
 
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);

@@ -9,9 +9,6 @@
 class PointApprox :	public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
-private:
-	PointGeometric		Point;
-
 public:
 	double				X,
 						Y,
@@ -19,11 +16,12 @@ public:
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:
-	PointApprox();
+	PointApprox(double x = 0, double y = 0, double z = 0);
 	~PointApprox();
 
 	PointApprox&	operator=(PointGeometric point);					// PointApprox = PointGeometric
-
+	operator		PointGeometric ();									// Conversation operator to PointGeometric
+	
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
 };
 

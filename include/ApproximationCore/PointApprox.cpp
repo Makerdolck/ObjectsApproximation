@@ -4,18 +4,16 @@
 
 
 // ---																										// Constructors
-PointApprox::PointApprox() { objectApproxName = (char*)"point"; X = 0; Y = 0; Z = 0; }
-
-PointApprox::~PointApprox(){}
-// ---																										// Constructors
-PointApprox&	PointApprox::operator=(PointGeometric point)
+PointApprox::PointApprox(double x, double y, double z) 
 {
-	X = point.X;
-	Y = point.Y;
-	Z = point.Z;
+	objectApproxName = (char*)"point";
 
-	return *this;
+	X = x;
+	Y = y;
+	Z = z;
 }
+
+PointApprox::~PointApprox() {}
 // ---																										// --- APPROXIMATION ---
 void PointApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
 {
@@ -24,4 +22,18 @@ void PointApprox::FindByPoints(PointGeometric *points, int arraySize, double acc
 	X = Line.Point.X;
 	Y = Line.Point.Y;
 	Z = Line.Point.Z;
+}
+// ---																										// Copy from PointGeometric
+PointApprox& PointApprox::operator=(PointGeometric point)
+{
+	X = point.X;
+	Y = point.Y;
+	Z = point.Z;
+
+	return *this;
+}
+// ---																										// Conversation operator to PointGeometric
+PointApprox::operator PointGeometric()
+{
+	return PointGeometric(X, Y, Z);
 }

@@ -103,6 +103,9 @@
     <ClCompile Include="MFCKio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\ApproximationCore\CompensationOptionNamesEnum.cpp">
+      <Filter>Source Files\ApproxCore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -215,6 +218,9 @@
     </ClInclude>
     <ClInclude Include="MFCKioView.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ApproximationCore\CompensationOptionNamesEnum.h">
+      <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

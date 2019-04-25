@@ -6,11 +6,20 @@
 // ---																										// Constructors
 PlaneGeometric::PlaneGeometric(){}
 PlaneGeometric::PlaneGeometric(LineGeometric line){ Line = line; }
-PlaneGeometric::PlaneGeometric(VectorGeometric vector) { Line.Vector = vector; Normalize(); }
-PlaneGeometric::PlaneGeometric(PointGeometric point, VectorGeometric vector) { Line = LineGeometric(point, vector); Normalize(); }
+PlaneGeometric::PlaneGeometric(VectorGeometric vector) 
+{ 
+	Line.Vector = vector; 
+	Normalize(); 
+}
+PlaneGeometric::PlaneGeometric(PointGeometric point, VectorGeometric vector) 
+{ 
+	Line = LineGeometric(point, vector); 
+	Normalize(); 
+}
 PlaneGeometric::PlaneGeometric(PointGeometric point1, PointGeometric point2, PointGeometric point3)
 {
 	double A, B, C/*, D*/;
+
 	A = point1.Y*(point2.Z - point3.Z) +
 		point2.Y*(point3.Z - point1.Z) +
 		point3.Y*(point1.Z - point2.Z);
@@ -29,7 +38,7 @@ PlaneGeometric::PlaneGeometric(PointGeometric point1, PointGeometric point2, Poi
 		point3.X*(point1.Y*point2.Z - point2.Y*point1.Z)
 		);*/
 
-	Line.Point = point1;
+	Line.Point	= point1;
 	Line.Vector = VectorGeometric(A, B, C);
 }
 
@@ -42,9 +51,9 @@ void PlaneGeometric::Normalize()
 // ---																										// Point Projection
 PointGeometric PlaneGeometric::PointProjection(PointGeometric pointOut)
 {
-	PointGeometric pointProjection;
-	VectorGeometric vectorBetween(Line.Point, pointOut, false);				// Vector between point on and out of plane
-	double distance = vectorBetween * Line.Vector;							// Scalar distance from point to plane along the normal
+	PointGeometric	pointProjection;
+	VectorGeometric vectorBetween(Line.Point, pointOut, false);	// Vector between point on and out of plane
+	double			distance = vectorBetween * Line.Vector;		// Scalar distance from point to plane along the normal
 
 	pointProjection.X = pointOut.X - distance * Line.Vector.X;
 	pointProjection.Y = pointOut.Y - distance * Line.Vector.Y;

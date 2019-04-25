@@ -3,7 +3,7 @@
 #ifndef __POINT_GEOMETRIC_H__
 #define __POINT_GEOMETRIC_H__
 
-#define PI_Approx 3.1415926535897932384626433832795
+#define PI_Approx 3.141592653589793
 
 #include <math.h>
 
@@ -18,7 +18,7 @@ public:
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:
-	PointGeometric(double x = 0.0f, double y = 0.0f, double z = 0.0f);
+	PointGeometric(double x = 0, double y = 0, double z = 0);
 	~PointGeometric();
 
 	double			DistanceToPoint(PointGeometric point);

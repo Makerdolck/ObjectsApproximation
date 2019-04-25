@@ -6,9 +6,22 @@
 
 
 // ---																										// Constructors
-RectangleApprox::RectangleApprox() { Width = 0, Height = 0; objectApproxName = (char*)"rectangle"; WanderingPoints = nullptr; }
+RectangleApprox::RectangleApprox()
+{
+	Width				= 0;
+	Height				= 0;
+	maxX				= 0;
+	minX				= 0;
+	maxY				= 0;
+	minY				= 0;
+	objectApproxName	= (char*)"rectangle";
+	WanderingPoints		= nullptr;
+}
 
-RectangleApprox::~RectangleApprox() { delete [] WanderingPoints; }
+RectangleApprox::~RectangleApprox()
+{
+	delete [] WanderingPoints;
+}
 // ---										 																// Find Height, Width and MaxMin X_Y
 void RectangleApprox::FindWidthHeightMinMaxXY(PointGeometric *points, int arraySize)
 {
@@ -59,15 +72,13 @@ double RectangleApprox::FunctionApprox(PointGeometric *points, int arraySize)
 	sum += Width;
 	sum += Height;
 
-	/*for (int i = 0; i < arraySize; i++)
-	{
-		
-	}*/
 	return sum;
 }
 
 void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
 {
+	std::vector<PointGeometric> pointsProjected;
+
 	WanderingPoints = new PointGeometric[arraySize];
 
 	Plane.FindByPoints(&points[0], arraySize, accuracy);
@@ -78,67 +89,44 @@ void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double
 	VectorY = VectorZ ^ VectorX;
 
 	for (int i = 0; i < arraySize; i++)
-	{
-		points[i] = Plane.PointProjection(points[i]);
-	}
+		pointsProjected.push_back(Plane.PointProjection(points[i]));
 
 	WanderingCenter = Line.Point;
 
-	FindPointsCoordinates(&points[0], arraySize);
-	//FindWidthHeightMinMaxXY(&points[0], arraySize);
+	FindPointsCoordinates(&pointsProjected[0], arraySize);
 
-
-
-//	Line.Vector = PlaneGeometric(points[0], points[1], points[2]).Line.Vector;	// Find center vector
-//	Line.Point = CenterByPoints(points, arraySize);																				// Find center point
-//
-//	PointGeometric tmpCenter = Line.Point;
-//
 	///////////		Start Approximation
 
-	double	globalDeviation = 0,
-			globalDeviationOld = 0;
+	double	globalDeviation		= 0,
+			globalDeviationOld	= 0;
 
-	globalDeviation = FunctionApprox(points, arraySize);
+	globalDeviation = FunctionApprox(&pointsProjected[0], arraySize);
 
 	do {
 		globalDeviationOld = globalDeviation;
 
-		///////////
 
-		Approximation(points, arraySize, accuracy, &VectorX, &VectorX.X);	// Changing X - vector
-		Approximation(points, arraySize, accuracy, &VectorX, &VectorX.Y);	// Changing Y - vector
-		Approximation(points, arraySize, accuracy, &VectorX, &VectorX.Z);	// Changing Z - vector
+		Approximation(&pointsProjected[0], arraySize, accuracy, &VectorX, &VectorX.X);	// Changing X - vector
+		Approximation(&pointsProjected[0], arraySize, accuracy, &VectorX, &VectorX.Y);	// Changing Y - vector
+		Approximation(&pointsProjected[0], arraySize, accuracy, &VectorX, &VectorX.Z);	// Changing Z - vector
 
-		Approximation(points, arraySize, accuracy, &VectorX, &WanderingCenter.X);		// Changing X - center
-		Approximation(points, arraySize, accuracy, &VectorX, &WanderingCenter.Y);		// Changing Y - center
-		Approximation(points, arraySize, accuracy, &VectorX, &WanderingCenter.Z);		// Changing Z - center
+		Approximation(&pointsProjected[0], arraySize, accuracy, &VectorX, &WanderingCenter.X);		// Changing X - center
+		Approximation(&pointsProjected[0], arraySize, accuracy, &VectorX, &WanderingCenter.Y);		// Changing Y - center
+		Approximation(&pointsProjected[0], arraySize, accuracy, &VectorX, &WanderingCenter.Z);		// Changing Z - center
 
-		///////////
 
-		globalDeviation = FunctionApprox(points, arraySize);
+		globalDeviation = FunctionApprox(&pointsProjected[0], arraySize);
 
 	} while (fabs(globalDeviation - globalDeviationOld) > accuracy);
 
 
 	Line.Point = Plane.PointProjection(WanderingCenter);
-
-	//	---	---	--- Triangulation
-
-	//Triangulation(1.0f);
 }
 // ---																										// Triangulation
-void RectangleApprox::Triangulation(double stepSize)
+void RectangleApprox::Triangulation(double inAccuracy)
 {
 	Mesh.points.clear();
 	Mesh.vectorsNormal.clear();
-
-
-	double	LengthX = fabs(minX) + fabs(maxX),
-			HeightY = fabs(minY) + fabs(maxY);
-
-	double	tmpStepSizeX = stepSize,
-			tmpStepSizeY = stepSize;
 
 
 	Mesh.points.push_back(PointGeometric(minX, minY));										// -|-
@@ -150,48 +138,19 @@ void RectangleApprox::Triangulation(double stepSize)
 	Mesh.points.push_back(PointGeometric(minX, maxY));										// -|+
 
 
-	//for (double stepSumY = stepSize; stepSumY <= HeightY; stepSumY += tmpStepSizeY)
-	//{
-	//	tmpStepSizeX = stepSize;
-	//
-	//	for (double stepSumX = stepSize; stepSumX <= LengthX; stepSumX += tmpStepSizeX)
-	//	{
-	//		Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY - stepSize));		// -|-
-	//		Mesh.points.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
-	//		Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
-	//
-	//		Mesh.points.push_back(PointGeometric(stepSumX, stepSumY));								// 0|0
-	//		Mesh.points.push_back(PointGeometric(stepSumX, stepSumY - stepSize));					// 0|-
-	//		Mesh.points.push_back(PointGeometric(stepSumX - stepSize, stepSumY));					// -|0
-	//
-	//		if ((LengthX - stepSumX) < stepSize && (LengthX - stepSumX) != 0)
-	//		{
-	//			tmpStepSizeX = LengthX - stepSumX;
-	//		}
-	//	}
-	//
-	//	if ((HeightY - stepSumY) < stepSize && (HeightY - stepSumY) != 0)
-	//	{
-	//		tmpStepSizeY = HeightY - stepSumY;
-	//	}
-	//}
-
-
 	//	---	---	Transfer points from XY plane to cylinder bottom surface 
 
-	PlaneGeometric tmpPlane = Line;
-
 	VectorGeometric vectorZ, vectorY, vectorX;
+
 	vectorX = VectorX;
 	vectorZ = Line.Vector;
 	vectorY = vectorX ^ vectorZ;
 
-	PointGeometric tmpPoint = Line.Point;	// Center point of new coordinate system
 
 	for (int i = 0; i < (int)Mesh.points.size(); i++)
 	{
 		Mesh.points[i] = TransferPointToNewCoordinateSystem(	Mesh.points[i],
-																tmpPoint,
+																Line.Point,
 																vectorX,
 																vectorY,
 																vectorZ);

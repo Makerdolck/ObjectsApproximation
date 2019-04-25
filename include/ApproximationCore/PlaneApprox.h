@@ -5,16 +5,13 @@
 
 #include "GeomObjectApprox.h"
 #include "PlaneGeometric.h"
-#include "VectorGeometric.h"
+
 
 class PlaneApprox : public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 private:
 	PlaneGeometric	Plane;
-
-public:
-	
 
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:

@@ -2,7 +2,6 @@
 
 #include "MeasureTypesEnum.h"
 
-
 // ---																										// Constructors
 MeasureTypesEnum::MeasureTypesEnum(){}
 
