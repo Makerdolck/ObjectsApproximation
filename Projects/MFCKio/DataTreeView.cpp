@@ -128,7 +128,7 @@ void DataTreeView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	if (nChar == 'F')		// 'F' is pressed
 	{
-		pView->FocusedOn((ObjectApprox*)pCtrl->GetItemData(focused_TI));
+		pView->FocusingOn((ObjectApprox*)pCtrl->GetItemData(focused_TI));
 			
 	}
 
@@ -164,7 +164,7 @@ void DataTreeView::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
 // ---																					// On New Object for Visualize is coming
 LRESULT DataTreeView::OnAddNewObjToTree(WPARAM wParam, LPARAM lParam)
 {
-	ObjectApprox			*object;
+	ObjectApprox			*object = nullptr;
 
 	if (objectsArray->back()->flagReady == true)
 		object = objectsArray->back();
@@ -232,7 +232,7 @@ LRESULT DataTreeView::OnAddNewObjToTree(WPARAM wParam, LPARAM lParam)
 	//pCtrl->Expand(TIR_Points, TVE_EXPAND);
 	//pCtrl->Expand(TIR_Points, TVE_COLLAPSE);
 
-	pCtrl->SetItemData(treeItem, (DWORD64)object);
+	pCtrl->SetItemData(treeItem, (DWORD_PTR)object); // DWORD64
 
 	pCtrl->Invalidate();
 	

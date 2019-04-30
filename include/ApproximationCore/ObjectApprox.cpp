@@ -16,7 +16,22 @@ ObjectApprox::ObjectApprox()
 
 ObjectApprox::~ObjectApprox()
 {
-	delete objMath;
+	if (objMath->GetName() == PointApprox().GetName())
+		delete (PointApprox*)objMath;
+	else if (objMath->GetName() == LineSegmentApprox().GetName())
+		delete (LineSegmentApprox*)objMath;
+	else if (objMath->GetName() == RectangleApprox().GetName())
+		delete (RectangleApprox*)objMath;
+	else if (objMath->GetName() == CircleApprox().GetName())
+		delete (CircleApprox*)objMath;
+	else if (objMath->GetName() == CylinderApprox().GetName())
+		delete (CylinderApprox*)objMath;
+	else if (objMath->GetName() == ConeApprox().GetName())
+		delete (ConeApprox*)objMath;
+	else if (objMath->GetName() == SphereApprox().GetName())
+		delete (SphereApprox*)objMath;
+	else
+		delete objMath;
 }
 // ---																										// Update Compensation Option
 void ObjectApprox::UpdateCompensationOption(wchar_t* option, float value)
