@@ -18,19 +18,19 @@ PlaneGeometric::PlaneGeometric(PointGeometric point, VectorGeometric vector)
 }
 PlaneGeometric::PlaneGeometric(PointGeometric point1, PointGeometric point2, PointGeometric point3)
 {
-	double A, B, C/*, D*/;
+	//double A, B, C/*, D*/;
 
-	A = point1.Y*(point2.Z - point3.Z) +
-		point2.Y*(point3.Z - point1.Z) +
-		point3.Y*(point1.Z - point2.Z);
+	//A = point1.Y*(point2.Z - point3.Z) +
+	//	point2.Y*(point3.Z - point1.Z) +
+	//	point3.Y*(point1.Z - point2.Z);
 
-	B = point1.Z*(point2.X - point3.X) +
-		point2.Z*(point3.X - point1.X) +
-		point3.Z*(point1.X - point2.X);
+	//B = point1.Z*(point2.X - point3.X) +
+	//	point2.Z*(point3.X - point1.X) +
+	//	point3.Z*(point1.X - point2.X);
 
-	C = point1.X*(point2.Y - point3.Y) +
-		point2.X*(point3.Y - point1.Y) +
-		point3.X*(point1.Y - point2.Y);
+	//C = point1.X*(point2.Y - point3.Y) +
+	//	point2.X*(point3.Y - point1.Y) +
+	//	point3.X*(point1.Y - point2.Y);
 
 	/*D = (-1)*(
 		point1.X*(point2.Y*point3.Z - point3.Y*point2.Z) +
@@ -39,7 +39,8 @@ PlaneGeometric::PlaneGeometric(PointGeometric point1, PointGeometric point2, Poi
 		);*/
 
 	Line.Point	= point1;
-	Line.Vector = VectorGeometric(A, B, C);
+	//Line.Vector = VectorGeometric(A, B, C);
+	Line.Vector = VectorGeometric(point1, point2) ^ VectorGeometric(point1, point3);
 }
 
 PlaneGeometric::~PlaneGeometric(){}
@@ -66,7 +67,7 @@ VectorGeometric PlaneGeometric::VectorProjection(VectorGeometric vectorOut, bool
 {
 	VectorGeometric vectorProjection;
 	
-	vectorProjection = vectorOut - Line.Vector * ((vectorOut*Line.Vector) / (Line.Vector*Line.Vector));
+	vectorProjection = vectorOut - Line.Vector * (vectorOut * Line.Vector);
 
 	if (flagNormalize)
 		vectorProjection.Normalize();

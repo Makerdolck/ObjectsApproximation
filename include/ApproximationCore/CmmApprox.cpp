@@ -20,6 +20,8 @@ CmmApprox::CmmApprox()
 	Init		= (INIT *)::GetProcAddress(hLibrary, "Init");
 	GetPoint	= (GETPOINT *)::GetProcAddress(hLibrary, "GetPoint");
 	DisConnect	= (DISCONNECT *)::GetProcAddress(hLibrary, "DisConnect");
+	Move = (MOVE*)::GetProcAddress(hLibrary, "Move");
+	Home = (HOME*)::GetProcAddress(hLibrary, "Home");
 }
 
 CmmApprox::~CmmApprox()
@@ -59,4 +61,12 @@ void CmmApprox::Disconect_()
 	(*DisConnect)();
 
 	flagConnected = false;
+}
+void CmmApprox::Move_(double *X, double *Y, double *Z, BOOL bTouch)
+{
+	(*Move)(X, Y, Z, bTouch);
+}
+void CmmApprox::Home_()
+{
+	(*Home)();
 }

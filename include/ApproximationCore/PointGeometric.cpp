@@ -18,24 +18,24 @@ double PointGeometric::DistanceToPoint(PointGeometric point)
 // ---																										// Point * coefficient
 PointGeometric	PointGeometric::operator*(double coef)
 {
-	PointGeometric	point;
+	PointGeometric	pointRezult;
 
-	point.X = X * coef;
-	point.Y = Y * coef;
-	point.Z = Z * coef;
+	pointRezult.X = X * coef;
+	pointRezult.Y = Y * coef;
+	pointRezult.Z = Z * coef;
 
-	return point;
+	return pointRezult;
 }
 // ---																										// Point / coefficient
 PointGeometric	PointGeometric::operator/(double coef)
 {
-	PointGeometric	point;
+	PointGeometric	pointRezult;
 
-	point.X = X / coef;
-	point.Y = Y / coef;
-	point.Z = Z / coef;
+	pointRezult.X = X / coef;
+	pointRezult.Y = Y / coef;
+	pointRezult.Z = Z / coef;
 
-	return point;
+	return pointRezult;
 }
 // ---																										// Point - Point
 PointGeometric PointGeometric::operator-(PointGeometric point)
@@ -62,24 +62,24 @@ PointGeometric PointGeometric::operator+(PointGeometric point)
 // ---																										// Point + Vector
 PointGeometric PointGeometric::operator+(VectorGeometric vector)
 {
-	PointGeometric point;
+	PointGeometric pointRezult;
 
-	point.X = X + vector.X;
-	point.Y = Y + vector.Y;
-	point.Z = Z + vector.Z;
+	pointRezult.X = X + vector.X;
+	pointRezult.Y = Y + vector.Y;
+	pointRezult.Z = Z + vector.Z;
 
-	return point;
+	return pointRezult;
 }
 // ---																										// Point - Vector
 PointGeometric PointGeometric::operator-(VectorGeometric vector)
 {
-	PointGeometric point;
+	PointGeometric pointRezult;
 
-	point.X = X - vector.X;
-	point.Y = Y - vector.Y;
-	point.Z = Z - vector.Z;
+	pointRezult.X = X - vector.X;
+	pointRezult.Y = Y - vector.Y;
+	pointRezult.Z = Z - vector.Z;
 
-	return point;
+	return pointRezult;
 }
 // ---																										// Point == Point
 bool PointGeometric::operator==(PointGeometric point)

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "CompensationOptionNamesEnum.h"
+#include <afxcom_.h>
 
 // ---																										// Constructors
 CompensationOptionNamesEnum::CompensationOptionNamesEnum()

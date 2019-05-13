@@ -226,6 +226,8 @@
     <ClInclude Include="..\..\include\OutSource\DVector\Dvector.h" />
     <ClInclude Include="..\..\include\OutSource\Matrix.h" />
     <ClInclude Include="..\..\include\OutSource\Reference.h" />
+    <ClInclude Include="..\..\include\Traekt.h" />
+    <ClInclude Include="CAutoDlg.h" />
     <ClInclude Include="DialogObjectProperties.h" />
     <ClInclude Include="DialogMachine.h" />
     <ClInclude Include="DialogMeasure.h" />
@@ -265,6 +267,8 @@
     <ClCompile Include="..\..\include\OutSource\DVector\Dvector.cpp" />
     <ClCompile Include="..\..\include\OutSource\Matrix.cpp" />
     <ClCompile Include="..\..\include\OutSource\Reference.cpp" />
+    <ClCompile Include="..\..\include\Traekt.cpp" />
+    <ClCompile Include="CAutoDlg.cpp" />
     <ClCompile Include="DialogObjectProperties.cpp" />
     <ClCompile Include="DialogMachine.cpp" />
     <ClCompile Include="DialogMeasure.cpp" />

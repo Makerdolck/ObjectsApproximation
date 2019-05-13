@@ -106,6 +106,8 @@
     <ClCompile Include="..\..\include\ApproximationCore\CompensationOptionNamesEnum.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\Traekt.cpp" />
+    <ClCompile Include="CAutoDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -222,6 +224,8 @@
     <ClInclude Include="..\..\include\ApproximationCore\CompensationOptionNamesEnum.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Traekt.h" />
+    <ClInclude Include="CAutoDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\buttons.bmp">
