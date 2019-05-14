@@ -252,7 +252,7 @@ int	SphereApprox::IntersectionSphereAndCircle(CircleApprox Circle, PointGeometri
 	double D;
 	PlaneGeometric Plane(Circle.Line);
 	CircleGeometric Circle1;
-	CircleGeometric Circle2(Circle.Line, Radius);
+	CircleGeometric Circle2(Circle.Line, Circle.Radius);
 
 	D = (-1) * (Plane.Line.Vector.X * Plane.Line.Point.X + Plane.Line.Vector.Y * Plane.Line.Point.Y + Plane.Line.Vector.Z * Plane.Line.Point.Z);
 	double t;
