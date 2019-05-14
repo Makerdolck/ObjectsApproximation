@@ -37,3 +37,11 @@ PointApprox::operator PointGeometric()
 {
 	return PointGeometric(X, Y, Z);
 }
+// ---																										//	---	Intersections ---
+
+// ---																										// PointBetweenPointMiddle
+PointGeometric PointApprox::PointBetweenPointMiddle(PointApprox point2) {
+	PointGeometric pointin(X, Y, Z);
+	PointGeometric  pointout(point2.X, point2.Y, point2.Z);
+	return pointin.PointBetween(pointout);
+}

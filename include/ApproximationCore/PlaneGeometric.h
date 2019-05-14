@@ -24,6 +24,11 @@ public:
 
 	PointGeometric	PointProjection(PointGeometric pointOut);
 	VectorGeometric	VectorProjection(VectorGeometric vectorOut, bool flagNormalize = true);
+
+	PointGeometric  PointBetweenPlaneMiddle(PointGeometric point);
+	int				PlaneBetweenLine(LineGeometric vectorLine, PointGeometric* pointOut);
+	int				PlaneAngleLine(LineGeometric Lline);
+	int				PlaneIntersectionPlane(PlaneGeometric Plane2, LineGeometric* line);
 };
 
 #endif /* __PLANE_GEOMETRIC_H__ */ 

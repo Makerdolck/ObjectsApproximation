@@ -1,15 +1,6 @@
 #include "stdafx.h"
 #include <Traekt.h>
 #include <ApproximationCore\_ALLincludesCore.h>
-//#include <ApproximationCore\CmmApprox.h>
-//#include <ApproximationCore\GlobalFunctions.h>
-//#include <ApproximationCore\CircleApprox.h>
-//#include <ApproximationCore\PointApprox.h>
-//#include <ApproximationCore\LineGeometric.h>
-//#include <ApproximationCore\CircleGeometric.h>
-//#include <ApproximationCore\CylinderApprox.h>
-//#include <ApproximationCore\GlobalFunctions.h>
-//#include <ApproximationCore\PlaneGeometric.h>
 #include <iostream>
 #include <algorithm>
 
@@ -23,12 +14,6 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 	bool inside = ((StTr*)Struct)->TrBoss;
 	bool part = ((StTr*)Struct)->TrPart;
 	CmmApprox* pCMM = ((StTr*)Struct)->TrCmm;
-
-	/*VectorGeometric VectZ(0,0,1);
-	if (VectZ*CylinderTraekt.Line.Vector < 0)
-	{
-	CylinderTraekt.Line.Vector= CylinderTraekt.Line.Vector*(-1);
-	}*/
 	CircleApprox CircleTraekt;
 	LineGeometric LineTraekt;
 	LineTraekt.Point = CylinderTraekt.Line.CreatePointOnDistance(CylinderTraekt.Height / 2, false);
@@ -36,9 +21,6 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 
 	int PtDist = 10;
 	int ToolSize = 10;
-
-	
-	
 	short sh = 0;
 	
 	PointGeometric PointMach;
@@ -67,7 +49,8 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 	double p;
 	double h;
 	double angle1, anglesSum;
-	double /*angleF, angleL,*/ angle;
+	double angle;
+	int forPntCnt = 0;
 	LineGeometric tmpLine;
 	PointGeometric tmpPoint;
 	PointGeometric tmpPoint1;
@@ -80,7 +63,6 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 	CircleTraekt.Line.Point = LineTraekt.CreatePointOnDistance(0);
 	if (part)
 	{
-
 		PlaneTr.Line.Point = CircleTraekt.Line.Point;
 		PlaneTr.Line.Vector = CircleTraekt.Line.Vector;
 		for (int i = 0; i < (int)CylinderTraekt.PointsForApprox.size(); i++)
@@ -113,7 +95,6 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 			vectorY = vectorY * (-1);
 		}
 
-
 		p = (CircleTraekt.Radius + CircleTraekt.Radius + VPart[Fpoint].DistanceToPoint(VPart[Lpoint])) / 2;
 		h = 2 * sqrt(p*(p - CircleTraekt.Radius)*(p - CircleTraekt.Radius)*(p - VPart[Fpoint].DistanceToPoint(VPart[Lpoint]))) / VPart[Fpoint].DistanceToPoint(VPart[Lpoint]);
 
@@ -124,21 +105,9 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 		else
 		{
 			angle1 = 2 * (asin(VPart[Fpoint].DistanceToPoint(VPart[Lpoint]) / (2 * CircleTraekt.Radius))*180.0f / PI_Approx);
-			//angle1 = 180.0 - 2 * (acos(VPart[Fpoint].DistanceToPoint(VPart[Lpoint]) / (2 * CircleTraekt.Radius))*180.0f / PI_Approx);
-			//(asin(h / CircleTraekt.Radius) * 180.0 / PI_Approx);
 		}
-		/*p = (CircleTraekt.Radius + CircleTraekt.Radius + CylinderTraekt.PointsForApprox[0].DistanceToPoint(VPart[Fpoint])) / 2;
-		h = 2 * sqrt(p*(p - CircleTraekt.Radius)*(p - CircleTraekt.Radius)*(p - CylinderTraekt.PointsForApprox[0].DistanceToPoint(VPart[Fpoint]))) / CircleTraekt.Radius;
-		angleF = (asin(h / CircleTraekt.Radius) * 180.0 / PI_Approx);
-		p = (CircleTraekt.Radius + CircleTraekt.Radius + CylinderTraekt.PointsForApprox[0].DistanceToPoint(VPart[Lpoint])) / 2;
-		h = 2 * sqrt(p*(p - CircleTraekt.Radius)*(p - CircleTraekt.Radius)*(p - CylinderTraekt.PointsForApprox[0].DistanceToPoint(VPart[Lpoint]))) / CircleTraekt.Radius;
-		angleL = (asin(h / CircleTraekt.Radius) * 180.0 / PI_Approx);*/
-		angle = angle1/ (step - 1);//(angleL - angleF)/step;
-
-																						/*FILE* dots;
-																						dots = fopen("D:\\dots.txt", "wt");
-																						int i = 0;*/
-		int forPntCnt = 0;
+		angle = angle1/ (step - 1);
+		
 		CircleTraekt.Mesh.points.clear();
 		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
 		{
@@ -151,9 +120,6 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 			forPntCnt++;
 		}
 		/*fclose(dots);*/
-
-
-
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
 			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
@@ -167,7 +133,23 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 	else
 	{
 		angle = 360.0 / step;
-		CircleTraekt.Triangulation(2*(sin(angle* PI_Approx / 180.0f))*CircleTraekt.Radius);
+		CircleTraekt.Mesh.points.clear();
+		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
+		{
+			p = cos(anglesSum * PI_Approx / 180.0f) * CircleTraekt.Radius;	// X component
+			h = sin(anglesSum * PI_Approx / 180.0f) * CircleTraekt.Radius;	// Y component		
+			CircleTraekt.Mesh.points.push_back(PointGeometric(p, h, 0));
+			forPntCnt++;
+		}
+		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
+		{
+			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+				CircleTraekt.Line.Point,
+				vectorX,
+				vectorY,
+				vectorZ);
+		}
+		CircleTraekt.Mesh.vectorsNormal.push_back(CircleTraekt.Line.Vector);
 		MinDist = PointMach.DistanceToPoint(CircleTraekt.Mesh.points[0]);
 		for (int i = 1; i<(int)CircleTraekt.Mesh.points.size(); i++)
 		{
@@ -218,7 +200,6 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 			else
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius + PtDist);
-				//ForP1->GetPoint_(&CurX, &CurY, &CurZ, &sh);
 				double xPre = CircleTraekt.Line.Point.DistanceToPoint(tmpPoint1);
 
 				xVec.Point = CircleTraekt.Line.Point;
@@ -238,9 +219,6 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 			}
 			pCMM->Move_(&CircleTraekt.Mesh.points[i].X, &CircleTraekt.Mesh.points[i].Y, &CircleTraekt.Mesh.points[i].Z, true);
 		}
-
-		//CircleTraekt.Mesh.points.clear();
-
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
 			lineOffset.Point = CircleTraekt.Mesh.points[i];
@@ -257,7 +235,6 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 
 UINT TraektCone(LPVOID Struct)
 {
-	
 	ConeApprox * ConeTraekt1 = (ConeApprox *)((StTr*)Struct)->TrGeom;
 	ConeApprox ConeTraekt = *ConeTraekt1;
 	int step = ((StTr*)Struct)->TrStep;
@@ -272,25 +249,15 @@ UINT TraektCone(LPVOID Struct)
 
 	int PtDist = 10;
 	int ToolSize = 10;
-
-	
 	
 	short sh = 0;
 	PointGeometric PointMach;
 	pCMM->GetPoint_(&PointMach.X, &PointMach.Y, &PointMach.Z, &sh);
 	
-	
 	int MinN = 0;
 	double MinDist;
 	CircleTraekt.Radius = ConeTraekt.Radius;
 	CircleTraekt.Line.Vector = ConeTraekt.Line.Vector;
-	//if (inside)
-	//{
-	//	PointGeometric inFirst;
-	//	inFirst = ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height + ToolSize, false);
-	//	//Move_(&xMach, &yMach, &inFirst.Z, false);
-	//	ForP1->Move_(&inFirst.X, &inFirst.Y, &inFirst.Z, false);
-	//}
 
 	PlaneGeometric PlaneTr;
 	LineGeometric LinePart;
@@ -303,7 +270,8 @@ UINT TraektCone(LPVOID Struct)
 	double p;
 	double h;
 	double angle1, anglesSum;
-	double /*angleF, angleL,*/ angle;
+	double angle;
+	int forPntCnt = 0;
 	LineGeometric tmpLine;
 	PointGeometric tmpPoint;
 	PointGeometric tmpPoint1;
@@ -311,7 +279,6 @@ UINT TraektCone(LPVOID Struct)
 	LineGeometric xVec;
 	PointGeometric xP;
 	VectorGeometric yCoord;
-
 
 	CircleTraekt.Line.Point = LineTraekt.CreatePointOnDistance(0);
 	if (part)
@@ -348,7 +315,6 @@ UINT TraektCone(LPVOID Struct)
 			vectorY = vectorY * (-1);
 		}
 
-
 		p = (CircleTraekt.Radius + CircleTraekt.Radius + VPart[Fpoint].DistanceToPoint(VPart[Lpoint])) / 2;
 		h = 2 * sqrt(p*(p - CircleTraekt.Radius)*(p - CircleTraekt.Radius)*(p - VPart[Fpoint].DistanceToPoint(VPart[Lpoint]))) / VPart[Fpoint].DistanceToPoint(VPart[Lpoint]);
 
@@ -361,12 +327,12 @@ UINT TraektCone(LPVOID Struct)
 			angle1 = 2 * (asin(VPart[Fpoint].DistanceToPoint(VPart[Lpoint]) / (2 * CircleTraekt.Radius))*180.0f / PI_Approx);//(asin(h / CircleTraekt.Radius) * 180.0 / PI_Approx);
 		}
 		
-		angle = angle1/ (step - 1);//(angleL - angleF)/step;
+		angle = angle1/ (step - 1);
 
 		/*FILE* dots;
 		dots = fopen("D:\\dots.txt", "wt");
 		int i = 0;*/
-		int forPntCnt = 0;
+		
 		CircleTraekt.Mesh.points.clear();
 		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
 		{
@@ -380,8 +346,6 @@ UINT TraektCone(LPVOID Struct)
 		}
 		/*fclose(dots);*/
 
-
-
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
 			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
@@ -390,12 +354,28 @@ UINT TraektCone(LPVOID Struct)
 				vectorY,
 				vectorZ);
 		}
-		//CircleTraekt.Mesh.vectorsNormal.push_back(CircleTraekt.Line.Vector);
+		CircleTraekt.Mesh.vectorsNormal.push_back(CircleTraekt.Line.Vector);
 	}
 	else
 	{
 		angle = 360.0 / step;
-		CircleTraekt.Triangulation(2 * (sin(angle* PI_Approx / 180.0f))*CircleTraekt.Radius);
+		CircleTraekt.Mesh.points.clear();
+		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
+		{
+			p = cos(anglesSum * PI_Approx / 180.0f) * CircleTraekt.Radius;	// X component
+			h = sin(anglesSum * PI_Approx / 180.0f) * CircleTraekt.Radius;	// Y component		
+			CircleTraekt.Mesh.points.push_back(PointGeometric(p, h, 0));
+			forPntCnt++;
+		}
+		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
+		{
+			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+				CircleTraekt.Line.Point,
+				vectorX,
+				vectorY,
+				vectorZ);
+		}
+		CircleTraekt.Mesh.vectorsNormal.push_back(CircleTraekt.Line.Vector);
 		MinDist = PointMach.DistanceToPoint(CircleTraekt.Mesh.points[0]);
 		for (int i = 1; i<(int)CircleTraekt.Mesh.points.size(); i++)
 		{
@@ -565,6 +545,7 @@ UINT TraektSphere(LPVOID Struct)
 	double h;
 	double angle1, anglesSum;
 	double /*angleF, angleL,*/ angle;
+	int forPntCnt = 0;
 	PlaneGeometric PlaneTr;
 	LineGeometric LinePart;
 	if (part)
@@ -595,7 +576,6 @@ UINT TraektSphere(LPVOID Struct)
 			}
 		}
 
-		
 
 		vectorX = VectorGeometric(CircleTraekt.Line.Point, VPart1[Fpoint1]);
 		vectorZ = CircleTraekt.Line.Vector;
@@ -617,18 +597,12 @@ UINT TraektSphere(LPVOID Struct)
 		{
 			angle1 = 2 * (asin(VPart1[Fpoint1].DistanceToPoint(VPart1[Lpoint1]) / (2 * CircleTraekt.Radius))*180.0f / PI_Approx);//(asin(h / CircleTraekt.Radius) * 180.0 / PI_Approx);
 		}
-		/*p = (CircleTraekt.Radius + CircleTraekt.Radius + CylinderTraekt->PointsForApprox[0].DistanceToPoint(VPart[Fpoint])) / 2;
-		h = 2 * sqrt(p*(p - CircleTraekt.Radius)*(p - CircleTraekt.Radius)*(p - CylinderTraekt->PointsForApprox[0].DistanceToPoint(VPart[Fpoint]))) / CircleTraekt.Radius;
-		angleF = (asin(h / CircleTraekt.Radius) * 180.0 / PI_Approx);
-		p = (CircleTraekt.Radius + CircleTraekt.Radius + CylinderTraekt->PointsForApprox[0].DistanceToPoint(VPart[Lpoint])) / 2;
-		h = 2 * sqrt(p*(p - CircleTraekt.Radius)*(p - CircleTraekt.Radius)*(p - CylinderTraekt->PointsForApprox[0].DistanceToPoint(VPart[Lpoint]))) / CircleTraekt.Radius;
-		angleL = (asin(h / CircleTraekt.Radius) * 180.0 / PI_Approx);*/
+		
 		angle = angle1/(step-1);//(angleL - angleF)/step;
 
 																						/*FILE* dots;
 																						dots = fopen("D:\\dots.txt", "wt");
 																						int i = 0;*/
-		int forPntCnt = 0;
 		CircleTraekt.Mesh.points.clear();
 		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
 		{
@@ -657,7 +631,23 @@ UINT TraektSphere(LPVOID Struct)
 	else
 	{
 		angle = 360.0 / step;
-		CircleTraekt.Triangulation(2 * (sin(angle* PI_Approx / 180.0f))*CircleTraekt.Radius);
+		CircleTraekt.Mesh.points.clear();
+		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
+		{
+			p = cos(anglesSum * PI_Approx / 180.0f) * CircleTraekt.Radius;	// X component
+			h = sin(anglesSum * PI_Approx / 180.0f) * CircleTraekt.Radius;	// Y component		
+			CircleTraekt.Mesh.points.push_back(PointGeometric(p, h, 0));
+			forPntCnt++;
+		}
+		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
+		{
+			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+				CircleTraekt.Line.Point,
+				vectorX,
+				vectorY,
+				vectorZ);
+		}
+		CircleTraekt.Mesh.vectorsNormal.push_back(CircleTraekt.Line.Vector);
 		MinDist = PointMach.DistanceToPoint(CircleTraekt.Mesh.points[0]);
 		for (int i = 1; i<(int)CircleTraekt.Mesh.points.size(); i++)
 		{
@@ -878,6 +868,7 @@ UINT TraektCircle(LPVOID Struct)
 	double h;
 	double angle1, anglesSum;
 	double /*angleF, angleL,*/ angle;
+	int forPntCnt = 0;
 	LineGeometric tmpLine;
 	PointGeometric tmpPoint;
 	PointGeometric tmpPoint1;
@@ -938,7 +929,7 @@ UINT TraektCircle(LPVOID Struct)
 																						/*FILE* dots;
 																						dots = fopen("D:\\dots.txt", "wt");
 																						int i = 0;*/
-		int forPntCnt = 0;
+		
 		CircleTraekt.Mesh.points.clear();
 		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
 		{
@@ -967,7 +958,23 @@ UINT TraektCircle(LPVOID Struct)
 	else
 	{
 		angle = 360.0 / step;
-		CircleTraekt.Triangulation(2 * (sin(angle* PI_Approx / 180.0f))*CircleTraekt.Radius);
+		CircleTraekt.Mesh.points.clear();
+		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
+		{
+			p = cos(anglesSum * PI_Approx / 180.0f) * CircleTraekt.Radius;	// X component
+			h = sin(anglesSum * PI_Approx / 180.0f) * CircleTraekt.Radius;	// Y component		
+			CircleTraekt.Mesh.points.push_back(PointGeometric(p, h, 0));
+			forPntCnt++;
+		}
+		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
+		{
+			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+				CircleTraekt.Line.Point,
+				vectorX,
+				vectorY,
+				vectorZ);
+		}
+		CircleTraekt.Mesh.vectorsNormal.push_back(CircleTraekt.Line.Vector);
 		MinDist = PointMach.DistanceToPoint(CircleTraekt.Mesh.points[0]);
 		for (int i = 1; i<(int)CircleTraekt.Mesh.points.size(); i++)
 		{

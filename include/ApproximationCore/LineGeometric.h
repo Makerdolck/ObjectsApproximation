@@ -24,6 +24,9 @@ public:
 	PointGeometric	CreatePointOnDistance(double distance, bool flagPositiveDirection = true);
 	PointGeometric	PointProjection(PointGeometric point);
 	double			DistanceToPoint(PointGeometric point);
+
+	PointGeometric  PointBetweenLineMiddle(PointGeometric point);
+	int				LineBetweenLine(LineGeometric Line2, PointGeometric* pointout);
 };
 
 #endif /* __LINE_GEOMETRIC_H__ */

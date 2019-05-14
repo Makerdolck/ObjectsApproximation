@@ -186,3 +186,100 @@ void SphereApprox::Triangulation(double inAccuracy)
 	pointsFirstCircle.clear();
 	pointsSecondCircle.clear();
 }
+// ---																										//	---	Intersections ---
+
+// ---																										// IntersectionSphereAndPlane
+int	SphereApprox::IntersectionSphereAndPlane(RectangleApprox Plane, CircleGeometric* Circle) {
+	double D;
+	D = (-1) * (Plane.Line.Vector.X * Plane.Line.Point.X + Plane.Line.Vector.Y * Plane.Line.Point.Y + Plane.Line.Vector.Z * Plane.Line.Point.Z);
+	double t;
+	t = (-1) * ((D + Plane.Line.Vector.X * Line.Point.X + Plane.Line.Vector.Y * Line.Point.Y + Plane.Line.Vector.Z * Line.Point.Z) / (pow(Plane.Line.Vector.X, 2) + pow(Plane.Line.Vector.Y, 2) + pow(Plane.Line.Vector.Z, 2)));
+	Circle->Line.Point.X = Line.Point.X + t * Plane.Line.Vector.X;
+	Circle->Line.Point.Y = Line.Point.Y + t * Plane.Line.Vector.Y;
+	Circle->Line.Point.Z = Line.Point.Z + t * Plane.Line.Vector.Z;
+	double dist;
+	dist = sqrt(pow(Line.Point.X - Circle->Line.Point.X, 2) + pow(Line.Point.Y - Circle->Line.Point.Y, 2) + pow(Line.Point.Z - Circle->Line.Point.Z, 2));
+	/*Circle->Radius =sqrt( pow(Radius,2) - pow(dist,2));
+	Circle->Line.Vector = Plane.Line.Vector;*/
+	if (Radius > dist) {
+		Circle->Radius = sqrt(pow(Radius, 2) - pow(dist, 2));
+		Circle->Line.Vector = Plane.Line.Vector;
+		return 0;
+	}
+	else if (Radius < dist) {
+		return 1;
+	}
+	else {
+		return 2;
+	}
+
+
+}
+// ---																										// IntersectionSphereAndLine
+int	SphereApprox::IntersectionSphereAndLine(LineSegmentApprox Lline, PointGeometric* point1, PointGeometric* point2) {
+	double a;
+	double b;
+	double c;
+	double diskr, kor;
+	double t1, t2;
+	a = pow(Lline.Line.Vector.X, 2) + pow(Lline.Line.Vector.Y, 2) + pow(Lline.Line.Vector.Z, 2);
+	b = (-2) * (Lline.Line.Vector.X * (Line.Point.X - Lline.Line.Point.X) + Lline.Line.Vector.Y * (Line.Point.Y - Lline.Line.Point.Y) + Lline.Line.Vector.Z * (Line.Point.Z - Lline.Line.Point.Z));
+	c = pow(Line.Point.X - Lline.Line.Point.X, 2) + pow(Line.Point.Y - Lline.Line.Point.Y, 2) + pow(Line.Point.Z - Lline.Line.Point.Z, 2) - pow(Radius, 2);
+	diskr = b * b - 4 * a * c;
+	kor = sqrt(diskr);
+	if (kor > 0) {
+		t1 = ((-1) * b + kor) / (2 * a);
+		t2 = ((-1) * b - kor) / (2 * a);
+		point1->X = Lline.Line.Point.X + t1 * Lline.Line.Vector.X;
+		point1->Y = Lline.Line.Point.Y + t1 * Lline.Line.Vector.Y;
+		point1->Z = Lline.Line.Point.Z + t1 * Lline.Line.Vector.Z;
+
+		point2->X = Lline.Line.Point.X + t2 * Lline.Line.Vector.X;
+		point2->Y = Lline.Line.Point.Y + t2 * Lline.Line.Vector.Y;
+		point2->Z = Lline.Line.Point.Z + t2 * Lline.Line.Vector.Z;
+
+		return 0;
+	}
+	else if (diskr == 0) {
+		return 2;
+	}
+	else {
+		return 1;
+	}
+}
+// ---																										// IntersectionSphereAndCircle
+int	SphereApprox::IntersectionSphereAndCircle(CircleApprox Circle, PointGeometric* point1, PointGeometric* point2) {
+	double D;
+	PlaneGeometric Plane(Circle.Line);
+	CircleGeometric Circle1;
+	CircleGeometric Circle2(Circle.Line, Radius);
+
+	D = (-1) * (Plane.Line.Vector.X * Plane.Line.Point.X + Plane.Line.Vector.Y * Plane.Line.Point.Y + Plane.Line.Vector.Z * Plane.Line.Point.Z);
+	double t;
+	t = (-1) * ((D + Plane.Line.Vector.X * Line.Point.X + Plane.Line.Vector.Y * Line.Point.Y + Plane.Line.Vector.Z * Line.Point.Z) / (pow(Plane.Line.Vector.X, 2) + pow(Plane.Line.Vector.Y, 2) + pow(Plane.Line.Vector.Z, 2)));
+	Circle1.Line.Point.X = Line.Point.X + t * Plane.Line.Vector.X;
+	Circle1.Line.Point.Y = Line.Point.Y + t * Plane.Line.Vector.Y;
+	Circle1.Line.Point.Z = Line.Point.Z + t * Plane.Line.Vector.Z;
+	double dist;
+	dist = sqrt(pow(Line.Point.X - Circle1.Line.Point.X, 2) + pow(Line.Point.Y - Circle1.Line.Point.Y, 2) + pow(Line.Point.Z - Circle1.Line.Point.Z, 2));
+	if (Radius > dist) {
+		Circle1.Radius = sqrt(pow(Radius, 2) - pow(dist, 2));
+		Circle1.Line.Vector = Plane.Line.Vector;
+		int Res;
+		Res = Circle2.CircleIntersection(Circle1, point1, point2);
+		return 0;
+	}
+	else if (Radius < dist) {
+		return 1;
+	}
+
+	return 1;
+}
+// ---																										// PointIntersection
+PointGeometric SphereApprox::PointIntersection(PointApprox pointOut) {
+	PointGeometric PointSp(Line.Point);
+	PointGeometric point(pointOut.X, pointOut.Y, pointOut.Z);
+	VectorGeometric vectorNewLine(pointOut.X - Line.Point.X, pointOut.Y - Line.Point.Y, pointOut.Z - Line.Point.Z);
+	LineGeometric line1(PointSp, vectorNewLine);
+	return line1.CreatePointOnDistance(Radius);
+}

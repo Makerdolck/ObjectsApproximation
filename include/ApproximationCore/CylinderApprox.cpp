@@ -314,4 +314,132 @@ void CylinderApprox::Triangulation(double inAccuracy)
 	pointsPNquarter.clear();
 
 }
+// ---																										//	---	Intersections ---
 
+// ---																										// IntersectionCylinderAndPlane
+int	CylinderApprox::IntersectionCylinderAndPlane(RectangleApprox Plane, CircleGeometric* Circle) {
+	PlaneGeometric plane;
+	plane.Line = Plane.Line;
+	LineGeometric line = Line;
+	PointGeometric point;
+	int Res;
+	Res = plane.PlaneBetweenLine(line, &point);
+	if (Res == 0) {
+		int Res2;
+		Res2 = plane.PlaneAngleLine(line);
+		if (Res2 == 0) {
+			plane.Line.Vector.Normalize();
+			Circle->Line.Vector = plane.Line.Vector;
+			Circle->Radius = Radius;
+			PointGeometric pointC = plane.PointProjection(Line.Point);
+			Circle->Line.Point = pointC;
+			return 0;
+		}
+	}
+
+	return 1;
+}
+// ---																										// IntersectionCylinderAndLine
+int	CylinderApprox::IntersectionCylinderAndLine(LineSegmentApprox Lline, PointGeometric* point1, PointGeometric* point2) {
+
+	PointGeometric pointC = Line.CreatePointOnDistance(Height / 2, false);
+	CircleGeometric circle;
+	circle.Line.Point = pointC;
+	circle.Radius = Radius;
+	circle.Line.Vector = Line.Vector;
+	PlaneGeometric plane(circle.Line);
+
+	PointGeometric point1p, point2p;
+
+	PointGeometric pointE = plane.PointProjection(Lline.PointEnd);
+	PointGeometric pointS = plane.PointProjection(Lline.PointStart);
+	PointGeometric pointCr = pointE.PointBetween(pointS);
+	VectorGeometric vectorNewLine(pointS, pointE);
+	LineGeometric line1(pointCr, vectorNewLine);
+	double angle, degree;
+	angle = (Line.Vector.X * Lline.Vector.X + Line.Vector.Y * Lline.Vector.Y + Line.Vector.Z * Lline.Vector.Z) / (sqrt(pow(Line.Vector.X, 2) + pow(Line.Vector.Y, 2) + pow(Line.Vector.Z, 2)) * sqrt(pow(Lline.Vector.X, 2) + pow(Lline.Vector.Y, 2) + pow(Lline.Vector.Z, 2)));
+	degree = angle * 180 / PI_Approx;
+	if ((degree >= 0 && degree < 180) || (degree <= 0 && degree > -180)) {
+
+		int Res;
+		Res = circle.LineIntersection(line1, &point1p, &point2p);
+
+		if (Res == 2) {
+			LineGeometric lineOtv1(point1p, Line.Vector);
+			LineGeometric lineOtv2(point2p, Line.Vector);
+			LineGeometric lineLline;
+			lineLline.Point = Lline.Point;
+			lineLline.Vector = Lline.Vector;
+
+			PointGeometric point1pp, point2pp;
+			int Res2, Res3;
+			Res3 = lineOtv2.LineBetweenLine(lineLline, &point2pp);
+			Res2 = lineOtv1.LineBetweenLine(lineLline, &point1pp);
+
+			point1->X = point1pp.X;
+			point1->Y = point1pp.Y;
+			point1->Z = point1pp.Z;
+
+			point2->X = point2pp.X;
+			point2->Y = point2pp.Y;
+			point2->Z = point2pp.Z;
+
+			return 2;
+		}
+		if (Res == 1) {
+			LineGeometric lineOtv1(point1p, Line.Vector);
+
+			LineGeometric lineLline;
+			lineLline.Point = Lline.Point;
+			lineLline.Vector = Lline.Vector;
+
+			PointGeometric point1pp, point2pp;
+			int Res2;
+			Res2 = lineOtv1.LineBetweenLine(lineLline, &point1pp);
+
+
+			point1->X = point1pp.X;
+			point1->Y = point1pp.Y;
+			point1->Z = point1pp.Z;
+			return 1;
+		}
+	}
+
+	return 0;
+}
+// ---																										// IntersectionTwoCylinder
+int	CylinderApprox::IntersectionTwoCylinder(CylinderApprox cylinder2, PointGeometric* point1) {
+	return Line.LineBetweenLine(cylinder2.Line, point1);
+}
+// ---																										// IntersectionCylinderCone
+int	CylinderApprox::IntersectionCylinderCone(ConeApprox cone, PointGeometric* point1) {
+	return Line.LineBetweenLine(cone.Line, point1);
+}
+// ---																										// IntersectionCylinderAndCircle
+int	CylinderApprox::IntersectionCylinderAndCircle(CircleApprox circle, PointGeometric* point1, PointGeometric* point2) {
+	RectangleApprox plane;
+	CylinderApprox Cylinder;
+	CircleGeometric Circle1;
+	Cylinder.Line = Line;
+	Cylinder.Radius = Radius;
+	plane.Line = circle.Line;
+	int Res;
+	Res = Cylinder.IntersectionCylinderAndPlane(plane, &Circle1);
+	if (Res == 0) {
+		int Res2;
+		CircleGeometric Circle2;
+		Circle2.Line = circle.Line;
+		Circle2.Radius = circle.Radius;
+		Res2 = Circle1.CircleIntersection(Circle2, point1, point2);
+		if (Res2 == 2) {
+			return 2;
+		}
+		if (Res2 == 1) {
+			return 1;
+		}
+		else
+			return 0;
+	}
+	else
+		return 0;
+}

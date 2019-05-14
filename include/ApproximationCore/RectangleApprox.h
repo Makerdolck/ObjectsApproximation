@@ -6,6 +6,10 @@
 #include "GeomObjectApprox.h"
 #include "PlaneApprox.h"
 
+class CircleApprox;
+class PointApprox;
+#include "CircleApprox.h"
+
 class RectangleApprox :	public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
@@ -34,6 +38,12 @@ public:
 
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
 	void			Triangulation(double inAccuracy = 1.0f);
+
+	int				PlaneIntersectionPlane(RectangleApprox Plane2, LineGeometric* line);
+	int				PlaneBetweenLine(LineGeometric line1, PointGeometric* point1);
+	int				PlaneIntersectionCircle(CircleApprox Circle, PointGeometric* point1, PointGeometric* point2);
+	PointGeometric	PointBetweenPlaneMiddle(PointApprox point);
+	PointGeometric	PointBetweenPlane(PointApprox point);
 
 private:
 	void			FindWidthHeightMinMaxXY(PointGeometric *points, int arraySize);

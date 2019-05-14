@@ -93,3 +93,13 @@ bool PointGeometric::operator==(PointGeometric point)
 
 	return (true);
 }
+// ---																										//	---	Intersections ---
+
+// ---																										// Point_Between_two_points
+PointGeometric PointGeometric::PointBetween(PointGeometric point) {
+	PointGeometric pointMean;
+	pointMean.X = (X + point.X) / 2;
+	pointMean.Y = (Y + point.Y) / 2;
+	pointMean.Z = (Z + point.Z) / 2;
+	return pointMean;
+}

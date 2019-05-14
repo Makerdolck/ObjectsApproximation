@@ -64,9 +64,15 @@ void CmmApprox::Disconect_()
 }
 void CmmApprox::Move_(double *X, double *Y, double *Z, BOOL bTouch)
 {
+	if (!flagConnected || hLibrary == NULL)
+		return;
+
 	(*Move)(X, Y, Z, bTouch);
 }
 void CmmApprox::Home_()
 {
+	if (!flagConnected || hLibrary == NULL)
+		return;
+
 	(*Home)();
 }

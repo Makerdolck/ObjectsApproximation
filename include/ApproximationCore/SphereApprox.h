@@ -5,6 +5,10 @@
 
 #include "GeomObjectApprox.h"
 
+class RectangleApprox;
+#include "RectangleApprox.h"
+#include "CircleGeometric.h"
+#include "LineSegmentApprox.h"
 
 class SphereApprox : public GeomObjectApprox
 {
@@ -19,6 +23,11 @@ public:
 
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
 	void			Triangulation(double inAccuracy = 1.0f);
+
+	int				IntersectionSphereAndPlane(RectangleApprox Plane, CircleGeometric* Circle);
+	int				IntersectionSphereAndLine(LineSegmentApprox Lline, PointGeometric* point1, PointGeometric* point2);
+	int				IntersectionSphereAndCircle(CircleApprox Circle, PointGeometric* point1, PointGeometric* point2);
+	PointGeometric	PointIntersection(PointApprox pointOut);
 
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);

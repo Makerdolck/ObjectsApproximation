@@ -159,7 +159,52 @@ void RectangleApprox::Triangulation(double inAccuracy)
 
 	Mesh.vectorsNormal.push_back(VectorZ);
 }
+// ---																										//	---	Intersections ---
 
+// ---																										// PlaneIntersectionPlane
+int	RectangleApprox::PlaneIntersectionPlane(RectangleApprox Plane2, LineGeometric* line) {
+	PlaneGeometric plane(Line);
+	PlaneGeometric plane2(Plane2.Line);
+	return plane.PlaneIntersectionPlane(plane2, line);
+}
+// ---																										// PlaneBetweenLine
+int	RectangleApprox::PlaneBetweenLine(LineGeometric line1, PointGeometric* point1) {
+	PlaneGeometric plane(Line);
+	//LineGeometric line(line1.Point.X, line1.Point.X);
+	return plane.PlaneBetweenLine(line1, point1);
+}
+// ---																										// PointBetweenPlaneMiddle
+PointGeometric RectangleApprox::PointBetweenPlaneMiddle(PointApprox point) {
+	PlaneGeometric plane(Line);
+	PointGeometric  pointout(point.X, point.Y, point.Z);
+	return plane.PointBetweenPlaneMiddle(pointout);
 
+}
+// ---																										// PointBetweenPlane
+PointGeometric RectangleApprox::PointBetweenPlane(PointApprox point) {
+	PlaneGeometric plane(Line);
+	PointGeometric  pointout(point.X, point.Y, point.Z);
+	return plane.PointProjection(pointout);
 
+}
+// ---																										// PlaneIntersectionCircle
+int	RectangleApprox::PlaneIntersectionCircle(CircleApprox Circle, PointGeometric* point1, PointGeometric* point2) {
+	PlaneGeometric plane(Line);
+	PlaneGeometric plane1(Circle.Line);
+	LineGeometric LineP;
+	int Res;
+	Res = plane.PlaneIntersectionPlane(Circle.Line, &LineP);
+	if (Res == 1)
+	{
+		return 1;
+	}
+	if (Res == 0)
+	{
+		CircleGeometric circle(Circle.Line, Circle.Radius);
+		int Res2;
+		Res2 = circle.LineIntersection(LineP, point1, point2);
+		return 0;
+	}
 
+	return 1;
+}

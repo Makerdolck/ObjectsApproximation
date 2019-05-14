@@ -106,8 +106,15 @@
     <ClCompile Include="..\..\include\ApproximationCore\CompensationOptionNamesEnum.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\Traekt.cpp" />
-    <ClCompile Include="CAutoDlg.cpp" />
+    <ClCompile Include="..\..\include\Traekt.cpp">
+      <Filter>Source Files\OutSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CAutoDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\Intersection.cpp">
+      <Filter>Source Files\OutSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -224,8 +231,15 @@
     <ClInclude Include="..\..\include\ApproximationCore\CompensationOptionNamesEnum.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Traekt.h" />
-    <ClInclude Include="CAutoDlg.h" />
+    <ClInclude Include="..\..\include\Traekt.h">
+      <Filter>Header Files\OutSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CAutoDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Intersection.h">
+      <Filter>Header Files\OutSource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\buttons.bmp">

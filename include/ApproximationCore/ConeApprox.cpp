@@ -443,4 +443,41 @@ void ConeApprox::Triangulation(double inAccuracy)
 	pointsNPquarter.clear();
 	pointsPNquarter.clear();
 }
+// ---																										//	---	Intersections ---
 
+// ---																										// IntersectionTwoCone
+int	ConeApprox::IntersectionTwoCone(ConeApprox cone2, PointGeometric* point1) {
+	return Line.LineBetweenLine(cone2.Line, point1);
+}
+// ---																										// IntersectionConeAndPlane
+int	ConeApprox::IntersectionConeAndPlane(RectangleApprox Plane, CircleGeometric* Ñircle) {
+	PlaneGeometric plane;
+	plane.Line = Plane.Line;
+	LineGeometric line = Line;
+	PointGeometric point;
+	int Res;
+	Res = plane.PlaneBetweenLine(line, &point);
+	if (Res == 0) {
+		int Res2;
+		Res2 = plane.PlaneAngleLine(line);
+		if (Res2 == 0) {
+			plane.Line.Vector.Normalize();
+			PointGeometric IntersectionPoint;
+			IntersectionPoint = Line.PointProjection(Plane.Line.Point);
+			PointGeometric PointBotton;
+			PointGeometric pointC = plane.PointProjection(Line.Point);
+			double HeightInter;
+			HeightInter = Height - IntersectionPoint.DistanceToPoint(PointBottomSurfaceCenter);
+			double rd;
+			rd = HeightInter * tan(Angle * PI_Approx / 180);
+			Ñircle->Radius = rd + RadiusSmaller;
+
+			Ñircle->Line.Vector = plane.Line.Vector;
+
+			Ñircle->Line.Point = pointC;
+			return 0;
+		}
+	}
+
+	return 1;
+}

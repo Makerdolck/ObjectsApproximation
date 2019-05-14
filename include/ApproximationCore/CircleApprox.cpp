@@ -3,6 +3,7 @@
 #include "CircleApprox.h"
 #include "GlobalFunctions.h"
 
+#include "CircleGeometric.h"
 
 // ---																										// Constructors
 CircleApprox::CircleApprox()
@@ -154,4 +155,36 @@ void CircleApprox::Triangulation(double inAccuracy)
 	pointsNPquarter.clear();
 	pointsNNquarter.clear();
 	pointsPNquarter.clear();
+}
+// ---																										//	---	Intersections ---
+
+// ---																										// LineIntersection
+int CircleApprox::LineIntersection(LineGeometric line, PointGeometric* point1, PointGeometric* point2)
+{
+	CircleGeometric circle(Line, Radius);
+	return (circle.LineIntersection(line, point1, point2));
+}
+// ---																										// CircleIntersection
+int CircleApprox::CircleIntersection(CircleApprox Circle2, PointGeometric* point1, PointGeometric* point2)
+{
+	CircleGeometric circle(Line, Radius);
+	CircleGeometric circle2(Circle2.Line, Circle2.Radius);
+	return (circle.CircleIntersection(circle2, point1, point2));
+}
+// ---																										// PointIntersectionMiddle
+PointGeometric CircleApprox::PointIntersectionMiddle(PointApprox pointOut)
+{
+	CircleGeometric circle(Line, Radius);
+	PointGeometric  point(pointOut.X, pointOut.Y, pointOut.Z);
+	return (point.PointBetween(circle.Line.Point));
+}
+// ---																										// PointIntersection
+PointGeometric CircleApprox::PointIntersection(PointApprox pointOut)
+{
+	CircleGeometric circle(Line, Radius);
+	PointGeometric  point(pointOut.X, pointOut.Y, pointOut.Z);
+	PlaneGeometric plane(circle.Line);
+	PointGeometric pointPJ;
+	pointPJ = plane.PointProjection(point);
+	return (circle.PointIntersectionMiddle(pointPJ));
 }

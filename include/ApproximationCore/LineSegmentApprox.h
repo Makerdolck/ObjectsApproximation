@@ -5,6 +5,7 @@
 
 #include "GeomObjectApprox.h"
 
+#include "PointApprox.h"
 
 class LineSegmentApprox : public GeomObjectApprox
 {
@@ -25,6 +26,10 @@ public:
 	PointGeometric	PointProjection(PointGeometric point);
 
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
+
+	PointGeometric	PointBetweenLineMiddle(PointApprox point);
+	PointGeometric	PointBetweenLine(PointApprox point);
+	int				LineBetweenLine(LineGeometric Line2, PointGeometric* pointout);
 
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);

@@ -23,6 +23,8 @@ public:
 	operator		PointGeometric ();									// Conversation operator to PointGeometric
 	
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
+
+	PointGeometric	PointBetweenPointMiddle(PointApprox point);
 };
 
 #endif /* __POINT_APPROX_H__ */ 

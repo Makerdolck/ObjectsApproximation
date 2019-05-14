@@ -130,3 +130,24 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 
 	_points.clear();
 }
+// ---																										//	---	Intersections ---
+
+// ---																										// PointBetweenLineMiddle
+PointGeometric LineSegmentApprox::PointBetweenLineMiddle(PointApprox point) {
+
+	LineGeometric line(Point, Vector);
+	PointGeometric  pointout(point.X, point.Y, point.Z);
+	return line.PointBetweenLineMiddle(pointout);
+}
+// ---																										// PointBetweenLine
+PointGeometric LineSegmentApprox::PointBetweenLine(PointApprox point) {
+
+	LineGeometric line(Point, Vector);
+	PointGeometric  pointout(point.X, point.Y, point.Z);
+	return line.PointProjection(pointout);
+}
+// ---																										// LineBetweenLine
+int	LineSegmentApprox::LineBetweenLine(LineGeometric Line2, PointGeometric* pointout) {
+	LineGeometric line(Point, Vector);
+	return line.LineBetweenLine(Line2, pointout);
+}
