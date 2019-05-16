@@ -228,6 +228,7 @@
     <ClInclude Include="..\..\include\OutSource\Matrix.h" />
     <ClInclude Include="..\..\include\OutSource\Reference.h" />
     <ClInclude Include="..\..\include\Tolerance\AxialLine.h" />
+    <ClInclude Include="..\..\include\Tolerance\DiameterLine.h" />
     <ClInclude Include="..\..\include\Tolerance\FormRoundnessToleranceObject.h" />
     <ClInclude Include="..\..\include\Tolerance\includes.h" />
     <ClInclude Include="..\..\include\Tolerance\SizeLine.h" />
@@ -277,6 +278,7 @@
     <ClCompile Include="..\..\include\OutSource\Matrix.cpp" />
     <ClCompile Include="..\..\include\OutSource\Reference.cpp" />
     <ClCompile Include="..\..\include\Tolerance\AxialLine.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\DiameterLine.cpp" />
     <ClCompile Include="..\..\include\Tolerance\FormRoundessToleranceObject.cpp" />
     <ClCompile Include="..\..\include\Tolerance\SizeLine.cpp" />
     <ClCompile Include="..\..\include\Tolerance\Tolerance.cpp" />

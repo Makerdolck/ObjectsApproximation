@@ -163,12 +163,13 @@ void Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 	{
 		objApprox = objectsArray->operator[](i);
 
-		if (objApprox->flagReady == false)
-			continue;
-
 		if (objApprox->flagSelected) {
 			countSelectedObject++;
 		}
+	}
+	if (countSelectedObject == 0) {
+		AfxMessageBox(L"Не выбран ни один объект", MB_ICONWARNING | MB_OK);
+		return;
 	}
 
 	for (int i = 0; i < (int)objectsArray->size(); i++)
@@ -204,8 +205,7 @@ void Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 			else if (objApprox->objMath->GetName() == torusA->GetName()) {
 				AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
 			}
-		}
-		if (countSelectedObject == 2) {
+		}else if (countSelectedObject == 2) {
 			if (objApprox->objMath->GetName() == point1->GetName()) {
 				if (objectNum == 1) {
 					point1 = (PointApprox*)objApprox->objMath;
@@ -218,12 +218,95 @@ void Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 			}
 			else {
 				AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
+				return;
 			}
+		}
+		else {
+			AfxMessageBox(L"Выбрано слишком много объектов", MB_ICONWARNING | MB_OK);
+			return;
 		}
 	}
 
 	if (newSizeLine != nullptr) {
 		addNewObject(newSizeLine);
+	}
+}
+
+void Tolerance::DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray) {
+	if (objectsArray == nullptr)
+	{
+		AfxMessageBox(L"objectsArray == nullptr", MB_ICONWARNING | MB_OK);
+		return;
+	}
+	if (objectsArray->size() < 1) {
+		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+
+	ObjectApprox* objApprox;
+
+	
+	CircleApprox* circleA = new CircleApprox();
+	ConeApprox* coneA = new ConeApprox();
+	CylinderApprox* cylinderA = new CylinderApprox();
+	SphereApprox* sphereA = new SphereApprox();
+	TorusApprox* torusA = new TorusApprox();
+
+	DiameterLine* newDiameterLine = nullptr;
+
+	int countSelectedObject = 0; // Количество выбранных объектов
+	int objectNum = 1; // Номер объекта
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (objApprox->flagSelected) {
+			countSelectedObject++;
+		}
+	}
+	if (countSelectedObject == 0) {
+		AfxMessageBox(L"Не выбран ни один объект", MB_ICONWARNING | MB_OK);
+		return;
+	}
+	if (countSelectedObject > 1) {
+		AfxMessageBox(L"Необходимо выбрать только один объект", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (!objApprox->flagReady || !objApprox->flagSelected)
+			continue;
+
+		if (objApprox->objMath->GetName() == circleA->GetName()) {
+			circleA = (CircleApprox*)objApprox->objMath;
+			newDiameterLine = new DiameterLine(circleA, true);
+		}
+		else if (objApprox->objMath->GetName() == coneA->GetName()) {
+			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
+		}
+		else if (objApprox->objMath->GetName() == cylinderA->GetName()) {
+			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
+
+		}
+		else if (objApprox->objMath->GetName() == sphereA->GetName()) {
+			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
+		}
+		else if (objApprox->objMath->GetName() == torusA->GetName()) {
+			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
+		}
+		else {
+			AfxMessageBox(L"Недопустимый объект", MB_ICONWARNING | MB_OK);
+		}
+	}
+
+	if (newDiameterLine != nullptr) {
+		addNewObject(newDiameterLine);
 	}
 }
 
@@ -238,8 +321,6 @@ void Tolerance::DrawAxialLine(std::vector<ObjectApprox*>* objectsArray)
 		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
 		return;
 	}
-
-
 
 
 	ObjectApprox* objApprox;

@@ -140,6 +140,7 @@ protected:
 	// Voronov
 	//void drawBitmapText(char* string, double x, double y, double z);
 	void DrawOpenGL_SizeLine(SizeLine* obj);
+	void DrawOpenGL_DiameterLine(DiameterLine* obj);
 	void DrawOpenGL_AxialLine(AxialLine* obj);
 	void DrawOpenGL_Tolerance_Form_Roudness(FormRoundnessToleranceObject* obj);
 	//-----------------------

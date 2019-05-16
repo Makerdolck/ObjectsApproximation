@@ -865,7 +865,9 @@ void COpenGLView::PaintScene(GLenum mode)
 			if (dynamic_cast<SizeLine*>(toleranceObject)) {
 				DrawOpenGL_SizeLine((SizeLine*)toleranceObject);
 			}
-			else if (dynamic_cast<AxialLine*> (toleranceObject)) {
+			else if (dynamic_cast<DiameterLine*> (toleranceObject)) {
+				DrawOpenGL_DiameterLine((DiameterLine*)toleranceObject);
+			}else if (dynamic_cast<AxialLine*> (toleranceObject)) {
 				DrawOpenGL_AxialLine((AxialLine*)toleranceObject);
 			}
 			else if (dynamic_cast<FormRoundnessToleranceObject*>(toleranceObject)) {
@@ -990,6 +992,67 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 
 
 	glLineWidth(1);
+}
+
+void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
+{
+	glLineWidth(2);
+	glColor3d(0, 255, 0);
+
+	double triangle_height = 0.3;
+	double triangle_widht = 0.3;
+	
+	glPointSize(8);
+	glBegin(GL_POINTS);
+		glVertex3d(obj->centerPoint.X, obj->centerPoint.Y, obj->centerPoint.Z);
+		
+	glEnd();
+
+	if(!obj->isOutdoor){
+		// Диаметральная линия
+		glBegin(GL_LINES);
+			glVertex3d(obj->centerPoint.X + obj->diameter / 2, obj->centerPoint.Y, obj->centerPoint.Z);
+			glVertex3d(obj->centerPoint.X - obj->diameter / 2, obj->centerPoint.Y, obj->centerPoint.Z);
+		glEnd();
+
+		// Правый треугольник
+		glBegin(GL_TRIANGLES);
+			glVertex3d(obj->centerPoint.X + obj->diameter / 2, obj->centerPoint.Y, obj->centerPoint.Z);
+			glVertex3d(obj->centerPoint.X + obj->diameter / 2 - triangle_height, obj->centerPoint.Y + triangle_widht, obj->centerPoint.Z);
+			glVertex3d(obj->centerPoint.X + obj->diameter / 2 - triangle_height, obj->centerPoint.Y - triangle_widht, obj->centerPoint.Z);
+		glEnd();
+
+		// Левый треугольник
+		glBegin(GL_TRIANGLES);
+			glVertex3d(obj->centerPoint.X - obj->diameter / 2, obj->centerPoint.Y, obj->centerPoint.Z);
+			glVertex3d(obj->centerPoint.X - obj->diameter / 2 + triangle_height, obj->centerPoint.Y + triangle_widht, obj->centerPoint.Z);
+			glVertex3d(obj->centerPoint.X - obj->diameter / 2 + triangle_height, obj->centerPoint.Y - triangle_widht, obj->centerPoint.Z);
+		glEnd();
+
+
+	}
+	else {
+		// Диаметральная линия
+		glBegin(GL_LINES);
+			glVertex3d(obj->centerPoint.X + obj->diameter, obj->centerPoint.Y, obj->centerPoint.Z);
+			glVertex3d(obj->centerPoint.X - obj->diameter, obj->centerPoint.Y, obj->centerPoint.Z);
+		glEnd();
+
+		// Правый треугольник
+		glBegin(GL_TRIANGLES);
+		glVertex3d(obj->centerPoint.X + obj->diameter / 2, obj->centerPoint.Y, obj->centerPoint.Z);
+		glVertex3d(obj->centerPoint.X + obj->diameter / 2 + triangle_height, obj->centerPoint.Y + triangle_widht, obj->centerPoint.Z);
+		glVertex3d(obj->centerPoint.X + obj->diameter / 2 + triangle_height, obj->centerPoint.Y - triangle_widht, obj->centerPoint.Z);
+		glEnd();
+
+		// Левый треугольник
+		glBegin(GL_TRIANGLES);
+		glVertex3d(obj->centerPoint.X - obj->diameter / 2, obj->centerPoint.Y, obj->centerPoint.Z);
+		glVertex3d(obj->centerPoint.X - obj->diameter / 2 - triangle_height, obj->centerPoint.Y + triangle_widht, obj->centerPoint.Z);
+		glVertex3d(obj->centerPoint.X - obj->diameter / 2 - triangle_height, obj->centerPoint.Y - triangle_widht, obj->centerPoint.Z);
+		glEnd();
+	}
+	
 }
 
 void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)

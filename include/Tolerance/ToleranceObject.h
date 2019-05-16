@@ -16,6 +16,7 @@ public:
 	enum ToleranceObjectType {
 		UNDEFINED,
 		SIZE_LINE,
+		DIAMETER_LINE,
 		AXIAL_LINE,
 		BASE_LINE,
 		FORM_ROUDNESS
