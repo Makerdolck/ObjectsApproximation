@@ -95,6 +95,7 @@ COpenGLView::COpenGLView()
 	flagShiftPressed = false;
 
 	objectsArray = nullptr;
+	toleranceObjectsArray = nullptr; // Voronov
 
 	//m_fLineWidth = 0.05;
 	// Colors
@@ -848,6 +849,32 @@ void COpenGLView::PaintScene(GLenum mode)
 
 	}	
 
+	// Voronov
+	if (toleranceObjectsArray != nullptr) {
+
+		ToleranceObject* toleranceObject;
+
+		for (int i = 0; i < toleranceObjectsArray->size(); i++) {
+			toleranceObject = toleranceObjectsArray->operator[](i);
+
+			if (!toleranceObject->isVisible) {
+				continue;
+			}
+
+
+			if (dynamic_cast<SizeLine*>(toleranceObject)) {
+				DrawOpenGL_SizeLine((SizeLine*)toleranceObject);
+			}
+			else if (dynamic_cast<AxialLine*> (toleranceObject)) {
+				DrawOpenGL_AxialLine((AxialLine*)toleranceObject);
+			}
+			else if (dynamic_cast<FormRoundnessToleranceObject*>(toleranceObject)) {
+				DrawOpenGL_Tolerance_Form_Roudness((FormRoundnessToleranceObject*)toleranceObject);
+			}
+
+		}
+	}
+
 	delete pointA;
 	delete lineSegmentA;
 	delete rectangleA;
@@ -859,6 +886,164 @@ void COpenGLView::PaintScene(GLenum mode)
 	glPopMatrix();
 }
 //////////////////////////////////////////////////////////
+
+// Voronov
+
+/*void COpenGLView::drawBitmapText(char* string, double x, double y, double z)
+{
+	char* c;
+	glRasterPos3f(x, y, z);
+
+	for (c = string; *c != '\0'; c++)
+	{
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, *c);
+	}
+}*/
+
+
+//////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL SizeLine
+void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
+{
+	glLineWidth(2);
+	glColor3d(0, 255, 0);
+
+	double offset = 15 + obj->offset; // Расстояние от объекта до размерной линии. obj->offset - компенсация размера объекта.
+	double dx = 0.3; // Высота "ушек"
+
+	double triangle_width = 0.2;
+	double triangle_height = 0.5;
+
+	
+
+	double x1 = obj->PointStart.X;
+	double y1 = obj->PointStart.Y;
+	double z1 = obj->PointStart.Z;
+
+	double x2 = obj->PointEnd.X;
+	double y2 = obj->PointEnd.Y;
+	double z2 = obj->PointEnd.Z;
+	double length = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+
+	double x1n = x1 + obj->offset * (y2 - y1) / length;
+	double y1n = y1 + obj->offset * (x1 - x2) / length;
+	double x2n = x2 + obj->offset * (y2 - y1) / length;
+	double y2n = y2 + obj->offset * (x1 - x2) / length;
+
+	// Координаты размерной линии
+	double x1p = x1 + offset * (y2 - y1) / length;
+	double y1p = y1 + offset * (x1 - x2) / length;
+
+	double x2p = x2 + offset * (y2 - y1) / length;
+	double y2p = y2 + offset * (x1 - x2) / length;
+
+//	drawBitmapText("X", x1p, y1p, z1);
+	//---------
+
+	/*
+		PointGeometric p1 = PointGeometric(x1p, y1p, z1);
+		PointGeometric p2 = PointGeometric(x2p, y2p, z2);
+		VectorGeometric vec = VectorGeometric(p2, p1, false);
+		VectorGeometric vec_norm = vec.getNormalized();
+		VectorGeometric vec_h = vec - vec_norm;
+
+
+
+		glLineWidth(5);
+		// Треугольник
+		glBegin(GL_LINES);
+		glColor3d(255, 255, 255);
+		glVertex3d(x1p, y1p, z1);
+		glVertex3d(vec_h.X, vec_h.Y, z1);
+		//glVertex3d(x2p, y2p, z2);
+		glEnd();
+		glLineWidth(1);
+	*/
+
+
+	// Размерная линия
+	glBegin(GL_LINES);
+		glVertex3d(x1p, y1p, z1);
+		glVertex3d(x2p, y2p, z2);
+	glEnd();
+
+
+	// Координаты "ушек"
+	double x1o = x1 + (offset + dx) * (y2 - y1) / length;
+	double y1o = y1 + (offset + dx) * (x1 - x2) / length;
+
+	double x2o = x2 + (offset + dx) * (y2 - y1) / length;
+	double y2o = y2 + (offset + dx) * (x1 - x2) / length;
+	//-----
+	// Левая линия от начальной точки до размерной линии + оффсет
+	glBegin(GL_LINES);
+		glVertex3d(x1n, y1n, z1);
+		glVertex3d(x1o, y1o, z1);
+	glEnd();
+
+	// Правая линия от начальной точки до размерной линии + оффсет
+	glBegin(GL_LINES);
+		glVertex3d(x2n, y2n, z2);
+		glVertex3d(x2o, y2o, z2);
+	glEnd();
+
+	glDisable(GL_LINE_STIPPLE);
+
+
+	glLineWidth(1);
+}
+
+void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
+{
+	glLineWidth(2);
+	glColor3d(0, 255, 0);
+
+	VectorGeometric normalizedVector = VectorGeometric(obj->dirVector);
+	normalizedVector.Normalize();
+
+	VectorGeometric start = obj->dirVector - (normalizedVector * 5) - (normalizedVector * obj->offset);
+	VectorGeometric end = obj->dirVector + (normalizedVector * 3) + (normalizedVector * obj->offset);
+
+	//start = start + obj->centerPoint;
+	//end = end + obj->centerPoint;
+
+	start.X += obj->centerPoint.X;
+	start.Y += obj->centerPoint.Y;
+	start.Z += obj->centerPoint.Z;
+
+	end.X += obj->centerPoint.X;
+	end.Y += obj->centerPoint.Y;
+	end.Z += obj->centerPoint.Z;
+
+	glEnable(GL_LINE_STIPPLE); // разрешаем рисовать
+							// прерывистую линию
+	glLineStipple(2, 58364); // Паттерн 
+	glBegin(GL_LINES);
+	
+	glVertex3d(start.X, start.Y, start.Z);
+	glVertex3d(end.X, end.Y, end.Z);
+	glEnd();
+
+	glDisable(GL_LINE_STIPPLE);
+
+}
+
+void COpenGLView::DrawOpenGL_Tolerance_Form_Roudness(FormRoundnessToleranceObject * obj)
+{
+	CircleApprox* circle = (CircleApprox*)obj->objMath;
+	glLineWidth(2);
+	glColor3d(255, 0, 255);
+	glBegin(GL_LINE_LOOP);
+	
+	for (int i = 0; i < circle->PointsForApprox.size(); i++) {
+		PointGeometric tmp = circle->PointsForApprox.operator[](i);
+		glVertex3d(tmp.X, tmp.Y, tmp.Z);
+	}
+	glEnd();
+
+
+}
+/////////////////////////////////////////////
+
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Cube (Test)
 void COpenGLView::DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor)

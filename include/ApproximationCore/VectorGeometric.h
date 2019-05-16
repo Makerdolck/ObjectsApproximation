@@ -19,6 +19,7 @@ public:
 	~VectorGeometric();
 
 	void Normalize();
+	double length(); // Voronov
 
 	PointGeometric	PointProjection(PointGeometric pointOut, PointGeometric pointOn);
 	double			DistanceToPoint(PointGeometric pointOut, PointGeometric pointOn);

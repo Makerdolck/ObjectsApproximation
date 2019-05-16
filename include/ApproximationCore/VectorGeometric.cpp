@@ -36,6 +36,10 @@ void VectorGeometric::Normalize()
 	Y /= length;
 	Z /= length;
 }
+double VectorGeometric::length()
+{
+	return sqrt(pow(X, 2) + pow(Y, 2) + pow(Z, 2));
+}
 // ---																										// Point Projection
 PointGeometric VectorGeometric::PointProjection(PointGeometric pointOut, PointGeometric pointOn)
 {

@@ -229,7 +229,9 @@
     <ClInclude Include="..\..\include\OutSource\Reference.h" />
     <ClInclude Include="..\..\include\Tolerance\AxialLine.h" />
     <ClInclude Include="..\..\include\Tolerance\FormRoundnessToleranceObject.h" />
+    <ClInclude Include="..\..\include\Tolerance\includes.h" />
     <ClInclude Include="..\..\include\Tolerance\SizeLine.h" />
+    <ClInclude Include="..\..\include\Tolerance\Tolerance.h" />
     <ClInclude Include="..\..\include\Tolerance\ToleranceBase.h" />
     <ClInclude Include="..\..\include\Tolerance\ToleranceObject.h" />
     <ClInclude Include="..\..\include\Traekt.h" />
@@ -277,6 +279,7 @@
     <ClCompile Include="..\..\include\Tolerance\AxialLine.cpp" />
     <ClCompile Include="..\..\include\Tolerance\FormRoundessToleranceObject.cpp" />
     <ClCompile Include="..\..\include\Tolerance\SizeLine.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\Tolerance.cpp" />
     <ClCompile Include="..\..\include\Tolerance\ToleranceBase.cpp" />
     <ClCompile Include="..\..\include\Tolerance\ToleranceObject.cpp" />
     <ClCompile Include="..\..\include\Traekt.cpp" />

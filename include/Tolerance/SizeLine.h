@@ -12,7 +12,7 @@
 class SizeLine : public ToleranceObject
 {
 public:
-	SizeLine();
+	SizeLine(PointApprox *point1, PointApprox *point2);
 	SizeLine(LineSegmentApprox *lineSegment);
 	SizeLine(CylinderApprox* cylinder);
 	SizeLine(ConeApprox* cone);
@@ -22,8 +22,6 @@ public:
 	PointGeometric	PointEnd; 
 	double offset = 0; // Расстояние от объекта до размерной линии
 
-
-	void paint(); // Построить линию
 	ToleranceObjectType getType();
 
 

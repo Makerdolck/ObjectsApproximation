@@ -11,6 +11,7 @@
 #include <ApproximationCore/_ALLincludesCore.h>
 
 #include <OutSource/Matrix.h>
+#include "Tolerance/includes.h"
 
 class COpenGLView : public CView
 {
@@ -97,6 +98,7 @@ protected:
 	   
 protected:
 	std::vector<ObjectApprox*>	*objectsArray;
+	std::vector<ToleranceObject*>* toleranceObjectsArray; // Voronov
 
 	PointGeometric				centerOfAllObjects;
 
@@ -133,6 +135,14 @@ protected:
 	void			GetScreenCoord(GLdouble wX, GLdouble wY, GLdouble wZ, PointGeometric& coord);
 
 	void			DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);
+
+
+	// Voronov
+	//void drawBitmapText(char* string, double x, double y, double z);
+	void DrawOpenGL_SizeLine(SizeLine* obj);
+	void DrawOpenGL_AxialLine(AxialLine* obj);
+	void DrawOpenGL_Tolerance_Form_Roudness(FormRoundnessToleranceObject* obj);
+	//-----------------------
 
 	//{{AFX_MSG(CTry_OpenGLView)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

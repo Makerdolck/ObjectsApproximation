@@ -130,6 +130,9 @@
     <ClCompile Include="..\..\include\Tolerance\ToleranceObject.cpp">
       <Filter>Source Files\Tolerance</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\Tolerance\Tolerance.cpp">
+      <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -268,6 +271,12 @@
       <Filter>Header Files\Tolerance</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Tolerance\ToleranceObject.h">
+      <Filter>Header Files\Tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\Tolerance.h">
+      <Filter>Header Files\Tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\includes.h">
       <Filter>Header Files\Tolerance</Filter>
     </ClInclude>
   </ItemGroup>
