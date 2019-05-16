@@ -227,6 +227,11 @@
     <ClInclude Include="..\..\include\OutSource\DVector\Dvector.h" />
     <ClInclude Include="..\..\include\OutSource\Matrix.h" />
     <ClInclude Include="..\..\include\OutSource\Reference.h" />
+    <ClInclude Include="..\..\include\Tolerance\AxialLine.h" />
+    <ClInclude Include="..\..\include\Tolerance\FormRoundnessToleranceObject.h" />
+    <ClInclude Include="..\..\include\Tolerance\SizeLine.h" />
+    <ClInclude Include="..\..\include\Tolerance\ToleranceBase.h" />
+    <ClInclude Include="..\..\include\Tolerance\ToleranceObject.h" />
     <ClInclude Include="..\..\include\Traekt.h" />
     <ClInclude Include="CAutoDlg.h" />
     <ClInclude Include="DialogObjectProperties.h" />
@@ -269,6 +274,11 @@
     <ClCompile Include="..\..\include\OutSource\DVector\Dvector.cpp" />
     <ClCompile Include="..\..\include\OutSource\Matrix.cpp" />
     <ClCompile Include="..\..\include\OutSource\Reference.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\AxialLine.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\FormRoundessToleranceObject.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\SizeLine.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\ToleranceBase.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\ToleranceObject.cpp" />
     <ClCompile Include="..\..\include\Traekt.cpp" />
     <ClCompile Include="CAutoDlg.cpp" />
     <ClCompile Include="DialogObjectProperties.cpp" />

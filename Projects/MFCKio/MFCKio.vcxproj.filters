@@ -115,6 +115,21 @@
     <ClCompile Include="..\..\include\Intersection.cpp">
       <Filter>Source Files\OutSource</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\Tolerance\AxialLine.cpp">
+      <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\Tolerance\FormRoundessToleranceObject.cpp">
+      <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\Tolerance\SizeLine.cpp">
+      <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\Tolerance\ToleranceBase.cpp">
+      <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\Tolerance\ToleranceObject.cpp">
+      <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -239,6 +254,21 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Intersection.h">
       <Filter>Header Files\OutSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\AxialLine.h">
+      <Filter>Header Files\Tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\FormRoundnessToleranceObject.h">
+      <Filter>Header Files\Tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\SizeLine.h">
+      <Filter>Header Files\Tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\ToleranceBase.h">
+      <Filter>Header Files\Tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\ToleranceObject.h">
+      <Filter>Header Files\Tolerance</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -401,6 +431,12 @@
     </Filter>
     <Filter Include="Header Files\OutSource">
       <UniqueIdentifier>{c118cf91-6bb0-4b8a-a5e4-a4b28518ab23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tolerance">
+      <UniqueIdentifier>{bdfc1784-c84b-4204-8a14-6510fe3bc36e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tolerance">
+      <UniqueIdentifier>{894e1e31-589d-4c14-8329-4598814be2ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
