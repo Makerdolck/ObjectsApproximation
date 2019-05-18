@@ -16,8 +16,6 @@ class RectangleApprox :	public GeomObjectApprox
 private:
 	PlaneApprox		Plane;
 
-	VectorGeometric VectorZ;
-
 	PointGeometric	WanderingCenter,
 					*WanderingPoints;
 
@@ -53,4 +51,4 @@ private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
 };
 
-#endif /* __RECTANGLE_APPROX_H__ */ 
+#endif /* __RECTANGLE_APPROX_H__ */

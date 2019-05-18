@@ -35,4 +35,4 @@ private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
 };
 
-#endif /* __LINE_SEGMENT_APPROX_H__ */ 
+#endif /* __LINE_SEGMENT_APPROX_H__ */

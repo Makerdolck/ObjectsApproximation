@@ -13,11 +13,17 @@ LineSegmentApprox::~LineSegmentApprox(){}
 // ---																										// Distance to Point
 double LineSegmentApprox::DistanceToPoint(PointGeometric point)
 {
+	Line.Point	= Point;
+	Line.Vector	= Vector;
+
 	return Line.DistanceToPoint(point);
 }
 // ---																										// Point Projection to Line
 PointGeometric LineSegmentApprox::PointProjection(PointGeometric point)
 {
+	Line.Point	= Point;
+	Line.Vector = Vector;
+
 	return Line.PointProjection(point);
 }
 // ---																										// --- APPROXIMATION ---
@@ -33,10 +39,11 @@ double LineSegmentApprox::FunctionApprox(PointGeometric *points, int arraySize)
 
 void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
 {
-	Line.Vector = VectorGeometric(points[0], points[arraySize - 1]);	// Find center vector
+	Vector = VectorGeometric(points[0], points[arraySize - 1]);			// Find center vector
 	CenterByPoints(points, arraySize);									// Find center point
 
-	PointGeometric tmpCenter = Line.Point;
+					Point		= Line.Point;
+	PointGeometric	tmpCenter	= Line.Point;
 
 	///////////		Start Approximation
 
@@ -47,25 +54,22 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 			*vectorMCoordinate2 = nullptr;
 
 	// Find Max vector Element
-	if ((fabs(Line.Vector.X) > fabs(Line.Vector.Y)) && (fabs(Line.Vector.X) > fabs(Line.Vector.Z)))
+	if ((fabs(Vector.X) > fabs(Vector.Y)) && (fabs(Vector.X) > fabs(Vector.Z)))
 	{
-		//lineCenterM.Line.Vector.X;
-		vectorMCoordinate1 = &Line.Vector.Y;
-		vectorMCoordinate2 = &Line.Vector.Z;
+		vectorMCoordinate1 = &Vector.Y;
+		vectorMCoordinate2 = &Vector.Z;
 	}
 	else
 	{
-		if ((fabs(Line.Vector.Y) > fabs(Line.Vector.X)) && (fabs(Line.Vector.Y) > fabs(Line.Vector.Z)))
+		if ((fabs(Vector.Y) > fabs(Vector.X)) && (fabs(Vector.Y) > fabs(Vector.Z)))
 		{
-			//lineCenterM.Line.Vector.Y;
-			vectorMCoordinate1 = &Line.Vector.X;
-			vectorMCoordinate2 = &Line.Vector.Z;
+			vectorMCoordinate1 = &Vector.X;
+			vectorMCoordinate2 = &Vector.Z;
 		}
 		else
 		{
-			//lineCenterM.Line.Vector.Z;
-			vectorMCoordinate1 = &Line.Vector.Y;
-			vectorMCoordinate2 = &Line.Vector.X;
+			vectorMCoordinate1 = &Vector.Y;
+			vectorMCoordinate2 = &Vector.X;
 		}
 	}
 
@@ -75,12 +79,12 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 		globalDeviationOld = globalDeviation;
 
 
-		Approximation(points, arraySize, accuracy, &Line.Vector, vectorMCoordinate1);	// Changing 1 - vector
-		Approximation(points, arraySize, accuracy, &Line.Vector, vectorMCoordinate2);	// Changing 2 - vector
+		Approximation(points, arraySize, accuracy, &Vector, vectorMCoordinate1);	// Changing 1 - vector
+		Approximation(points, arraySize, accuracy, &Vector, vectorMCoordinate2);	// Changing 2 - vector
 		
-		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.X);		// Changing X - center
-		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.Y);		// Changing Y - center
-		Approximation(points, arraySize, accuracy, &Line.Vector, &Line.Point.Z);		// Changing Z - center
+		Approximation(points, arraySize, accuracy, &Vector, &Point.X);		// Changing X - center
+		Approximation(points, arraySize, accuracy, &Vector, &Point.Y);		// Changing Y - center
+		Approximation(points, arraySize, accuracy, &Vector, &Point.Z);		// Changing Z - center
 
 
 		globalDeviation = FunctionApprox(points, arraySize);
@@ -88,13 +92,13 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 	} while (fabs(globalDeviation - globalDeviationOld) > accuracy);
 
 
-	Line.Point = PointProjection(tmpCenter);
+	Point = PointProjection(tmpCenter);
 
 	//
 	std::vector<PointGeometric> _points;
 
-	PointStart	= Line.Point;
-	PointEnd	= Line.Point;
+	PointStart	= Point;
+	PointEnd	= Point;
 
 	VectorGeometric		tmpVector;
 
@@ -105,26 +109,23 @@ void LineSegmentApprox::FindByPoints(PointGeometric *points, int arraySize, doub
 
 	for (int i = 0; i < arraySize; i++)
 	{
-		tmpVector = VectorGeometric(_points[i], Line.Point);
+		tmpVector = VectorGeometric(_points[i], Point);
 
-		if ((tmpVector.X >= 0 && Line.Vector.X >= 0) || (tmpVector.X <= 0 && Line.Vector.X <= 0))
+		if ((tmpVector.X >= 0 && Vector.X >= 0) || (tmpVector.X <= 0 && Vector.X <= 0))
 		{
-			if (PointStart.DistanceToPoint(Line.Point) < _points[i].DistanceToPoint(Line.Point)) {
+			if (PointStart.DistanceToPoint(Point) < _points[i].DistanceToPoint(Point)) {
 				PointStart = _points[i];
 				continue;
 			}
 		}
 		else
 		{
-			if (PointEnd.DistanceToPoint(Line.Point) < _points[i].DistanceToPoint(Line.Point)) {
+			if (PointEnd.DistanceToPoint(Point) < _points[i].DistanceToPoint(Point)) {
 				PointEnd = _points[i];
 				continue;
 			}
 		}
 	}
-
-	Point  = Line.Point;
-	Vector = Line.Vector;
 
 	Height = PointStart.DistanceToPoint(PointEnd);
 

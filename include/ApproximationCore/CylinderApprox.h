@@ -39,4 +39,4 @@ private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
 };
 
-#endif /* __CYLINDER_APPROX_H__ */ 
+#endif /* __CYLINDER_APPROX_H__ */

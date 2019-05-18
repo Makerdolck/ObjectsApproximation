@@ -89,10 +89,10 @@ void KramerMethod(double** gaussCoefficients, double* gaussFreeCoefficients, dou
 //	return pointResult;
 //}
 PointGeometric TransferPointToNewCoordinateSystem/*_Old*/(	PointGeometric	point,
-														PointGeometric	pointCenterNewCoordinateSystem,
-														VectorGeometric	vectorX,
-														VectorGeometric	vectorY,
-														VectorGeometric vectorZ)
+															PointGeometric	pointCenterNewCoordinateSystem,
+															VectorGeometric	vectorX,
+															VectorGeometric	vectorY,
+															VectorGeometric vectorZ)
 {
 	PointGeometric	pointResult,
 					pointCenter = pointCenterNewCoordinateSystem;

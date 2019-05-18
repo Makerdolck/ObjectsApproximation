@@ -63,7 +63,7 @@ double RectangleApprox::FunctionApprox(PointGeometric *points, int arraySize)
 
 	WanderingCenter = Plane.PointProjection(WanderingCenter);
 	VectorX = Plane.VectorProjection(VectorX);
-	VectorY = VectorX ^ VectorZ;
+	VectorY = VectorX ^ Line.Vector;
 
 	FindPointsCoordinates(&points[0], arraySize);
 
@@ -84,9 +84,8 @@ void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double
 	Plane.FindByPoints(&points[0], arraySize, accuracy);
 	Line = Plane.Line;
 
-	VectorZ = Line.Vector;
 	VectorX = VectorGeometric(Line.Point, Plane.PointProjection(points[0]));
-	VectorY = VectorZ ^ VectorX;
+	VectorY = Line.Vector ^ VectorX;
 
 	for (int i = 0; i < arraySize; i++)
 		pointsProjected.push_back(Plane.PointProjection(points[i]));
@@ -157,7 +156,7 @@ void RectangleApprox::Triangulation(double inAccuracy)
 	}
 
 
-	Mesh.vectorsNormal.push_back(VectorZ);
+	Mesh.vectorsNormal.push_back(vectorZ);
 }
 // ---																										//	---	Intersections ---
 

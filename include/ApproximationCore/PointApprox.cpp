@@ -14,15 +14,6 @@ PointApprox::PointApprox(double x, double y, double z)
 }
 
 PointApprox::~PointApprox() {}
-// ---																										// --- APPROXIMATION ---
-void PointApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
-{
-	CenterByPoints(points, arraySize);
-
-	X = Line.Point.X;
-	Y = Line.Point.Y;
-	Z = Line.Point.Z;
-}
 // ---																										// Copy from PointGeometric
 PointApprox& PointApprox::operator=(PointGeometric point)
 {
@@ -37,11 +28,22 @@ PointApprox::operator PointGeometric()
 {
 	return PointGeometric(X, Y, Z);
 }
+// ---																										// --- APPROXIMATION ---
+void PointApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
+{
+	CenterByPoints(points, arraySize);
+
+	X = Line.Point.X;
+	Y = Line.Point.Y;
+	Z = Line.Point.Z;
+}
 // ---																										//	---	Intersections ---
 
 // ---																										// PointBetweenPointMiddle
-PointGeometric PointApprox::PointBetweenPointMiddle(PointApprox point2) {
-	PointGeometric pointin(X, Y, Z);
+PointGeometric PointApprox::PointBetweenPointMiddle(PointApprox point2) 
+{
+	PointGeometric	pointin(X, Y, Z);
 	PointGeometric  pointout(point2.X, point2.Y, point2.Z);
+
 	return pointin.PointBetween(pointout);
 }

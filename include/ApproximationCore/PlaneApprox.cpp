@@ -13,14 +13,14 @@ PlaneApprox::~PlaneApprox(){}
 // ---																										// Point Projection
 PointGeometric PlaneApprox::PointProjection(PointGeometric pointOut)
 {
-	Plane.Line = Line;
+	PlaneGeometric	Plane(Line);
 
 	return Plane.PointProjection(pointOut);
 }
 // ---																										// Vector Projection
 VectorGeometric PlaneApprox::VectorProjection(VectorGeometric vectorOut, bool flagNormalize)
 {
-	Plane.Line = Line;
+	PlaneGeometric	Plane(Line);
 
 	return Plane.VectorProjection(vectorOut, flagNormalize);
 }

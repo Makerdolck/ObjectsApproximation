@@ -141,7 +141,7 @@ void CylinderApprox::Triangulation(double inAccuracy)
 
 	//	---	---	Finding the angle of displacement of a point along a circle
 
-	double	angle		= acos((Radius - inAccuracy) / Radius) * 180.f / PI_Approx,
+	double	angle		= 2 * acos((Radius - inAccuracy) / Radius) * 180.f / PI_Approx,
 			angelsSum,
 			xCompon,
 			yCompon;
