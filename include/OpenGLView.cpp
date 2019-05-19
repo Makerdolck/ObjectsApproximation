@@ -1019,6 +1019,61 @@ double COpenGLView::angle_point(PointGeometric a, PointGeometric b, PointGeometr
 
 void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 {
+	double triangle_height = 0.3;
+	double triangle_widht = 0.3;
+
+	VectorGeometric n = obj->objMath->Line.Vector;
+	PointGeometric centerPoint = obj->centerPoint - (n * 0.01);
+	VectorGeometric p = VectorGeometric(obj->objMath->PointsForApprox.operator[](0), centerPoint);
+	VectorGeometric perp = n ^ p;
+	perp.Normalize();
+	n.Normalize();
+
+	PointGeometric leftPoint = centerPoint + perp * (obj->diameter / 2);
+	PointGeometric rightPoint = centerPoint - perp * (obj->diameter / 2);
+	glLineWidth(2);
+	glColor3d(0, 255, 0);
+
+
+	glPointSize(8);
+	glBegin(GL_POINTS);
+		glVertex3d(centerPoint.X, centerPoint.Y, centerPoint.Z);
+	glEnd();
+
+	
+	
+	glBegin(GL_LINES);
+		glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
+		glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
+	glEnd();
+
+	VectorGeometric g = VectorGeometric(obj->objMath->PointsForApprox.operator[](1), centerPoint);
+	VectorGeometric perpTrinagle = n ^ perp;
+	perpTrinagle.Normalize();
+
+	PointGeometric leftTopPoint = leftPoint - perp * triangle_height + perpTrinagle * triangle_widht;
+	PointGeometric leftBottomPoint = leftPoint - perp * triangle_height - perpTrinagle * triangle_widht;
+	// Правый треугольник
+	glBegin(GL_TRIANGLES);
+		glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
+		glVertex3d(leftTopPoint.X, leftTopPoint.Y, leftTopPoint.Z);
+		glVertex3d(leftBottomPoint.X, leftBottomPoint.Y, leftBottomPoint.Z);
+	glEnd();
+
+	PointGeometric rightTopPoint = rightPoint + perp * triangle_height + perpTrinagle * triangle_widht;
+	PointGeometric rightBottomPoint = rightPoint + perp * triangle_height - perpTrinagle * triangle_widht;
+	// Правый треугольник
+	glBegin(GL_TRIANGLES);
+		glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
+		glVertex3d(rightTopPoint.X, rightTopPoint.Y, rightTopPoint.Z);
+		glVertex3d(rightBottomPoint.X, rightBottomPoint.Y, rightBottomPoint.Z);
+	glEnd();
+
+
+
+
+
+	/*
 	glPushMatrix();       // сохраняем текущие координаты
 	//double angle = angle_point(PointGeometric(0, 0, 0), obj->centerPoint, obj->objMath->PointsForApprox.operator[](0));
 	glTranslated(obj->centerPoint.X, obj->centerPoint.Y, obj->centerPoint.Z);  // сдвигаемся по оси Z
@@ -1030,6 +1085,7 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 
 	double triangle_height = 0.3;
 	double triangle_widht = 0.3;
+	
 	
 	glPointSize(8);
 	glBegin(GL_POINTS);
@@ -1086,6 +1142,7 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 	}
 	
 	glPopMatrix();  // возвращаемся к старой системе координат
+	*/
 }
 
 void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
