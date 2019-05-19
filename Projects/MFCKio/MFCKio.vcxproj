@@ -225,6 +225,7 @@
     <ClInclude Include="..\..\include\Intersection.h" />
     <ClInclude Include="..\..\include\OpenGLView.h" />
     <ClInclude Include="..\..\include\OutSource\DVector\Dvector.h" />
+    <ClInclude Include="..\..\include\OutSource\MyFont.h" />
     <ClInclude Include="..\..\include\OutSource\Matrix.h" />
     <ClInclude Include="..\..\include\OutSource\Reference.h" />
     <ClInclude Include="..\..\include\Tolerance\AxialLine.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="..\..\include\Intersection.cpp" />
     <ClCompile Include="..\..\include\OpenGLView.cpp" />
     <ClCompile Include="..\..\include\OutSource\DVector\Dvector.cpp" />
+    <ClCompile Include="..\..\include\OutSource\MyFont.cpp" />
     <ClCompile Include="..\..\include\OutSource\Matrix.cpp" />
     <ClCompile Include="..\..\include\OutSource\Reference.cpp" />
     <ClCompile Include="..\..\include\Tolerance\AxialLine.cpp" />

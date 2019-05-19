@@ -11,6 +11,14 @@ DiameterLine::DiameterLine(CircleApprox* circle, bool isOutdoor = false)
 	this->diameter = circle->Radius * 2;
 }
 
+DiameterLine::DiameterLine(CylinderApprox* cylinder, bool isOutdoor)
+{
+	this->centerPoint = cylinder->PointBottomSurfaceCenter;
+	this->objMath = cylinder;
+	this->isOutdoor = isOutdoor;
+	this->diameter = cylinder->Radius * 2;
+}
+
 
 DiameterLine::~DiameterLine()
 {

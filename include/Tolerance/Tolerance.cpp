@@ -15,13 +15,16 @@ Tolerance::~Tolerance()
 
 double Tolerance::FormStraightness(LineSegmentApprox* line)
 {
-	LineGeometric lineGeom = LineGeometric(line->Vector);
+	//LineGeometric lineGeom = LineGeometric(line->Vector);
 	
-	double min = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](0));
-	double max = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](0));
-	for (int i = 0; i < line->PointsForApprox.size(); i++) {
-		//double distance = DistanceBetween(line->PointStart, line->PointEnd, line->PointsForApprox.operator[](i));
-		double distance = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](i));
+	//double min = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](0));
+	//double max = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](0));	
+	//double min = DistanceBetween(line->PointStart, line->PointEnd, line->PointsForApprox.operator[](0));
+	double min = DistanceBetween(line->PointsForApprox.operator[](0), line->PointsForApprox.operator[](line->PointsForApprox.size()-1), line->PointsForApprox.operator[](1));
+	double max = DistanceBetween(line->PointsForApprox.operator[](0), line->PointsForApprox.operator[](line->PointsForApprox.size()-1), line->PointsForApprox.operator[](1));
+	for (int i = 1; i < line->PointsForApprox.size()-1; i++) {
+		double distance = DistanceBetween(line->PointsForApprox.operator[](0), line->PointsForApprox.operator[](line->PointsForApprox.size() - 1), line->PointsForApprox.operator[](i));
+		//double distance = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](i));
 
 		if (distance > max) {
 			max = distance;
@@ -36,22 +39,30 @@ double Tolerance::FormStraightness(LineSegmentApprox* line)
 	double result = round(max, 4) - round(min, 4);
 	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, result);
 	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-	return max; // Нужно ли делить на 2?
+	return max;
 }
 
 double Tolerance::FormFlatness(PlaneApprox* plane)
 {
-	double max = DistanceBetween(plane->PointProjection(plane->PointsForApprox.operator[](0)), plane->PointsForApprox.operator[](0));
+	//double max = DistanceBetween(plane->PointProjection(plane->PointsForApprox.operator[](0)), plane->PointsForApprox.operator[](0));
+	double min = DistanceBetween(*plane, plane->PointsForApprox.operator[](0));
+	double max = min;
 	for (int i = 0; i < plane->PointsForApprox.size(); i++) {
-		double result = DistanceBetween(plane->PointProjection(plane->PointsForApprox.operator[](i)), plane->PointsForApprox.operator[](i));
-//		double result = distancePointPlane(plane->PointsForApprox.operator[](i), *plane);
+		//double result = DistanceBetween(plane->PointProjection(plane->PointsForApprox.operator[](i)), plane->PointsForApprox.operator[](i));
+		double result = DistanceBetween(*plane, plane->PointsForApprox.operator[](i));
 		if (result > max) {
 			max = result;
 		}
+		if (result < min) {
+			min = result;
+		}
 	}
 
+
+
 	CString str = L"";
-	str.Format(L"Result: %g", max);
+	//str.Format(L"Result: %g", max);
+	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min), 3));
 	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return max;
@@ -76,9 +87,9 @@ double Tolerance::FormRoundness(CircleApprox* circle)
 		}
 	}
 	CString str = L"";
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, abs(abs(max) - abs(min)));
+	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
 	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-	return abs(abs(max) - abs(min)); // Нужно ли делить на 2?
+	return round(fabs(max - min) / 2, 3);
 }
 
 
@@ -101,10 +112,33 @@ double Tolerance::FormCylindricity(CylinderApprox* cylinder)
 	}
 
 	CString str = L"";
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, abs(max-min));
+	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max-min)/2, 3));
 	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
-	return abs(max-min);
+	return round(fabs(max - min) / 2, 3);
+}
+
+double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control)
+{
+
+	double min = DistanceBetween(*base, control->PointsForApprox.operator[](0));
+	double max = min;
+
+	for (int i = 0; i < control->PointsForApprox.size(); i++) {
+		double distance = DistanceBetween(*base, control->PointsForApprox.operator[](i));
+		if (distance > max) {
+			max = distance;
+		}
+		if (min > distance) {
+			min = distance;
+		}
+	}
+
+	CString str = L"";
+	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
+	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+
+	return round(fabs(max - min) / 2, 3);
 }
 
 
@@ -285,14 +319,14 @@ void Tolerance::DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray) {
 
 		if (objApprox->objMath->GetName() == circleA->GetName()) {
 			circleA = (CircleApprox*)objApprox->objMath;
-			newDiameterLine = new DiameterLine(circleA, true);
+			newDiameterLine = new DiameterLine(circleA, false);
 		}
 		else if (objApprox->objMath->GetName() == coneA->GetName()) {
 			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
 		}
 		else if (objApprox->objMath->GetName() == cylinderA->GetName()) {
-			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
-
+			cylinderA = (CylinderApprox*)objApprox->objMath;
+			newDiameterLine = new DiameterLine(cylinderA, false);
 		}
 		else if (objApprox->objMath->GetName() == sphereA->GetName()) {
 			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
@@ -433,16 +467,35 @@ double Tolerance::DistanceBetween(PointGeometric point1, PointGeometric point2)
 
 double Tolerance::DistanceBetween(PointGeometric A, PointGeometric B, PointGeometric point)
 {
-	double d = 0;
+	/*double d = 0;
 	VectorGeometric AB = VectorGeometric(A, B, false);
 	VectorGeometric AC = VectorGeometric(A, point, false);
-	VectorGeometric BC = AB * AC;
+	VectorGeometric BC = AB ^ AC;
 	
 	double area = BC.length();
 	d = area / AB.length();
 
-	return d;
+	return d;*/
+
+	VectorGeometric AB = VectorGeometric(A, B, false);
+	VectorGeometric AC = VectorGeometric(A, point, false);
+	VectorGeometric res = (AC ^ AB);
+	
+	
+	return res.length() / AB.length();
 }
+
+double Tolerance::DistanceBetween(PlaneApprox plane, PointGeometric point)
+{
+	PointGeometric centerPoint = plane.Line.Point;
+	VectorGeometric N = plane.Line.Vector;
+	double d = -(N * plane.PointsForApprox.operator[](1));
+	double result = (N.X * point.X + N.Y * point.Y + N.Z * point.Z + d) / N.length();
+	return round(result, 3);
+
+}
+
+
 
 // Округление value до num_after_point после запятой
 double Tolerance::round(double value, int num_after_point) {

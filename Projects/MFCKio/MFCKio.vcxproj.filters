@@ -136,6 +136,9 @@
     <ClCompile Include="..\..\include\Tolerance\DiameterLine.cpp">
       <Filter>Source Files\Tolerance</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\OutSource\MyFont.cpp">
+      <Filter>Source Files\OutSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -284,6 +287,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Tolerance\DiameterLine.h">
       <Filter>Header Files\Tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OutSource\MyFont.h">
+      <Filter>Header Files\OutSource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

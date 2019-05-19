@@ -24,23 +24,17 @@ public:
 	double FormFlatness(PlaneApprox* plane); // Плоскостность
 	double FormRoundness(CircleApprox *circle); // Круглость
 	double FormCylindricity(CylinderApprox *cylinder); // Цилиндричность
-	int FormLineProfile(std::vector<ObjectApprox*>* objectsArray); // Форма заданного профиля
-	int FormSurfaceProfile(std::vector<ObjectApprox*>* objectsArray); // Форма заданной поверхности
 
 	// Допуски ориентации
-	int OrientationParallelism(std::vector<ObjectApprox*>* objectsArray); // Параллельность
+	double OrientationParallelism(PlaneApprox* base, PlaneApprox* control); // Параллельность
 	int OrientationPerpendicularity(std::vector<ObjectApprox*>* objectsArray); // Перпендикулярность
 	int OrientationAngularity(std::vector<ObjectApprox*>* objectsArray); // Наклон
-	int OrientationLineProfile(std::vector<ObjectApprox*>* objectsArray); // Форма заданного профиля
-	int OrientationSurfaceProfile(std::vector<ObjectApprox*>* objectsArray); // Форма заданной поверхности
 
 	// Допуски месторасположения
 	int LocationPosition(std::vector<ObjectApprox*>* objectsArray); // Позиционирование
 	int LocationConcentricity(std::vector<ObjectApprox*>* objectsArray); // Концентричность (для точек)
 	int LocationCoaxiality(std::vector<ObjectApprox*>* objectsArray); // Соосность (для осей)
 	int LocationSymmetry(std::vector<ObjectApprox*>* objectsArray); // Симметричность
-	int LocationLineProfile(std::vector<ObjectApprox*>* objectsArray); // Форма заданного профиля
-	int LocationSurfaceProfile(std::vector<ObjectApprox*>* objectsArray); // Форма заданной поверхности
 
 	// Допуски биения
 	int RunOutCircular(std::vector<ObjectApprox*>* objectsArray); // Форма заданной поверхности
@@ -60,8 +54,9 @@ private:
 	void addNewObject(ToleranceObject* obj);
 	double DistanceBetween(PointGeometric point1, PointGeometric point2);
 	double DistanceBetween(PointGeometric A, PointGeometric B, PointGeometric point);
+	double DistanceBetween(PlaneApprox plane, PointGeometric point);
 	double round(double value, int num_after_point); // Округление до n цифры после запятой
-	// Расстояние от точки до прямой
+	
 	PointGeometric centerByPoints(PointGeometric* points, int arraySize);
 };
 

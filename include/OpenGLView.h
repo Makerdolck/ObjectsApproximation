@@ -12,6 +12,8 @@
 
 #include <OutSource/Matrix.h>
 #include "Tolerance/includes.h"
+#include "OutSource/MyFont.h"
+
 
 class COpenGLView : public CView
 {
@@ -105,6 +107,8 @@ protected:
 	PointGeometric				pointEyeLook,
 								pointAimLook;
 
+	MyFont *myFont;
+
 	double						distanceAimEye,
 								offsetView_X,
 								offsetView_Y;
@@ -138,8 +142,9 @@ protected:
 
 
 	// Voronov
-	//void drawBitmapText(char* string, double x, double y, double z);
+	void drawBitmapText(char* string, double x, double y, double z);
 	void DrawOpenGL_SizeLine(SizeLine* obj);
+	double angle_point(PointGeometric a, PointGeometric b, PointGeometric c);
 	void DrawOpenGL_DiameterLine(DiameterLine* obj);
 	void DrawOpenGL_AxialLine(AxialLine* obj);
 	void DrawOpenGL_Tolerance_Form_Roudness(FormRoundnessToleranceObject* obj);

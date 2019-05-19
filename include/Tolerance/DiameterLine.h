@@ -14,6 +14,7 @@ class DiameterLine :
 public:
 
 	DiameterLine(CircleApprox* circle, bool isOutdoor);
+	DiameterLine(CylinderApprox* cylinder, bool isOutdoor);
 	~DiameterLine();
 
 	PointGeometric centerPoint;
