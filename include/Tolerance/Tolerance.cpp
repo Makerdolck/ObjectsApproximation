@@ -141,6 +141,58 @@ double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control
 	return round(fabs(max - min) / 2, 3);
 }
 
+int Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control)
+{
+	double min = DistanceBetween(*base, control->PointsForApprox.operator[](0));
+	double max = min;
+
+	for (int i = 0; i < control->PointsForApprox.size(); i++) {
+		double distance = DistanceBetween(*base, control->PointsForApprox.operator[](i));
+		if (distance > max) {
+			max = distance;
+		}
+		if (min > distance) {
+			min = distance;
+		}
+	}
+
+	CString str = L"";
+	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
+	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+
+	return round(fabs(max - min) / 2, 3);
+}
+
+int Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* circleB)
+{
+	double distance = DistanceBetween(centerByPoints(&circleA->PointsForApprox[0], circleA->PointsForApprox.size()), centerByPoints(&circleB->PointsForApprox[0], circleB->PointsForApprox.size()));
+	
+	CString str = L"";
+	str.Format(L"Result: %g", distance);
+	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+
+
+	return distance;
+}
+
+int Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB)
+{
+
+	double bottomDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, cylinderB->PointBottomSurfaceCenter);
+	double topDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, cylinderB->PointTopSurfaceCenter);
+	
+	double max = bottomDistance;
+	if (topDistance > bottomDistance) {
+		max = topDistance;
+	}
+	
+	CString str = L"";
+	str.Format(L"Top: %g; Bottom: %g; Result: %g", topDistance, bottomDistance, round(max, 3));
+	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+
+	return round(max, 3);
+}
+
 
 PointGeometric Tolerance::centerByPoints(PointGeometric* points, int arraySize)
 {
@@ -455,6 +507,222 @@ void Tolerance::DrawFormRoundness(std::vector<ObjectApprox*>* objectsArray)
 	}
 }
 
+
+void Tolerance::DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsArray)
+{
+	if (objectsArray == nullptr)
+	{
+		AfxMessageBox(L"objectsArray == nullptr", MB_ICONWARNING | MB_OK);
+		return;
+	}
+	if (objectsArray->size() < 1) {
+		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+
+
+	ObjectApprox* objApprox;
+
+	PlaneApprox* planeBase = new PlaneApprox();
+	PlaneApprox* planeControl = new PlaneApprox();
+
+
+	//FormRoundnessToleranceObject* newTolerance = nullptr;
+
+	int countSelectedObject = 0;
+	int objectNum = 1;
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (objApprox->flagSelected) {
+			countSelectedObject++;
+		}
+	}
+	if (countSelectedObject == 0) {
+		AfxMessageBox(L"Не выбран ни один объект", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (!objApprox->flagReady || !objApprox->flagSelected)
+			continue;
+
+
+		if (countSelectedObject == 2) {
+			
+			if (objectNum == 1) {
+				
+					planeBase = (PlaneApprox*)objApprox->objMath;
+					objectNum++;
+					continue;
+			}
+			else {
+				
+					planeControl = (PlaneApprox*)objApprox->objMath;
+					OrientationParallelism(planeBase, planeControl);
+					break;
+				
+			}
+		}
+		else {
+			AfxMessageBox(L"Выбрано слишком много объектов", MB_ICONWARNING | MB_OK);
+			return;
+		}
+	}
+
+
+}
+
+
+void Tolerance::DrawLocationConcentricity(std::vector<ObjectApprox*>* objectsArray)
+{
+	if (objectsArray == nullptr)
+	{
+		AfxMessageBox(L"objectsArray == nullptr", MB_ICONWARNING | MB_OK);
+		return;
+	}
+	if (objectsArray->size() < 1) {
+		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+
+
+	ObjectApprox* objApprox;
+
+	CircleApprox* circleA = new CircleApprox();
+	CircleApprox* circleB = new CircleApprox();
+
+
+	//FormRoundnessToleranceObject* newTolerance = nullptr;
+
+	int countSelectedObject = 0;
+	int objectNum = 1;
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (objApprox->flagSelected) {
+			countSelectedObject++;
+		}
+	}
+	if (countSelectedObject == 0) {
+		AfxMessageBox(L"Не выбран ни один объект", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (!objApprox->flagReady || !objApprox->flagSelected)
+			continue;
+
+
+		if (countSelectedObject == 2) {
+			
+			if (objectNum == 1) {
+				
+					circleA = (CircleApprox*)objApprox->objMath;
+					objectNum++;
+					continue;
+			}
+			else {
+				
+					circleB = (CircleApprox*)objApprox->objMath;
+					LocationConcentricity(circleA, circleB);
+					break;
+				
+			}
+		}
+		else {
+			AfxMessageBox(L"Выбрано слишком много объектов", MB_ICONWARNING | MB_OK);
+			return;
+		}
+	}
+
+
+}
+
+void Tolerance::DrawLocationCoaxiality(std::vector<ObjectApprox*>* objectsArray)
+{
+	if (objectsArray == nullptr)
+	{
+		AfxMessageBox(L"objectsArray == nullptr", MB_ICONWARNING | MB_OK);
+		return;
+	}
+	if (objectsArray->size() < 1) {
+		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+
+
+	ObjectApprox* objApprox;
+
+	CylinderApprox* cylinderA = new CylinderApprox();
+	CylinderApprox* cylinderB = new CylinderApprox();
+
+
+	//FormRoundnessToleranceObject* newTolerance = nullptr;
+
+	int countSelectedObject = 0;
+	int objectNum = 1;
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (objApprox->flagSelected) {
+			countSelectedObject++;
+		}
+	}
+	if (countSelectedObject == 0) {
+		AfxMessageBox(L"Не выбран ни один объект", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (!objApprox->flagReady || !objApprox->flagSelected)
+			continue;
+
+
+		if (countSelectedObject == 2) {
+			
+			if (objectNum == 1) {
+				
+				cylinderA = (CylinderApprox*)objApprox->objMath;
+				objectNum++;
+				continue;
+			}
+			else {
+				cylinderB = (CylinderApprox*)objApprox->objMath;
+				LocationCoaxiality(cylinderA, cylinderB);
+				break;
+			}
+		}
+		else {
+			AfxMessageBox(L"Выбрано слишком много объектов", MB_ICONWARNING | MB_OK);
+			return;
+		}
+	}
+
+
+}
+
+
+
+
 void Tolerance::addNewObject(ToleranceObject* obj)
 {
 	toleranceObjectsArray->push_back(obj);
@@ -467,23 +735,15 @@ double Tolerance::DistanceBetween(PointGeometric point1, PointGeometric point2)
 
 double Tolerance::DistanceBetween(PointGeometric A, PointGeometric B, PointGeometric point)
 {
-	/*double d = 0;
-	VectorGeometric AB = VectorGeometric(A, B, false);
-	VectorGeometric AC = VectorGeometric(A, point, false);
-	VectorGeometric BC = AB ^ AC;
-	
-	double area = BC.length();
-	d = area / AB.length();
-
-	return d;*/
-
 	VectorGeometric AB = VectorGeometric(A, B, false);
 	VectorGeometric AC = VectorGeometric(A, point, false);
 	VectorGeometric res = (AC ^ AB);
-	
-	
 	return res.length() / AB.length();
 }
+
+
+
+
 
 double Tolerance::DistanceBetween(PlaneApprox plane, PointGeometric point)
 {

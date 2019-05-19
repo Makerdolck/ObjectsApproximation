@@ -27,13 +27,13 @@ public:
 
 	// Допуски ориентации
 	double OrientationParallelism(PlaneApprox* base, PlaneApprox* control); // Параллельность
-	int OrientationPerpendicularity(std::vector<ObjectApprox*>* objectsArray); // Перпендикулярность
+	int OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control); // Перпендикулярность
 	int OrientationAngularity(std::vector<ObjectApprox*>* objectsArray); // Наклон
 
 	// Допуски месторасположения
 	int LocationPosition(std::vector<ObjectApprox*>* objectsArray); // Позиционирование
-	int LocationConcentricity(std::vector<ObjectApprox*>* objectsArray); // Концентричность (для точек)
-	int LocationCoaxiality(std::vector<ObjectApprox*>* objectsArray); // Соосность (для осей)
+	int LocationConcentricity(CircleApprox *circleA, CircleApprox *circleB); // Концентричность (для точек)
+	int LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB); // Соосность (для осей)
 	int LocationSymmetry(std::vector<ObjectApprox*>* objectsArray); // Симметричность
 
 	// Допуски биения
@@ -46,6 +46,12 @@ public:
 	void DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray);
 	void DrawAxialLine(std::vector<ObjectApprox*>* objectsArray); // Осевая линия
 	void DrawFormRoundness(std::vector<ObjectApprox*>* objectsArray); // Допуски формы круглости
+
+	void DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsArray);
+
+	void DrawLocationConcentricity(std::vector<ObjectApprox*>* objectsArray);
+	void DrawLocationCoaxiality(std::vector<ObjectApprox*>* objectsArray);
+
 
 private:
 
