@@ -28,7 +28,8 @@ public:
 	// Допуски ориентации
 	double OrientationParallelism(PlaneApprox* base, PlaneApprox* control); // Параллельность
 	int OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control); // Перпендикулярность
-	int OrientationAngularity(std::vector<ObjectApprox*>* objectsArray); // Наклон
+	double OrientationAngularity(PlaneApprox* base, PlaneApprox* control); // Наклон
+	
 
 	// Допуски месторасположения
 	int LocationPosition(std::vector<ObjectApprox*>* objectsArray); // Позиционирование
@@ -48,6 +49,8 @@ public:
 	void DrawFormRoundness(std::vector<ObjectApprox*>* objectsArray); // Допуски формы круглости
 
 	void DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsArray);
+	void DrawOrientationAngularity(std::vector<ObjectApprox*>* objectsArray);
+
 
 	void DrawLocationConcentricity(std::vector<ObjectApprox*>* objectsArray);
 	void DrawLocationCoaxiality(std::vector<ObjectApprox*>* objectsArray);
@@ -58,6 +61,7 @@ private:
 	std::vector<ToleranceObject*>* toleranceObjectsArray; // Voronov
 
 	void addNewObject(ToleranceObject* obj);
+	double AngleBetween(PlaneApprox plane1, PlaneApprox plane2);
 	double DistanceBetween(PointGeometric point1, PointGeometric point2);
 	double DistanceBetween(PointGeometric A, PointGeometric B, PointGeometric point);
 	double DistanceBetween(PlaneApprox plane, PointGeometric point);

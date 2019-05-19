@@ -62,10 +62,10 @@ double Tolerance::FormFlatness(PlaneApprox* plane)
 
 	CString str = L"";
 	//str.Format(L"Result: %g", max);
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min), 3));
+	str.Format(L"Плоскостность. Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min), 3));
 	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
-	return max;
+	return round(fabs(max - min), 3);
 }
 
 double Tolerance::FormRoundness(CircleApprox* circle)
@@ -140,6 +140,18 @@ double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control
 
 	return round(fabs(max - min) / 2, 3);
 }
+
+double Tolerance::OrientationAngularity(PlaneApprox *base, PlaneApprox *control)
+{
+
+	CString str = L"";
+	str.Format(L"Angle: %g; Flatness: %g", AngleBetween(*base, *control), FormFlatness(control));
+	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+
+	return AngleBetween(*base, *control);
+}
+
+
 
 int Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control)
 {
@@ -579,6 +591,77 @@ void Tolerance::DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsAr
 
 }
 
+void Tolerance::DrawOrientationAngularity(std::vector<ObjectApprox*>* objectsArray)
+{
+	if (objectsArray == nullptr)
+	{
+		AfxMessageBox(L"objectsArray == nullptr", MB_ICONWARNING | MB_OK);
+		return;
+	}
+	if (objectsArray->size() < 1) {
+		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+
+
+	ObjectApprox* objApprox;
+
+	PlaneApprox* planeBase = new PlaneApprox();
+	PlaneApprox* planeControl = new PlaneApprox();
+
+
+	//FormRoundnessToleranceObject* newTolerance = nullptr;
+
+	int countSelectedObject = 0;
+	int objectNum = 1;
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (objApprox->flagSelected) {
+			countSelectedObject++;
+		}
+	}
+	if (countSelectedObject == 0) {
+		AfxMessageBox(L"Не выбран ни один объект", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (!objApprox->flagReady || !objApprox->flagSelected)
+			continue;
+
+
+		if (countSelectedObject == 2) {
+			
+			if (objectNum == 1) {
+				
+					planeBase = (PlaneApprox*)objApprox->objMath;
+					objectNum++;
+					continue;
+			}
+			else {
+				
+					planeControl = (PlaneApprox*)objApprox->objMath;
+					OrientationAngularity(planeBase, planeControl);
+					break;
+				
+			}
+		}
+		else {
+			AfxMessageBox(L"Выбрано слишком много объектов", MB_ICONWARNING | MB_OK);
+			return;
+		}
+	}
+
+
+}
+
 
 void Tolerance::DrawLocationConcentricity(std::vector<ObjectApprox*>* objectsArray)
 {
@@ -726,6 +809,17 @@ void Tolerance::DrawLocationCoaxiality(std::vector<ObjectApprox*>* objectsArray)
 void Tolerance::addNewObject(ToleranceObject* obj)
 {
 	toleranceObjectsArray->push_back(obj);
+}
+
+double Tolerance::AngleBetween(PlaneApprox plane1, PlaneApprox plane2)
+{
+	double angleCos = 0;
+	VectorGeometric n1 = plane1.Line.Vector;
+	VectorGeometric n2 = plane2.Line.Vector;
+
+	angleCos = fabs(n1.X * n2.X + n1.Y * n2.Y + n1.Z * n2.Z) / (n1.length() * n2.length());
+
+	return acosf(angleCos)* 180.0 / 3.1415926535897932384626433832795;
 }
 
 double Tolerance::DistanceBetween(PointGeometric point1, PointGeometric point2)
