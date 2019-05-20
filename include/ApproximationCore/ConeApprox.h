@@ -42,4 +42,4 @@ private:
 
 };
 
-#endif /* __CONE_APPROX_H__ */ 
+#endif /* __CONE_APPROX_H__ */

@@ -54,7 +54,7 @@ void RectangleApprox::FindPointsCoordinates(PointGeometric *points, int arraySiz
 		WanderingPoints[i].Z = 0;				// vectorR * Line.Vector;
 	}
 
-	FindWidthHeightMinMaxXY(&points[0], arraySize);
+	FindWidthHeightMinMaxXY(points, arraySize);
 }
 // ---																										// --- APPROXIMATION ---
 double RectangleApprox::FunctionApprox(PointGeometric *points, int arraySize)
@@ -65,7 +65,7 @@ double RectangleApprox::FunctionApprox(PointGeometric *points, int arraySize)
 	VectorX = Plane.VectorProjection(VectorX);
 	VectorY = VectorX ^ Line.Vector;
 
-	FindPointsCoordinates(&points[0], arraySize);
+	FindPointsCoordinates(points, arraySize);
 
 	sum += pow(fabs(fabs(maxX) - fabs(minX)), 2);
 	sum += pow(fabs(fabs(maxY) - fabs(minY)), 2);
@@ -81,7 +81,7 @@ void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double
 
 	WanderingPoints = new PointGeometric[arraySize];
 
-	Plane.FindByPoints(&points[0], arraySize, accuracy);
+	Plane.FindByPoints(points, arraySize, accuracy);
 	Line = Plane.Line;
 
 	VectorX = VectorGeometric(Line.Point, Plane.PointProjection(points[0]));

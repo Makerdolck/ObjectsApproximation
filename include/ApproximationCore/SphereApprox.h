@@ -33,4 +33,4 @@ private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
 };
 
-#endif /* __SPHERE_APPROX_H__ */ 
+#endif /* __SPHERE_APPROX_H__ */

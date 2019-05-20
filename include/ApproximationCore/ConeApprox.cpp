@@ -54,7 +54,6 @@ void ConeApprox::FindPointForBottomCenter(PointGeometric *points, int arraySize)
 		PointBottomSurfaceCenter = PointMin;
 	else
 		PointBottomSurfaceCenter = PointMax;
-
 }
 // ---																										// --- APPROXIMATION ---
 double ConeApprox::FunctionApprox(PointGeometric *points, int arraySize)		// R - (r - h * tg(alpha))
@@ -70,16 +69,21 @@ double ConeApprox::FunctionApprox(PointGeometric *points, int arraySize)		// R -
 
 	PointBottomCenter = Line.PointProjection(PointBottomSurfaceCenter);
 
+	FindHeight(points, arraySize);
+	
+	RadiusSmaller = Radius - Height / tan(Angle * PI_Approx / 180);
+
 	for (int i = 0; i < arraySize; i++)
 	{
-		height = PointBottomCenter.DistanceToPoint(Line.PointProjection(points[i]));
+		height = Height - PointBottomCenter.DistanceToPoint(Line.PointProjection(points[i]));
 
 		R = Line.DistanceToPoint(points[i]);
 
-		r = Radius - height / tan(Angle* PI_Approx / 180);
+		r = height / tan(Angle* PI_Approx / 180) + RadiusSmaller;
 
 		sum += pow(R - r, 2);
 	}
+
 	return sum;
 }
 

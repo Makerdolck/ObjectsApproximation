@@ -25,7 +25,7 @@ double CircleApprox::FunctionApprox(PointGeometric *points, int arraySize)		// R
 
 void CircleApprox::FindByPoints(PointGeometric *points, int arraySize, double accuracy)
 {
-	Plane.FindByPoints(&points[0], arraySize, accuracy);
+	Plane.FindByPoints(points, arraySize, accuracy);
 	Line = Plane.Line;
 
 	std::vector<PointGeometric> pointsProjected;

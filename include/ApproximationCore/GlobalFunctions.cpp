@@ -70,68 +70,15 @@ void KramerMethod(double** gaussCoefficients, double* gaussFreeCoefficients, dou
 	gaussResult[2] = D3 / D;
 }
 // ---																										// Transfer Point To New CoordinateSystem
-
-//PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
-//													PointGeometric	pointCenterNewCoordinateSystem,
-//													VectorGeometric	vectorX,
-//													VectorGeometric	vectorY,Afq
-//													VectorGeometric vectorZ)
-//{
-//	PointGeometric	pointResult,
-//					pointCenter = pointCenterNewCoordinateSystem;
-//
-//	VectorGeometric VectorR(PointGeometric(0,0,0), point, false);
-//
-//	pointResult.X = VectorR * vectorX;
-//	pointResult.Y = VectorR * vectorY;
-//	pointResult.Z = VectorR * vectorZ;
-//
-//	return pointResult;
-//}
-PointGeometric TransferPointToNewCoordinateSystem/*_Old*/(	PointGeometric	point,
-															PointGeometric	pointCenterNewCoordinateSystem,
-															VectorGeometric	vectorX,
-															VectorGeometric	vectorY,
-															VectorGeometric vectorZ)
+PointGeometric TransferPointToNewCoordinateSystem(	PointGeometric	point,
+													PointGeometric	pointCenterNewCoordinateSystem,
+													VectorGeometric	vectorX,
+													VectorGeometric	vectorY,
+													VectorGeometric vectorZ)
 {
-	PointGeometric	pointResult,
-					pointCenter = pointCenterNewCoordinateSystem;
+	VectorGeometric vectorR(PointGeometric(0, 0, 0), pointCenterNewCoordinateSystem, false);
 
-	double			gaussFreeCoefficients[3], 
-					gaussResult[3],
-					**gaussCoefficients = new double*[3];
+	VectorGeometric vectorPoint = vectorR + vectorX * point.X + vectorY * point.Y + vectorZ * point.Z;
 
-	for (int i = 0; i < 3; i++)
-		gaussCoefficients[i] = new double[3];
-
-
-	gaussCoefficients[0][0] = vectorX.X;	gaussCoefficients[0][1] = vectorX.Y;	gaussCoefficients[0][2] = vectorX.Z;
-	gaussFreeCoefficients[0] = point.X + pointCenter.X*vectorX.X + pointCenter.Y*vectorX.Y + pointCenter.Z*vectorX.Z;
-
-	gaussCoefficients[1][0] = vectorY.X;	gaussCoefficients[1][1] = vectorY.Y;	gaussCoefficients[1][2] = vectorY.Z;
-	gaussFreeCoefficients[1] = point.Y + pointCenter.X*vectorY.X + pointCenter.Y*vectorY.Y + pointCenter.Z*vectorY.Z;
-
-	gaussCoefficients[2][0] = vectorZ.X;	gaussCoefficients[2][1] = vectorZ.Y;	gaussCoefficients[2][2] = vectorZ.Z;
-	gaussFreeCoefficients[2] = point.Z + pointCenter.X*vectorZ.X + pointCenter.Y*vectorZ.Y + pointCenter.Z*vectorZ.Z;
-
-	double D	= gaussCoefficients[0][0] * gaussCoefficients[1][1] * gaussCoefficients[2][2]
-				+ gaussCoefficients[0][1] * gaussCoefficients[1][2] * gaussCoefficients[2][0]
-				+ gaussCoefficients[1][0] * gaussCoefficients[2][1] * gaussCoefficients[0][2]
-				- gaussCoefficients[2][0] * gaussCoefficients[1][1] * gaussCoefficients[0][2]
-				- gaussCoefficients[1][0] * gaussCoefficients[0][1] * gaussCoefficients[2][2]
-				- gaussCoefficients[0][0] * gaussCoefficients[2][1] * gaussCoefficients[1][2];
-	
-	if (D > 0)	// D != 0
-		KramerMethod(gaussCoefficients, &gaussFreeCoefficients[0], &gaussResult[0], D);
-	else
-		GaussMethod(gaussCoefficients, &gaussFreeCoefficients[0], 3, &gaussResult[0]);
-
-	pointResult = PointGeometric(gaussResult[0], gaussResult[1], gaussResult[2]);
-
-
-	for (int i = 0; i < 3; i++)
-		delete [] gaussCoefficients[i];
-	delete [] gaussCoefficients;
-
-	return pointResult;
+	return PointGeometric(vectorPoint.X, vectorPoint.Y, vectorPoint.Z);
 }
