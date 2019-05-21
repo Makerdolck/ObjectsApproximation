@@ -139,6 +139,9 @@
     <ClCompile Include="..\..\include\OutSource\MyFont.cpp">
       <Filter>Source Files\OutSource</Filter>
     </ClCompile>
+    <ClCompile Include="DialogToleranceSelectObjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -290,6 +293,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\OutSource\MyFont.h">
       <Filter>Header Files\OutSource</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogToleranceSelectObjects.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

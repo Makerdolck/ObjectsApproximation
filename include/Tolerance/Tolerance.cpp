@@ -177,7 +177,9 @@ int Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* contr
 
 int Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* circleB)
 {
-	double distance = DistanceBetween(centerByPoints(&circleA->PointsForApprox[0], circleA->PointsForApprox.size()), centerByPoints(&circleB->PointsForApprox[0], circleB->PointsForApprox.size()));
+
+	PointGeometric projCenterPoint = circleA->Line.Vector.PointProjection(centerByPoints(&circleA->PointsForApprox[0], circleA->PointsForApprox.size()), centerByPoints(&circleB->PointsForApprox[0], circleB->PointsForApprox.size()));
+	double distance = DistanceBetween(centerByPoints(&circleA->PointsForApprox[0], circleA->PointsForApprox.size()), projCenterPoint);
 	
 	CString str = L"";
 	str.Format(L"Result: %g", distance);
@@ -226,16 +228,16 @@ PointGeometric Tolerance::centerByPoints(PointGeometric* points, int arraySize)
 
 
 
-void Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
+SizeLine* Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 {
 	if (objectsArray == nullptr)
 	{
 		AfxMessageBox(L"objectsArray == nullptr", MB_ICONWARNING | MB_OK);
-		return;
+		return nullptr;
 	}
 	if (objectsArray->size() < 1) {
 		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
-		return;
+		return nullptr;
 	}
 
 
@@ -267,7 +269,7 @@ void Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 	}
 	if (countSelectedObject == 0) {
 		AfxMessageBox(L"Не выбран ни один объект", MB_ICONWARNING | MB_OK);
-		return;
+		return nullptr;
 	}
 
 	for (int i = 0; i < (int)objectsArray->size(); i++)
@@ -316,18 +318,20 @@ void Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 			}
 			else {
 				AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
-				return;
+				return nullptr;
 			}
 		}
 		else {
 			AfxMessageBox(L"Выбрано слишком много объектов", MB_ICONWARNING | MB_OK);
-			return;
+			return nullptr;
 		}
 	}
 
 	if (newSizeLine != nullptr) {
 		addNewObject(newSizeLine);
+		return newSizeLine;
 	}
+	return nullptr;
 }
 
 void Tolerance::DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray) {

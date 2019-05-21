@@ -87,6 +87,8 @@ protected:
 			flagRotateAxisX,
 			flagRotateAxisY;
 
+	
+
 	//FLOAT m_fLineWidth;
 	// Colors
 	float m_ClearColorRed;
@@ -123,6 +125,9 @@ protected:
 	float						coordinateDifferenceX,
 								coordinateDifferenceY;
 
+	
+	
+
 // Generated message map functions
 protected:
 	ObjectApprox	*GetObjectUnderMouse(CPoint point);
@@ -155,11 +160,13 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	virtual afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
 public:
+	bool flagToleranceMove = false; // Voronov Флаг что двигается размерная линия
+	SizeLine* selectedSizeLine = false; // Voronov Флаг что двигается размерная линия
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);

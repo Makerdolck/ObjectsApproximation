@@ -43,7 +43,7 @@ public:
 	
 
 	// Обработка и добавление объекта в список для отрисовки
-	void DrawSizeLine(std::vector<ObjectApprox*>* objectsArray);
+	SizeLine* DrawSizeLine(std::vector<ObjectApprox*>* objectsArray);
 	void DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray);
 	void DrawAxialLine(std::vector<ObjectApprox*>* objectsArray); // Осевая линия
 	void DrawFormRoundness(std::vector<ObjectApprox*>* objectsArray); // Допуски формы круглости

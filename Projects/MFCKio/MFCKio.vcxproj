@@ -242,6 +242,7 @@
     <ClInclude Include="DialogMachine.h" />
     <ClInclude Include="DialogMeasure.h" />
     <ClInclude Include="DialogSettings.h" />
+    <ClInclude Include="DialogToleranceSelectObjects.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MFCKio.h" />
     <ClInclude Include="MFCKioDoc.h" />
@@ -292,6 +293,7 @@
     <ClCompile Include="DialogMachine.cpp" />
     <ClCompile Include="DialogMeasure.cpp" />
     <ClCompile Include="DialogSettings.cpp" />
+    <ClCompile Include="DialogToleranceSelectObjects.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MFCKio.cpp" />
     <ClCompile Include="MFCKioDoc.cpp" />

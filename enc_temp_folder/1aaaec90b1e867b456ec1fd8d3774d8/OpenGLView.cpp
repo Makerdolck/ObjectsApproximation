@@ -985,6 +985,7 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 	double triangle_height = 0.3;
 
 	if(flagToleranceMove && selectedSizeLine == obj){
+		obj->PointStop.X = obj->PointStop.X - x1;
 		obj->PointStop.Y = obj->PointStop.Y - y1;
 		
 		TRACE("y = %g\n", obj->PointStop.Y);
