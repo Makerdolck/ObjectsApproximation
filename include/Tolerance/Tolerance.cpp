@@ -2,7 +2,7 @@
 #include "Tolerance.h"
 
 
-
+#define M_PI 3.1415926535897932384626433832795;
 
 Tolerance::Tolerance(std::vector<ToleranceObject*>* toleranceObjectsArray)
 {
@@ -141,17 +141,130 @@ double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control
 	return round(fabs(max - min) / 2, 3);
 }
 
-double Tolerance::OrientationAngularity(PlaneApprox *base, PlaneApprox *control)
+double Tolerance::OrientationParallelism(LineSegmentApprox *base, LineSegmentApprox*control)
 {
+	double min = DistanceBetween(base->PointStart, base->PointEnd, control->PointsForApprox.operator[](0));
+	double max = min;
+
+	for (int i = 0; i < control->PointsForApprox.size(); i++) {
+		double distance = DistanceBetween(base->PointStart, base->PointEnd, control->PointsForApprox.operator[](i));
+		if (distance > max) {
+			max = distance;
+		}
+		if (min > distance) {
+			min = distance;
+		}
+	}
 
 	CString str = L"";
-	str.Format(L"Angle: %g; Flatness: %g", AngleBetween(*base, *control), FormFlatness(control));
+	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
 	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
-	return AngleBetween(*base, *control);
+	return round(fabs(max - min) / 2, 3);
 }
 
 
+double Tolerance::OrientationAngularity(PlaneApprox* base, PlaneApprox* control)
+{
+	VectorGeometric rotatedPlane = rotatePlane(base, base->Line.Vector ^ control->Line.Vector, 13);
+	//control = result;
+	//result = control;
+
+	double min = DistanceBetween(rotatedPlane, control->PointsForApprox.operator[](0));
+	double max = min;
+
+	for (int i = 1; i < control->PointsForApprox.size(); i++) {
+		double distance = DistanceBetween(rotatedPlane, control->PointsForApprox.operator[](i));
+		if (distance > max) {
+			max = distance;
+		}
+		if (min > distance) {
+			min = distance;
+		}
+	}
+
+	CString str = L"";
+	str.Format(L"Angle: %g; Min: %g; Max: %g; Result: %g", AngleBetween(base->Line.Vector, rotatedPlane), min, max, fabs(max - min));
+	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	
+	return fabs(max-min);
+	
+}
+
+
+VectorGeometric Tolerance::getIntersectionVector(PlaneApprox Plane1, PlaneApprox Plane2) {
+	double D1 = 0;
+	double D2 = 0;
+	D1 = 1 * (Plane1.Line.Vector.X * Plane1.Line.Point.X + Plane1.Line.Vector.Y * Plane1.Line.Point.Y + Plane1.Line.Vector.Z * Plane1.Line.Point.Z);
+	D2 = 1 * (Plane2.Line.Vector.X * Plane2.Line.Point.X + Plane2.Line.Vector.Y * Plane2.Line.Point.Y + Plane2.Line.Vector.Z * Plane2.Line.Point.Z);
+
+	VectorGeometric VectorPr;
+	LineGeometric LineInter;
+	VectorPr = Plane1.Line.Vector ^ Plane2.Line.Vector;
+	LineInter.Vector = VectorGeometric(VectorPr.X, VectorPr.Y, VectorPr.Z, false);
+	if ((VectorPr.X == 0) && (VectorPr.Y == 0) && (VectorPr.Z = 0)) {
+		return VectorPr;
+	}
+
+	else {
+		/*if (VectorPr.X != 0) {
+			double del;
+			del = Line.Vector.Y * Plane2.Line.Vector.Z - Line.Vector.Z*Plane2.Line.Vector.Y;
+			LineInter.Point.Y = (D1*Plane2.Line.Vector.Z - Line.Vector.Z*D2) / del;
+			LineInter.Point.Z = (Line.Vector.Y*D2 - Plane2.Line.Vector.Y*D1) / del;
+
+		}*/
+		double del;
+		del = Plane1.Line.Vector.Y * Plane2.Line.Vector.Z - Plane1.Line.Vector.Z * Plane2.Line.Vector.Y;
+		if (del != 0) {
+			LineInter.Point.Y = (D1 * Plane2.Line.Vector.Z - Plane1.Line.Vector.Z * D2) / del;
+			LineInter.Point.Z = (Plane1.Line.Vector.Y * D2 - Plane2.Line.Vector.Y * D1) / del;
+		}
+		if (del == 0) {
+			del = Plane1.Line.Vector.X * Plane2.Line.Vector.Z - Plane1.Line.Vector.Z * Plane2.Line.Vector.X;
+			LineInter.Point.X = (D1 * Plane2.Line.Vector.Z - Plane1.Line.Vector.Z * D2) / del;
+			LineInter.Point.Z = (Plane1.Line.Vector.X * D2 - Plane2.Line.Vector.X * D1) / del;
+		}
+
+		//*line = LineInter;
+		//return 1;
+		//return LineInter;
+		return LineInter.Vector;
+	}
+}
+
+VectorGeometric Tolerance::rotatePlane(PlaneApprox* plane, VectorGeometric axis, double a) {
+	
+	double x = axis.X;
+	double y = axis.Y;
+	double z = axis.Z;
+	a = a * 180 / M_PI;
+	
+	
+	double matrix[3][3] = { 
+		{cos(a) + (1 - cos(a)) * pow(x, 2), (1 - cos(a)) * x * y - sin(a) * z, (1 - cos(a)) * x * z + sin(a) * y},
+		{(1 - cos(a)) * y * x + sin(a) * z, cos(a) + (1 - cos(a)) * pow(y, 2), (1 - cos(a)) * y * z - sin(a) * x},
+		{(1 - cos(a)) * z * x - sin(a) * y, (1 - cos(a)) * z * y + sin(a) * x, cos(a) + (1 - cos(a)) * pow(z, 2)} 
+	};
+
+
+
+	double vector[3] = { plane->Line.Vector.X,plane->Line.Vector.Y,plane->Line.Vector.Z };
+	double resultVector[3] = { 0,0,0 };
+	for (int i = 0; i < 3; i++) {
+		double tmp = 0;
+		for (int j = 0; j < 3; j++) {
+			tmp += matrix[i][j] * vector[j];
+		}
+		resultVector[i] = tmp;
+	}
+	VectorGeometric result = VectorGeometric(resultVector[0], resultVector[1], resultVector[2], false);
+
+	
+//	result.Line.Vector = 
+	return result;
+	
+}
 
 int Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control)
 {
@@ -175,7 +288,7 @@ int Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* contr
 	return round(fabs(max - min) / 2, 3);
 }
 
-int Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* circleB)
+double Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* circleB)
 {
 
 	PointGeometric projCenterPoint = circleA->Line.Vector.PointProjection(centerByPoints(&circleA->PointsForApprox[0], circleA->PointsForApprox.size()), centerByPoints(&circleB->PointsForApprox[0], circleB->PointsForApprox.size()));
@@ -189,7 +302,7 @@ int Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* circle
 	return distance;
 }
 
-int Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB)
+double Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB)
 {
 
 	double bottomDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, cylinderB->PointBottomSurfaceCenter);
@@ -202,7 +315,7 @@ int Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cyl
 	
 	CString str = L"";
 	str.Format(L"Top: %g; Bottom: %g; Result: %g", topDistance, bottomDistance, round(max, 3));
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(max, 3);
 }
@@ -817,14 +930,20 @@ void Tolerance::addNewObject(ToleranceObject* obj)
 
 double Tolerance::AngleBetween(PlaneApprox plane1, PlaneApprox plane2)
 {
-	double angleCos = 0;
 	VectorGeometric n1 = plane1.Line.Vector;
 	VectorGeometric n2 = plane2.Line.Vector;
-
-	angleCos = fabs(n1.X * n2.X + n1.Y * n2.Y + n1.Z * n2.Z) / (n1.length() * n2.length());
-
-	return acosf(angleCos)* 180.0 / 3.1415926535897932384626433832795;
+	return AngleBetween(n1, n2);
 }
+
+double Tolerance::AngleBetween(VectorGeometric n1, VectorGeometric n2)
+{
+	double angleCos = 0;
+	//angleCos = (n1.X * n2.X + n1.Y * n2.Y + n1.Z * n2.Z) / (n1.length() * n2.length());
+	angleCos = n1 * n2 / (n1.length() * n2.length());
+	return acos(angleCos) * 180 / M_PI;
+}
+
+
 
 double Tolerance::DistanceBetween(PointGeometric point1, PointGeometric point2)
 {
@@ -847,11 +966,30 @@ double Tolerance::DistanceBetween(PlaneApprox plane, PointGeometric point)
 {
 	PointGeometric centerPoint = plane.Line.Point;
 	VectorGeometric N = plane.Line.Vector;
-	double d = -(N * plane.PointsForApprox.operator[](1));
+	PointGeometric tmp = PointGeometric(0.00, 25.00048, 89.997153);
+	//double d = -(N * plane.PointsForApprox.operator[](0));
+	//double d = -(N * plane.Line.Point);
+	double d = -(N * tmp);
+	//double d = 0;
 	double result = (N.X * point.X + N.Y * point.Y + N.Z * point.Z + d) / N.length();
 	return round(result, 3);
 
 }
+
+double Tolerance::DistanceBetween(VectorGeometric planeNormal, PointGeometric point)
+{
+	
+	VectorGeometric N = planeNormal;
+
+	//double d = -(N * plane.PointsForApprox.operator[](0));
+
+	double d = 0;
+	double result = (N.X * point.X + N.Y * point.Y + N.Z * point.Z + d) / N.length();
+	return round(result, 3);
+
+}
+
+
 
 
 

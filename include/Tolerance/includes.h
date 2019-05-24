@@ -4,3 +4,7 @@
 #include <Tolerance/FormRoundnessToleranceObject.h>
 #include <Tolerance/ToleranceBase.h>
 #include <Tolerance/ToleranceObject.h>
+#include <Tolerance/ToleranceFrame.h>
+
+
+

@@ -18,7 +18,6 @@ public:
 	SizeLine(ConeApprox* cone);
 	~SizeLine();
 
-	PointGeometric	PointStop;
 	PointGeometric	PointStart;
 	PointGeometric	PointEnd; 
 	double offset = 0; // Расстояние от объекта до размерной линии

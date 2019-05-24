@@ -12,13 +12,37 @@
 // Коды значков https://en.wikipedia.org/wiki/Geometric_dimensioning_and_tolerancing
 
 // Отклонения и допуски формы (ГОСТ24462 - 83) https://studfiles.net/preview/5125915/page:26/
+
+enum TOLERANCE_NAME {
+	FORM_STRAIGHTNESS,
+	FORM_FLATNESS,
+	FORM_ROUNDNESS,
+	FORM_CYLINDRICITY,
+
+	ORIENTATION_PARALLELISM,
+	ORIENTATION_PERPENDICULARITY,
+	ORIENTATION_ANGULARITY,
+
+	LOCATION_POSITION,
+	LOCATION_CONCENTRICITY,
+	LOCATION_COAXIALITY,
+	LOCATION_SYMMETRY,
+
+	RUNOUT_FACE,
+	RUNOUT_RADIAL
+};
+
 class Tolerance
 {
 public:
+	
+
+
 	Tolerance(std::vector<ToleranceObject*>* toleranceObjectsArray);
 	~Tolerance();
 
 	
+
 	// Допуски формы
 	double FormStraightness(LineSegmentApprox* line); // Прямолинейность
 	double FormFlatness(PlaneApprox* plane); // Плоскостность
@@ -26,15 +50,32 @@ public:
 	double FormCylindricity(CylinderApprox *cylinder); // Цилиндричность
 
 	// Допуски ориентации
-	double OrientationParallelism(PlaneApprox* base, PlaneApprox* control); // Параллельность
+	double OrientationParallelism(PlaneApprox* base, PlaneApprox* control);
+	double OrientationParallelism(LineSegmentApprox* base, LineSegmentApprox* control);
+
+	
+	VectorGeometric getIntersectionVector(PlaneApprox Plane1, PlaneApprox Plane2);
+	VectorGeometric rotatePlane(PlaneApprox* plane, VectorGeometric axis, double a);
+
+	// Параллельность
 	int OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control); // Перпендикулярность
 	double OrientationAngularity(PlaneApprox* base, PlaneApprox* control); // Наклон
+	double OrientationAngularity(PlaneApprox* base, PlaneApprox* control, PlaneApprox* result);
+	double OrientationAngularity(PlaneGeometric* base, PlaneGeometric* control, PlaneGeometric* result);
+	void rotatePlane(PlaneGeometric* plane, VectorGeometric axis, PlaneGeometric* result, double a);
+	void rotatePlane(PlaneGeometric* plane, VectorGeometric* axis, PlaneGeometric* result, double a);
+	double OrientationAngularity(PlaneGeometric* base, PlaneGeometric* control);
+
+	void rotatePlane(PlaneGeometric* plane, PlaneGeometric* result, double a);
+
+	void rotatePlane(LineGeometric* axis, PlaneGeometric* plane, double angle);
+
 	
 
 	// Допуски месторасположения
 	int LocationPosition(std::vector<ObjectApprox*>* objectsArray); // Позиционирование
-	int LocationConcentricity(CircleApprox *circleA, CircleApprox *circleB); // Концентричность (для точек)
-	int LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB); // Соосность (для осей)
+	double LocationConcentricity(CircleApprox *circleA, CircleApprox *circleB); // Концентричность (для точек)
+	double LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB); // Соосность (для осей)
 	int LocationSymmetry(std::vector<ObjectApprox*>* objectsArray); // Симметричность
 
 	// Допуски биения
@@ -44,6 +85,7 @@ public:
 
 	// Обработка и добавление объекта в список для отрисовки
 	SizeLine* DrawSizeLine(std::vector<ObjectApprox*>* objectsArray);
+	void DrawToleranceFrame(std::vector<ObjectApprox*>* objectsArray);
 	void DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray);
 	void DrawAxialLine(std::vector<ObjectApprox*>* objectsArray); // Осевая линия
 	void DrawFormRoundness(std::vector<ObjectApprox*>* objectsArray); // Допуски формы круглости
@@ -56,17 +98,18 @@ public:
 	void DrawLocationCoaxiality(std::vector<ObjectApprox*>* objectsArray);
 
 
+	void addNewObject(ToleranceObject* obj);
 private:
 
 	std::vector<ToleranceObject*>* toleranceObjectsArray; // Voronov
 
-	void addNewObject(ToleranceObject* obj);
 	double AngleBetween(PlaneApprox plane1, PlaneApprox plane2);
+	double AngleBetween(VectorGeometric n1, VectorGeometric n2);
 	double DistanceBetween(PointGeometric point1, PointGeometric point2);
 	double DistanceBetween(PointGeometric A, PointGeometric B, PointGeometric point);
 	double DistanceBetween(PlaneApprox plane, PointGeometric point);
+	double DistanceBetween(VectorGeometric planeNormal, PointGeometric point);
 	double round(double value, int num_after_point); // Округление до n цифры после запятой
 	
 	PointGeometric centerByPoints(PointGeometric* points, int arraySize);
 };
-

@@ -20,7 +20,7 @@ SizeLine::SizeLine(LineSegmentApprox* lineSegment)
 
 SizeLine::SizeLine(CylinderApprox* cylinder)
 {
-	PointStop = PointGeometric(centerByPoints(new PointGeometric[2]{ PointStart, PointEnd }, 2));
+	PointPosition = PointGeometric(centerByPoints(new PointGeometric[2]{ PointStart, PointEnd }, 2));
 	objMath = cylinder;
 	this->PointStart = cylinder->PointBottomSurfaceCenter;
 	this->PointEnd = cylinder->PointTopSurfaceCenter;

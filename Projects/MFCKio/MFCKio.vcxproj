@@ -235,6 +235,7 @@
     <ClInclude Include="..\..\include\Tolerance\SizeLine.h" />
     <ClInclude Include="..\..\include\Tolerance\Tolerance.h" />
     <ClInclude Include="..\..\include\Tolerance\ToleranceBase.h" />
+    <ClInclude Include="..\..\include\Tolerance\ToleranceFrame.h" />
     <ClInclude Include="..\..\include\Tolerance\ToleranceObject.h" />
     <ClInclude Include="..\..\include\Traekt.h" />
     <ClInclude Include="CAutoDlg.h" />
@@ -286,6 +287,7 @@
     <ClCompile Include="..\..\include\Tolerance\SizeLine.cpp" />
     <ClCompile Include="..\..\include\Tolerance\Tolerance.cpp" />
     <ClCompile Include="..\..\include\Tolerance\ToleranceBase.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\ToleranceFrame.cpp" />
     <ClCompile Include="..\..\include\Tolerance\ToleranceObject.cpp" />
     <ClCompile Include="..\..\include\Traekt.cpp" />
     <ClCompile Include="CAutoDlg.cpp" />

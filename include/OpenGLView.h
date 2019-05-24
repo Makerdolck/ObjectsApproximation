@@ -148,6 +148,7 @@ protected:
 
 	// Voronov
 	void drawBitmapText(char* string, double x, double y, double z);
+	void DrawOpenGL_ToleranceFrame(ToleranceFrame* frame);
 	void DrawOpenGL_SizeLine(SizeLine* obj);
 	double angle_point(PointGeometric a, PointGeometric b, PointGeometric c);
 	void DrawOpenGL_DiameterLine(DiameterLine* obj);
@@ -166,7 +167,7 @@ protected:
 
 public:
 	bool flagToleranceMove = false; // Voronov Флаг что двигается размерная линия
-	SizeLine* selectedSizeLine = false; // Voronov Флаг что двигается размерная линия
+	ToleranceObject* selectedToleranceObject = nullptr; // Voronov 
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);

@@ -8,20 +8,7 @@ class DialogToleranceSelectObjects : public CDialog
 	DECLARE_DYNAMIC(DialogToleranceSelectObjects)
 
 public:
-	enum TOLERANCE_NAME {
-
-		ORIENTATION_PARALLELISM,
-		ORIENTATION_PERPENDICULARITY,
-		ORIENTATION_ANGULARITY,
-
-		LOCATION_POSITION,
-		LOCATION_CONCENTRICITY,
-		LOCATION_COAXIALITY,
-		LOCATION_SYMMETRY,
-
-		RUNOUT_FACE,
-		RUNOUT_RADIAL
-	};
+	
 
 	DialogToleranceSelectObjects(CWnd* pParent, TOLERANCE_NAME toleranceName);   // стандартный конструктор
 
@@ -40,9 +27,6 @@ protected:
 
 
 public:
-
-	
-
 	TOLERANCE_NAME toleranceName;
 
 	std::vector<ObjectApprox*>* objectsArray;

@@ -4,7 +4,7 @@
 #define __TOLERANCE_OBJECT_H__
 
 #include <ApproximationCore/_ALLincludesCore.h>
-#include <iostream>
+
 
 
 class ToleranceObject
@@ -19,6 +19,7 @@ public:
 		DIAMETER_LINE,
 		AXIAL_LINE,
 		BASE_LINE,
+		TOLERANCE_FRAME,
 		FORM_ROUDNESS
 
 	};
@@ -27,6 +28,8 @@ public:
 
 	bool flagSelected;
 	bool isVisible; // Видимость во вью
+
+	PointGeometric PointPosition; // Точка остановки линии
 
 	virtual ToleranceObjectType getType(); // Тип объекта
 

@@ -11,6 +11,7 @@
 
 IMPLEMENT_DYNAMIC(DialogToleranceSelectObjects, CDialog)
 
+
 DialogToleranceSelectObjects::DialogToleranceSelectObjects(CWnd* pParent, TOLERANCE_NAME toleranceName)
 	: CDialog(IDD_DIALOG_TOLERANCE_OBJECT_SELECT, pParent)
 {
@@ -29,7 +30,7 @@ DialogToleranceSelectObjects::DialogToleranceSelectObjects(CWnd* pParent, TOLERA
 BOOL DialogToleranceSelectObjects::OnInitDialog() {
 
 	changeName();
-	((CStatic*)GetDlgItem(IDOK))->EnableWindow(false);
+	((CButton*)GetDlgItem(IDOK))->EnableWindow(false);
 
 
 
@@ -86,7 +87,16 @@ void DialogToleranceSelectObjects::changeName()
 	LPCTSTR name = L"Не разработано";
 	switch (toleranceName) {
 	case LOCATION_COAXIALITY:
-		name = L"Соосность (Для осей)";
+		name = L"Соосность";
+		break;
+	case LOCATION_CONCENTRICITY:
+		name = L"Концентричность";
+		break;
+	case ORIENTATION_ANGULARITY:
+		name = L"Наклон";
+		break;
+	case ORIENTATION_PARALLELISM:
+		name = L"Параллельность";
 		break;
 
 	default:
@@ -119,11 +129,12 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectBaseObject()
 	base = getSelectedObject();
 	if (base != nullptr) {
 		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(base->Name.c_str());
+		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->EnableWindow(true);
 	}
 	
 	unselectAllObjects();
 	if (base != nullptr && control != nullptr) {
-		((CStatic*)GetDlgItem(IDOK))->EnableWindow(true);
+		((CButton*)GetDlgItem(IDOK))->EnableWindow(true);
 	}
 }
 
@@ -136,6 +147,7 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectControlObject()
 	control = getSelectedObject();
 	if (base != nullptr) {
 		((CStatic*)GetDlgItem(IDC_TEXT_CONTROL_NAME))->SetWindowTextW(control->Name.c_str());
+		((CStatic*)GetDlgItem(IDC_TEXT_CONTROL_NAME))->EnableWindow(true);
 	}
 	
 	unselectAllObjects();
@@ -155,21 +167,63 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 			AfxMessageBox(L"В качестве базы и контрольного объекта выбран один и тот же объект");
 			return;
 		}
-		
+		ToleranceBase* tmpBase = nullptr;
+		ToleranceFrame* frame = nullptr;
+		double result = NULL;
 		switch (toleranceName) {
+			case LOCATION_CONCENTRICITY:
+				result = parent->pTolerance->LocationConcentricity((CircleApprox*)base->objMath, (CircleApprox*)control->objMath);
+				tmpBase = new ToleranceBase(base);
+				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				break;
 			case LOCATION_COAXIALITY:
-				parent->pTolerance->LocationCoaxiality((CylinderApprox*)base->objMath, (CylinderApprox*)control->objMath);
+				result = parent->pTolerance->LocationCoaxiality((CylinderApprox*)base->objMath, (CylinderApprox*)control->objMath);
+				tmpBase = new ToleranceBase(base);
+				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				break;
+			case ORIENTATION_PARALLELISM:
+				result = NULL;
+				if (base->objMath->GetName() == RectangleApprox().GetName() && control->objMath->GetName() == RectangleApprox().GetName()) {
+					result = parent->pTolerance->OrientationParallelism((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath);
+				}
+				else if (base->objMath->GetName() == LineSegmentApprox().GetName() && control->objMath->GetName() == LineSegmentApprox().GetName()) {
+					result = parent->pTolerance->OrientationParallelism((LineSegmentApprox*)base->objMath, (LineSegmentApprox*)control->objMath);
+				}
+				tmpBase = new ToleranceBase(base);
+				if (result != NULL) {
+					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				}
+				
+				break;
+
+		case ORIENTATION_ANGULARITY:
+			//tmpBase = new ToleranceBase(base);
+			
+			//parent->pTolerance->OrientationAngularity((PlaneGeometric*)base, (PlaneGeometric*)control, result);
+			parent->pTolerance->OrientationAngularity((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath);
+				//tmpBase = new ToleranceBase(base);
+				//frame = new ToleranceFrame(tmpBase, control, toleranceName, 10);
+				
 				break;
 
 			default:
 				AfxMessageBox(L"Для данного допуска еще не разработано");
 		}
+
+		if (frame != nullptr) {
+			parent->pTolerance->addNewObject(frame);
+			parent->pView->selectedToleranceObject = nullptr;
+			parent->pView->flagToleranceMove = true;
+			parent->pView->selectedToleranceObject = frame;
+			parent->RedrawWindow();
+		}
+		
 	}
 	else {
 		AfxMessageBox(L"Не выбрана база или контрольный объект");
 	}
 	
-	//CDialog::OnOK();
+	CDialog::OnOK();
 }
 
 

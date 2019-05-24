@@ -5,12 +5,12 @@
 
 #include <ApproximationCore/_ALLincludesCore.h>
 #include "ToleranceObject.h"
-#include <iostream>
+
 
 class ToleranceBase : public ToleranceObject
 {
 public:
-	ToleranceBase();
+	ToleranceBase(ObjectApprox* obj);
 	~ToleranceBase();
 
 	

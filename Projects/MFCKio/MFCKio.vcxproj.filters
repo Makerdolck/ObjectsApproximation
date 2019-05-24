@@ -142,6 +142,9 @@
     <ClCompile Include="DialogToleranceSelectObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\Tolerance\ToleranceFrame.cpp">
+      <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -296,6 +299,9 @@
     </ClInclude>
     <ClInclude Include="DialogToleranceSelectObjects.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\ToleranceFrame.h">
+      <Filter>Header Files\Tolerance</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

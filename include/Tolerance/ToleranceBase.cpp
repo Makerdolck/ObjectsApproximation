@@ -2,10 +2,11 @@
 #include "ToleranceBase.h"
 
 
-ToleranceBase::ToleranceBase()
-{
-}
 
+ToleranceBase::ToleranceBase(ObjectApprox* obj)
+{
+	this->objMath = obj->objMath;
+}
 
 ToleranceBase::~ToleranceBase()
 {
