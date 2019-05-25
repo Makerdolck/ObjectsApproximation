@@ -49,3 +49,9 @@ ToleranceObject::ToleranceObjectType SizeLine::getType()
 	return SIZE_LINE;
 }
 
+double SizeLine::length()
+{
+
+	return sqrt(pow(PointEnd.X-PointStart.X, 2)+pow(PointEnd.Y-PointStart.Y, 2)+pow(PointEnd.Z-PointStart.Z, 2));
+}
+

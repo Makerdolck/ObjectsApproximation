@@ -4,6 +4,10 @@
 
 #define M_PI 3.1415926535897932384626433832795;
 
+Tolerance::Tolerance()
+{
+}
+
 Tolerance::Tolerance(std::vector<ToleranceObject*>* toleranceObjectsArray)
 {
 	this->toleranceObjectsArray = toleranceObjectsArray;
@@ -39,7 +43,7 @@ double Tolerance::FormStraightness(LineSegmentApprox* line)
 	double result = round(max, 4) - round(min, 4);
 	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, result);
 	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-	return max;
+	return round(max,3);
 }
 
 double Tolerance::FormFlatness(PlaneApprox* plane)
@@ -164,11 +168,10 @@ double Tolerance::OrientationParallelism(LineSegmentApprox *base, LineSegmentApp
 }
 
 
-double Tolerance::OrientationAngularity(PlaneApprox* base, PlaneApprox* control)
+double Tolerance::OrientationAngularity(PlaneApprox* base, PlaneApprox* control, double angle)
 {
-	VectorGeometric rotatedPlane = rotatePlane(base, base->Line.Vector ^ control->Line.Vector, 13);
-	//control = result;
-	//result = control;
+	VectorGeometric rotatedPlane = rotatePlane(base, base->Line.Vector ^ control->Line.Vector, angle);
+
 
 	double min = DistanceBetween(rotatedPlane, control->PointsForApprox.operator[](0));
 	double max = min;
@@ -184,8 +187,8 @@ double Tolerance::OrientationAngularity(PlaneApprox* base, PlaneApprox* control)
 	}
 
 	CString str = L"";
-	str.Format(L"Angle: %g; Min: %g; Max: %g; Result: %g", AngleBetween(base->Line.Vector, rotatedPlane), min, max, fabs(max - min));
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	str.Format(L"Angle: %g; Min: %g; Max: %g; Result: %g", AngleBetween(base->Line.Vector, control->Line.Vector), min, max, fabs(max - min));
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 	
 	return fabs(max-min);
 	
@@ -235,6 +238,39 @@ VectorGeometric Tolerance::getIntersectionVector(PlaneApprox Plane1, PlaneApprox
 
 VectorGeometric Tolerance::rotatePlane(PlaneApprox* plane, VectorGeometric axis, double a) {
 	
+	axis.Normalize();
+	double x = axis.X;
+	double y = axis.Y;
+	double z = axis.Z;
+	a = a / 180 * M_PI;
+	
+	
+	double matrix[3][3] = { 
+		{cos(a) + (1 - cos(a)) * pow(x, 2), (1 - cos(a)) * x * y - sin(a) * z, (1 - cos(a)) * x * z + sin(a) * y},
+		{(1 - cos(a)) * y * x + sin(a) * z, cos(a) + (1 - cos(a)) * pow(y, 2), (1 - cos(a)) * y * z - sin(a) * x},
+		{(1 - cos(a)) * z * x - sin(a) * y, (1 - cos(a)) * z * y + sin(a) * x, cos(a) + (1 - cos(a)) * pow(z, 2)} 
+	};
+
+
+	RectangleApprox *test = (RectangleApprox*) plane;
+	double vector[3] = { test->Plane.Line.Vector.X,test->Plane.Line.Vector.Y,test->Plane.Line.Vector.Z };
+	double resultVector[3] = { 0,0,0 };
+	for (int i = 0; i < 3; i++) {
+		
+		for (int j = 0; j < 3; j++) {
+			resultVector[i] += (matrix[i][j] * vector[j]);
+		}
+		
+	}
+	VectorGeometric result = VectorGeometric(resultVector[0], resultVector[1], resultVector[2], false);
+
+	return result;
+	
+}
+
+
+VectorGeometric Tolerance::rotatePlane(VectorGeometric* v, VectorGeometric axis, double a) {
+	
 	double x = axis.X;
 	double y = axis.Y;
 	double z = axis.Z;
@@ -249,7 +285,7 @@ VectorGeometric Tolerance::rotatePlane(PlaneApprox* plane, VectorGeometric axis,
 
 
 
-	double vector[3] = { plane->Line.Vector.X,plane->Line.Vector.Y,plane->Line.Vector.Z };
+	double vector[3] = { v->X, v->Y, v->Z };
 	double resultVector[3] = { 0,0,0 };
 	for (int i = 0; i < 3; i++) {
 		double tmp = 0;
@@ -266,7 +302,7 @@ VectorGeometric Tolerance::rotatePlane(PlaneApprox* plane, VectorGeometric axis,
 	
 }
 
-int Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control)
+double Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control)
 {
 	double min = DistanceBetween(*base, control->PointsForApprox.operator[](0));
 	double max = min;
@@ -299,7 +335,7 @@ double Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* cir
 	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 
-	return distance;
+	return round(distance, 3);
 }
 
 double Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB)
@@ -340,6 +376,58 @@ PointGeometric Tolerance::centerByPoints(PointGeometric* points, int arraySize)
 }
 
 
+
+double Tolerance::RunOutFace(CylinderApprox* base, RectangleApprox* control)
+{
+	VectorGeometric normal = VectorGeometric(base->PointBottomSurfaceCenter, base->PointTopSurfaceCenter, false);
+
+	double min = DistanceBetween(normal, control->PointsForApprox.operator[](0));
+	double max = min;
+
+	for (int i = 1; i < control->PointsForApprox.size(); i++) {
+		double distance = DistanceBetween(normal, control->PointsForApprox.operator[](i));
+
+		if (distance > max) {
+			max = distance;
+		}
+		if (min > distance) {
+			min = distance;
+		}
+	}
+
+	return round(fabs(max-min),3);
+}
+
+double Tolerance::RunOutFace(CylinderApprox* base, CircleApprox* control)
+{
+	return 0.0;
+}
+
+double Tolerance::RunOutRadial(CylinderApprox* base, CylinderApprox* control)
+{
+
+	PointGeometric bottomCenter = base->PointBottomSurfaceCenter;
+	PointGeometric topCenter = base->PointTopSurfaceCenter;
+	VectorGeometric axial = VectorGeometric(bottomCenter, topCenter, false);
+
+	double max = axial.DistanceToPoint(control->PointsForApprox.operator[](0), bottomCenter);
+	double min = axial.DistanceToPoint(control->PointsForApprox.operator[](0), bottomCenter);
+	for (int i = 0; i < control->PointsForApprox.size(); i++) {
+		double distance = axial.DistanceToPoint(control->PointsForApprox.operator[](i), bottomCenter);
+		if (distance > max) {
+			max = distance;
+		}
+		if (min > distance) {
+			min = distance;
+		}
+	}
+
+	CString str = L"";
+	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
+	//	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+
+	return round(fabs(max - min) / 2, 3);
+}
 
 SizeLine* Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 {
@@ -500,14 +588,14 @@ void Tolerance::DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray) {
 
 		if (objApprox->objMath->GetName() == circleA->GetName()) {
 			circleA = (CircleApprox*)objApprox->objMath;
-			newDiameterLine = new DiameterLine(circleA, false);
+			newDiameterLine = new DiameterLine(circleA);
 		}
 		else if (objApprox->objMath->GetName() == coneA->GetName()) {
 			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
 		}
 		else if (objApprox->objMath->GetName() == cylinderA->GetName()) {
 			cylinderA = (CylinderApprox*)objApprox->objMath;
-			newDiameterLine = new DiameterLine(cylinderA, false);
+			newDiameterLine = new DiameterLine(cylinderA);
 		}
 		else if (objApprox->objMath->GetName() == sphereA->GetName()) {
 			AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
@@ -700,76 +788,7 @@ void Tolerance::DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsAr
 
 }
 
-void Tolerance::DrawOrientationAngularity(std::vector<ObjectApprox*>* objectsArray)
-{
-	if (objectsArray == nullptr)
-	{
-		AfxMessageBox(L"objectsArray == nullptr", MB_ICONWARNING | MB_OK);
-		return;
-	}
-	if (objectsArray->size() < 1) {
-		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
-		return;
-	}
 
-
-
-	ObjectApprox* objApprox;
-
-	PlaneApprox* planeBase = new PlaneApprox();
-	PlaneApprox* planeControl = new PlaneApprox();
-
-
-	//FormRoundnessToleranceObject* newTolerance = nullptr;
-
-	int countSelectedObject = 0;
-	int objectNum = 1;
-
-	for (int i = 0; i < (int)objectsArray->size(); i++)
-	{
-		objApprox = objectsArray->operator[](i);
-
-		if (objApprox->flagSelected) {
-			countSelectedObject++;
-		}
-	}
-	if (countSelectedObject == 0) {
-		AfxMessageBox(L"Не выбран ни один объект", MB_ICONWARNING | MB_OK);
-		return;
-	}
-
-	for (int i = 0; i < (int)objectsArray->size(); i++)
-	{
-		objApprox = objectsArray->operator[](i);
-
-		if (!objApprox->flagReady || !objApprox->flagSelected)
-			continue;
-
-
-		if (countSelectedObject == 2) {
-			
-			if (objectNum == 1) {
-				
-					planeBase = (PlaneApprox*)objApprox->objMath;
-					objectNum++;
-					continue;
-			}
-			else {
-				
-					planeControl = (PlaneApprox*)objApprox->objMath;
-					OrientationAngularity(planeBase, planeControl);
-					break;
-				
-			}
-		}
-		else {
-			AfxMessageBox(L"Выбрано слишком много объектов", MB_ICONWARNING | MB_OK);
-			return;
-		}
-	}
-
-
-}
 
 
 void Tolerance::DrawLocationConcentricity(std::vector<ObjectApprox*>* objectsArray)
@@ -959,9 +978,9 @@ double Tolerance::DistanceBetween(PlaneApprox plane, PointGeometric point)
 	PointGeometric centerPoint = plane.Line.Point;
 	VectorGeometric N = plane.Line.Vector;
 	PointGeometric tmp = PointGeometric(0.00, 25.00048, 89.997153);
-	//double d = -(N * plane.PointsForApprox.operator[](0));
+	double d = -(N * plane.PointsForApprox.operator[](1));
 	//double d = -(N * plane.Line.Point);
-	double d = -(N * tmp);
+	//double d = -(N * tmp);
 	//double d = 0;
 	double result = (N.X * point.X + N.Y * point.Y + N.Z * point.Z + d) / N.length();
 	return round(result, 3);

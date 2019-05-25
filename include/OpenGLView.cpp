@@ -138,7 +138,8 @@ COpenGLView::COpenGLView()
 	coordinateDifferenceY = 0;
 
 	MatrixIdentity(BoxTrans);
-	myFont = new MyFont("arial.ttf", 32, 256);
+	//myFont = new MyFont("arial.ttf", 32, 256);
+	myFont = new MyFont("seguisym.ttf", 32, 256);
 }
 
 COpenGLView::~COpenGLView()
@@ -369,12 +370,13 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 	
 	if (flagToleranceMove) {
 		PointGeometric mouseNewInWorld;
-		PointGeometric mouseOldInWorld;
+		//PointGeometric mouseOldInWorld;
 
 		GetWorldCoord(point.x, point.y, 0, mouseNewInWorld);
 		
-		GetWorldCoord(mouse_x0, mouse_y0, 0, mouseOldInWorld);
+		//GetWorldCoord(mouse_x0, mouse_y0, 0, mouseOldInWorld);
 		selectedToleranceObject->PointPosition = mouseNewInWorld;
+		Invalidate(FALSE);
 	}
 
 
@@ -1033,7 +1035,13 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 
 	}
 	CString frameString = L"";
-	frameString.Format(L"%s %g", bageStr, frame->toleranceValue);
+	if (frame->Base != nullptr) {
+		frameString.Format(L"%s %g %s", bageStr, frame->toleranceValue, frame->Base->baseName);
+	}
+	else {
+		frameString.Format(L"%s %g", bageStr, frame->toleranceValue);
+	}
+	
 	
 	glPushMatrix();
 	glColor3d(0, 255, 0);
@@ -1054,13 +1062,12 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 
 void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 {
-	glPushMatrix();
-	glRasterPos3f(10, 10, 10);
-	myFont->Font->Render("Text");
-	glPopMatrix();
+	glLineWidth(2);
+	glColor3d(0, 255, 0);
+
 	
 	//
-	/*double x1 = obj->PointStart.X;
+	double x1 = obj->PointStart.X;
 	double y1 = obj->PointStart.Y;
 	double z1 = obj->PointStart.Z;
 
@@ -1070,27 +1077,26 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 	double length = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 	//glPushMatrix();
 	//glTranslated(x1, y1, z1);
-	glLineWidth(2);
-	glColor3d(0, 255, 0);
+	
 
 	double offset = 15 + obj->offset; // Расстояние от объекта до размерной линии. obj->offset - компенсация размера объекта.
-	double dx = 0.3; // Высота "ушек"
+	double dx = 1; // Высота "ушек"
 
-	double triangle_width = 0.3;
-	double triangle_height = 0.3;
+	double triangle_width = 1;
+	double triangle_height = 1;
 
-	if(flagToleranceMove && selectedToleranceObject == obj){
-		obj->PointPosition.Y = obj->PointPosition.Y ;
-		
-		
+	
+	if (flagToleranceMove && selectedToleranceObject == obj) {
+		obj->PointPosition.Y = obj->PointPosition.Y - 15;
+
+
 		double tmpY = ((y1 + obj->PointPosition.Y * (x1 - x2) / length));
-		
+
 		if ((tmpY < 0 && obj->PointPosition.Y > 0) || (tmpY > 0 && obj->PointPosition.Y < 0)) {
 			obj->PointPosition.Y = obj->PointPosition.Y * -1;
 		}
-		TRACE("y = %g; tmpY = %g\n", obj->PointPosition.Y, tmpY);
+		//TRACE("y = %g; centerLine.Y = %g\n", obj->PointPosition.Y, centerLine.Y);
 	}
-
 	
 
 	double x1n = x1 + obj->offset * (y2 - y1) / length;
@@ -1102,7 +1108,9 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 	//double x1p = x1 + offset * (y2 - y1) / length;
 	//double y1p = y1 + offset * (x1 - x2) / length;
 	double x1p = x1 + obj->PointPosition.Y * (y2 - y1) / length;
+	//double y1p = y1 + obj->PointPosition.Y * (x1 - x2) / length;
 	double y1p = y1 + obj->PointPosition.Y * (x1 - x2) / length;
+	
 	PointGeometric p1 = PointGeometric(x1p, y1p, z1);
 	//p1.Y = p1.Y + obj->PointStop.Y;
 
@@ -1110,11 +1118,27 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 	//double y2p = y2 + offset * (x1 - x2) / length;
 	double x2p = x2 + obj->PointPosition.Y * (y2 - y1) / length;
 	double y2p = y2 + obj->PointPosition.Y * (x1 - x2) / length;
+	
 	PointGeometric p2 = PointGeometric(x2p, y2p, z2);
+
+	
+
+
+
 	//p2 = p2 + obj->PointStop;
 	//p2.Y = p2.Y + obj->PointStop.Y;
 
 	VectorGeometric perpSize = VectorGeometric(PointGeometric(x1n, y1n, z1), p1, true);
+
+	CString sizeValue = L"";
+	sizeValue.Format(L"%g mm", obj->length());
+	PointGeometric centerLine = ((p2 + p1) / 2) + (perpSize * 2);
+	glPushMatrix();
+	glRasterPos3f(centerLine.X, centerLine.Y, centerLine.Z);
+	myFont->Font->Render(sizeValue);
+	glPopMatrix();
+
+	
 	//drawBitmapText("TEST", x1p, y1p, z1);
 	//---------
 		
@@ -1151,11 +1175,7 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 	double x2o = x2 + (offset + dx) * (y2 - y1) / length;
 	double y2o = y2 + (offset + dx) * (x1 - x2) / length;
 
-	glDisable(GL_DEPTH_TEST);
-	//glColor3f(0.0f, 0.0f, 0.0f);
-	//myFont->Print(x1o, y1o, z1, L"Test");
-	myFont->Print(-140, 80, L"Test");
-	glEnable(GL_DEPTH_TEST);
+	
 	//-----
 	// Левая линия от начальной точки до размерной линии + оффсет
 	glBegin(GL_LINES);
@@ -1173,9 +1193,6 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 
 	glDisable(GL_LINE_STIPPLE);
 
-
-	glLineWidth(1);*/
-	//glPopMatrix();
 }
 
 
@@ -1195,16 +1212,21 @@ double COpenGLView::angle_point(PointGeometric a, PointGeometric b, PointGeometr
 
 void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 {
-	double triangle_height = 0.3;
-	double triangle_widht = 0.3;
+	double triangle_height = 2;
+	double triangle_widht = 2;
 
 	VectorGeometric n = obj->objMath->Line.Vector;
 	PointGeometric centerPoint = obj->centerPoint - (n * 0.01);
-	VectorGeometric p = VectorGeometric(obj->objMath->PointsForApprox.operator[](0), centerPoint);
+	//VectorGeometric p = VectorGeometric(obj->objMath->PointsForApprox.operator[](0), centerPoint);
+	VectorGeometric p = VectorGeometric(obj->PointPosition, centerPoint);
+	p = Tolerance().rotatePlane(&p, n, 90);
 	VectorGeometric perp = n ^ p;
+	
 	perp.Normalize();
 	n.Normalize();
 
+	//PointGeometric leftPoint = centerPoint + perp * (obj->diameter / 2);
+	//PointGeometric rightPoint = centerPoint - perp * (obj->diameter / 2);
 	PointGeometric leftPoint = centerPoint + perp * (obj->diameter / 2);
 	PointGeometric rightPoint = centerPoint - perp * (obj->diameter / 2);
 	glLineWidth(2);
@@ -1227,8 +1249,8 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 	VectorGeometric perpTrinagle = n ^ perp;
 	perpTrinagle.Normalize();
 
-	PointGeometric leftTopPoint = leftPoint - perp * triangle_height + perpTrinagle * triangle_widht;
-	PointGeometric leftBottomPoint = leftPoint - perp * triangle_height - perpTrinagle * triangle_widht;
+	PointGeometric leftTopPoint = leftPoint + perp * triangle_height + perpTrinagle * triangle_widht;
+	PointGeometric leftBottomPoint = leftPoint + perp * triangle_height - perpTrinagle * triangle_widht;
 	// Правый треугольник
 	glBegin(GL_TRIANGLES);
 		glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
@@ -1236,8 +1258,8 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 		glVertex3d(leftBottomPoint.X, leftBottomPoint.Y, leftBottomPoint.Z);
 	glEnd();
 
-	PointGeometric rightTopPoint = rightPoint + perp * triangle_height + perpTrinagle * triangle_widht;
-	PointGeometric rightBottomPoint = rightPoint + perp * triangle_height - perpTrinagle * triangle_widht;
+	PointGeometric rightTopPoint = rightPoint - perp * triangle_height + perpTrinagle * triangle_widht;
+	PointGeometric rightBottomPoint = rightPoint - perp * triangle_height - perpTrinagle * triangle_widht;
 	// Правый треугольник
 	glBegin(GL_TRIANGLES);
 		glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
@@ -1245,80 +1267,31 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 		glVertex3d(rightBottomPoint.X, rightBottomPoint.Y, rightBottomPoint.Z);
 	glEnd();
 
-
-
-
-
-	/*
-	glPushMatrix();       // сохраняем текущие координаты
-	//double angle = angle_point(PointGeometric(0, 0, 0), obj->centerPoint, obj->objMath->PointsForApprox.operator[](0));
-	glTranslated(obj->centerPoint.X, obj->centerPoint.Y, obj->centerPoint.Z);  // сдвигаемся по оси Z
-	//VectorGeometric ve = VectorGeometric(obj->centerPoint, PointGeometric(0, 0, 0), true);
-	//glRotated(angle, 0, 1, 0);
-	
-	glLineWidth(2);
-	glColor3d(0, 255, 0);
-
-	double triangle_height = 0.3;
-	double triangle_widht = 0.3;
+	PointGeometric leftEarPoint = leftPoint  + (perp * 6);
+	PointGeometric rightEarPoint = rightPoint  - (perp * 6);
+	glBegin(GL_LINES);
+		glVertex3d(leftEarPoint.X, leftEarPoint.Y, leftEarPoint.Z);
+		glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
+	glEnd();
 	
 	
-	glPointSize(8);
-	glBegin(GL_POINTS);
-		//glVertex3d(obj->centerPoint.X, obj->centerPoint.Y, obj->centerPoint.Z);
-		glVertex3d(0, 0, 0);
-		//glVertex3d(obj->diameter, 0, 0);
-		//glVertex3d(0, obj->diameter, 0);
+	glBegin(GL_LINES);
+		glVertex3d(rightEarPoint.X, rightEarPoint.Y, rightEarPoint.Z);
+		glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
+	glEnd();
 		
+	glBegin(GL_LINES);
+		glVertex3d(rightEarPoint.X, rightEarPoint.Y, rightEarPoint.Z);
+		glVertex3d(obj->PointPosition.X, obj->PointPosition.Y, obj->PointPosition.Z);
 	glEnd();
 
-	if(!obj->isOutdoor){
-		// Диаметральная линия
-		glBegin(GL_LINES);
-			glVertex3d(obj->diameter / 2, 0, 0);
-			glVertex3d(-obj->diameter / 2, 0, 0);
-		glEnd();
+	CString sizeValue = L"";
+	sizeValue.Format(L" \u00D8 %g mm", obj->diameter);
+	glPushMatrix();
 
-		// Правый треугольник
-		glBegin(GL_TRIANGLES);
-			glVertex3d(obj->diameter / 2, 0, 0);
-			glVertex3d(obj->diameter / 2 - triangle_height, triangle_widht, 0);
-			glVertex3d(obj->diameter / 2 - triangle_height, - triangle_widht, 0);
-		glEnd();
-
-		// Левый треугольник
-		glBegin(GL_TRIANGLES);
-			glVertex3d(0 - obj->diameter / 2, 0, 0);
-			glVertex3d(0 - obj->diameter / 2 + triangle_height, 0 + triangle_widht, 0);
-			glVertex3d(0- obj->diameter / 2 + triangle_height, 0- triangle_widht, 0);
-		glEnd();
-
-
-	}
-	else {
-		// Диаметральная линия
-		glBegin(GL_LINES);
-			glVertex3d(obj->centerPoint.X + obj->diameter, obj->centerPoint.Y, obj->centerPoint.Z);
-			glVertex3d(obj->centerPoint.X - obj->diameter, obj->centerPoint.Y, obj->centerPoint.Z);
-		glEnd();
-
-		// Правый треугольник
-		glBegin(GL_TRIANGLES);
-		glVertex3d(obj->centerPoint.X + obj->diameter / 2, obj->centerPoint.Y, obj->centerPoint.Z);
-		glVertex3d(obj->centerPoint.X + obj->diameter / 2 + triangle_height, obj->centerPoint.Y + triangle_widht, obj->centerPoint.Z);
-		glVertex3d(obj->centerPoint.X + obj->diameter / 2 + triangle_height, obj->centerPoint.Y - triangle_widht, obj->centerPoint.Z);
-		glEnd();
-
-		// Левый треугольник
-		glBegin(GL_TRIANGLES);
-		glVertex3d(obj->centerPoint.X - obj->diameter / 2, obj->centerPoint.Y, obj->centerPoint.Z);
-		glVertex3d(obj->centerPoint.X - obj->diameter / 2 - triangle_height, obj->centerPoint.Y + triangle_widht, obj->centerPoint.Z);
-		glVertex3d(obj->centerPoint.X - obj->diameter / 2 - triangle_height, obj->centerPoint.Y - triangle_widht, obj->centerPoint.Z);
-		glEnd();
-	}
-	
-	glPopMatrix();  // возвращаемся к старой системе координат
-	*/
+	glRasterPos3f(obj->PointPosition.X, obj->PointPosition.Y, obj->PointPosition.Z);
+	myFont->Font->Render(sizeValue);
+	glPopMatrix();
 }
 
 void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
@@ -1680,6 +1653,19 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_SHIFT)
 	{
 		flagShiftPressed = false;
+	}
+	if (nChar == VK_DELETE)
+	{
+		if (flagToleranceMove) {
+			// Voronov Удаление вспомогательной геометрии	
+			if (selectedToleranceObject != nullptr) {
+				std::vector<ToleranceObject*>::iterator j = std::find(toleranceObjectsArray->begin(), toleranceObjectsArray->end(), selectedToleranceObject);
+				delete selectedToleranceObject;
+				toleranceObjectsArray->erase(j);
+			}
+				
+		}
+		
 	}
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);

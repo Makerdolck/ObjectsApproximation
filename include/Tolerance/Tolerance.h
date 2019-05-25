@@ -37,7 +37,7 @@ class Tolerance
 public:
 	
 
-
+	Tolerance();
 	Tolerance(std::vector<ToleranceObject*>* toleranceObjectsArray);
 	~Tolerance();
 
@@ -54,17 +54,20 @@ public:
 	double OrientationParallelism(LineSegmentApprox* base, LineSegmentApprox* control);
 
 	
+	
 	VectorGeometric getIntersectionVector(PlaneApprox Plane1, PlaneApprox Plane2);
 	VectorGeometric rotatePlane(PlaneApprox* plane, VectorGeometric axis, double a);
 
+	VectorGeometric rotatePlane(VectorGeometric* v, VectorGeometric axis, double a);
+
 	// Параллельность
-	int OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control); // Перпендикулярность
-	double OrientationAngularity(PlaneApprox* base, PlaneApprox* control); // Наклон
-	double OrientationAngularity(PlaneApprox* base, PlaneApprox* control, PlaneApprox* result);
-	double OrientationAngularity(PlaneGeometric* base, PlaneGeometric* control, PlaneGeometric* result);
+	double OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control); // Перпендикулярность
+	double OrientationAngularity(PlaneApprox* base, PlaneApprox* control, double angle); // Наклон
+	//double OrientationAngularity(PlaneApprox* base, PlaneApprox* control, PlaneApprox* result);
+	//double OrientationAngularity(PlaneGeometric* base, PlaneGeometric* control, PlaneGeometric* result);
 	void rotatePlane(PlaneGeometric* plane, VectorGeometric axis, PlaneGeometric* result, double a);
 	void rotatePlane(PlaneGeometric* plane, VectorGeometric* axis, PlaneGeometric* result, double a);
-	double OrientationAngularity(PlaneGeometric* base, PlaneGeometric* control);
+	//double OrientationAngularity(PlaneGeometric* base, PlaneGeometric* control);
 
 	void rotatePlane(PlaneGeometric* plane, PlaneGeometric* result, double a);
 
@@ -73,19 +76,20 @@ public:
 	
 
 	// Допуски месторасположения
-	int LocationPosition(std::vector<ObjectApprox*>* objectsArray); // Позиционирование
+	double LocationPosition(std::vector<ObjectApprox*>* objectsArray); // Позиционирование
 	double LocationConcentricity(CircleApprox *circleA, CircleApprox *circleB); // Концентричность (для точек)
 	double LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB); // Соосность (для осей)
-	int LocationSymmetry(std::vector<ObjectApprox*>* objectsArray); // Симметричность
+	double LocationSymmetry(std::vector<ObjectApprox*>* objectsArray); // Симметричность
 
 	// Допуски биения
-	int RunOutCircular(std::vector<ObjectApprox*>* objectsArray); // Форма заданной поверхности
-	int RunOutTotal(std::vector<ObjectApprox*>* objectsArray); // Форма заданной поверхности
+	double RunOutFace(CylinderApprox* base, RectangleApprox* control); // Торцевое
+	double RunOutFace(CylinderApprox* base, CircleApprox* control); // Торцевое
+	double RunOutRadial(CylinderApprox* base, CylinderApprox* control); // Радиальное
 	
 
 	// Обработка и добавление объекта в список для отрисовки
 	SizeLine* DrawSizeLine(std::vector<ObjectApprox*>* objectsArray);
-	void DrawToleranceFrame(std::vector<ObjectApprox*>* objectsArray);
+	//void DrawToleranceFrame(std::vector<ObjectApprox*>* objectsArray);
 	void DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray);
 	void DrawAxialLine(std::vector<ObjectApprox*>* objectsArray); // Осевая линия
 	void DrawFormRoundness(std::vector<ObjectApprox*>* objectsArray); // Допуски формы круглости

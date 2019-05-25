@@ -13,14 +13,13 @@ class DiameterLine :
 {
 public:
 
-	DiameterLine(CircleApprox* circle, bool isOutdoor);
-	DiameterLine(CylinderApprox* cylinder, bool isOutdoor);
+	DiameterLine(CircleApprox* circle);
+	DiameterLine(CylinderApprox* cylinder);
 	~DiameterLine();
 
 	PointGeometric centerPoint;
 	double diameter;
 
-	bool isOutdoor = false; // –азмерна€ лини€ выходит за окружность или нет
 
 	ToleranceObjectType getType();
 };

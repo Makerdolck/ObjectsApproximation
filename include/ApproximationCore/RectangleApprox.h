@@ -14,7 +14,7 @@ class RectangleApprox :	public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 private:
-	PlaneApprox		Plane;
+	
 
 	VectorGeometric VectorZ;
 
@@ -22,6 +22,7 @@ private:
 					*WanderingPoints;
 
 public:
+	PlaneApprox		Plane;
 	VectorGeometric	VectorY,
 					VectorX;
 

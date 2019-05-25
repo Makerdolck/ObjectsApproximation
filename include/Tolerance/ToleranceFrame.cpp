@@ -15,7 +15,7 @@ ToleranceFrame::ToleranceFrame(ObjectApprox* controlObject, int toleranceName, d
 
 	if (controlObject->objMath->GetName() == LineSegmentApprox().GetName()) {
 		LineSegmentApprox tmp = *((LineSegmentApprox*)controlObject->objMath);
-		this->PointStart = (tmp.PointStart - tmp.PointEnd)/2;
+		this->PointStart = (tmp.PointStart + tmp.PointEnd)/2;
 	}else if (controlObject->objMath->GetName() == CircleApprox().GetName()) {
 		CircleApprox tmp = *((CircleApprox*)controlObject->objMath);
 		this->PointStart = tmp.PointsForApprox.operator[](0);

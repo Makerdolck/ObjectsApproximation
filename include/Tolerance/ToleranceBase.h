@@ -13,12 +13,11 @@ public:
 	ToleranceBase(ObjectApprox* obj);
 	~ToleranceBase();
 
+	CString baseName;
 	
 	ToleranceObjectType getType();
-	char getCharName();
+	
 
-private:
-	char charName;
 };
 
 #endif

@@ -5,8 +5,8 @@
 #include "MFCKio.h"
 #include "DialogToleranceSelectObjects.h"
 #include "afxdialogex.h"
-
-
+#include <iostream>
+#include <stdio.h>
 // Диалоговое окно DialogToleranceSelectObjects
 
 IMPLEMENT_DYNAMIC(DialogToleranceSelectObjects, CDialog)
@@ -94,9 +94,20 @@ void DialogToleranceSelectObjects::changeName()
 		break;
 	case ORIENTATION_ANGULARITY:
 		name = L"Наклон";
+		((CStatic*)GetDlgItem(IDC_TEXT_ANGULARITY))->ShowWindow(TRUE);
+		((CEdit*)GetDlgItem(IDC_EDIT_ANGULARITY))->ShowWindow(TRUE);
+		break;
+	case ORIENTATION_PERPENDICULARITY:
+		name = L"Перпендикулярность";
 		break;
 	case ORIENTATION_PARALLELISM:
 		name = L"Параллельность";
+		break;
+	case RUNOUT_FACE:
+		name = L"Торцевое биение";
+		break;
+	case RUNOUT_RADIAL:
+		name = L"Радиальное биение";
 		break;
 
 	default:
@@ -115,6 +126,7 @@ BEGIN_MESSAGE_MAP(DialogToleranceSelectObjects, CDialog)
 	ON_BN_CLICKED(IDOK, &DialogToleranceSelectObjects::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &DialogToleranceSelectObjects::OnBnClickedCancel)
 //	ON_STN_CLICKED(IDC_TEXT_BASE_NAME, &DialogToleranceSelectObjects::OnStnClickedTextBaseName)
+ON_STN_CLICKED(IDC_TEXT_INSTRUCTION, &DialogToleranceSelectObjects::OnStnClickedTextInstruction)
 END_MESSAGE_MAP()
 
 
@@ -167,6 +179,8 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 			AfxMessageBox(L"В качестве базы и контрольного объекта выбран один и тот же объект");
 			return;
 		}
+		double angle = 0;
+		CString sWindowText;
 		ToleranceBase* tmpBase = nullptr;
 		ToleranceFrame* frame = nullptr;
 		double result = NULL;
@@ -176,11 +190,13 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 				tmpBase = new ToleranceBase(base);
 				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
 				break;
+
 			case LOCATION_COAXIALITY:
 				result = parent->pTolerance->LocationCoaxiality((CylinderApprox*)base->objMath, (CylinderApprox*)control->objMath);
 				tmpBase = new ToleranceBase(base);
 				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
 				break;
+
 			case ORIENTATION_PARALLELISM:
 				result = NULL;
 				tmpBase = new ToleranceBase(base);
@@ -192,19 +208,56 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 					result = parent->pTolerance->OrientationParallelism((LineSegmentApprox*)base->objMath, (LineSegmentApprox*)control->objMath);
 					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
 				}
-			
-				
 				break;
 
-		case ORIENTATION_ANGULARITY:
-			//tmpBase = new ToleranceBase(base);
+			case ORIENTATION_ANGULARITY:
+				tmpBase = new ToleranceBase(base);
 			
-			//parent->pTolerance->OrientationAngularity((PlaneGeometric*)base, (PlaneGeometric*)control, result);
-			parent->pTolerance->OrientationAngularity((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath);
-				//tmpBase = new ToleranceBase(base);
-				//frame = new ToleranceFrame(tmpBase, control, toleranceName, 10);
+				((CEdit*)GetDlgItem(IDC_EDIT_ANGULARITY))->GetWindowTextW(sWindowText);
 				
+				//angle = atof((const char*)(LPCTSTR)(sWindowText));
+				angle = atof((const char*)sWindowText.operator LPCTSTR());
+				angle = wcstod(sWindowText, nullptr);
+				result = parent->pTolerance->OrientationAngularity((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath, angle);
+				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+
 				break;
+
+			case ORIENTATION_PERPENDICULARITY:
+				tmpBase = new ToleranceBase(base);
+				result = parent->pTolerance->OrientationAngularity((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath, 90);
+				//tmpBase = new ToleranceBase(base);
+				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+
+				break;
+
+			case RUNOUT_RADIAL:
+				result = NULL;
+				tmpBase = new ToleranceBase(base);
+				if (base->objMath->GetName() == CylinderApprox().GetName() && control->objMath->GetName() == CylinderApprox().GetName()) {
+					result = parent->pTolerance->RunOutRadial((CylinderApprox*)base->objMath, (CylinderApprox*)control->objMath);
+					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				}
+				else if (base->objMath->GetName() == LineSegmentApprox().GetName() && control->objMath->GetName() == LineSegmentApprox().GetName()) {
+					result = parent->pTolerance->OrientationParallelism((LineSegmentApprox*)base->objMath, (LineSegmentApprox*)control->objMath);
+					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				}
+				break;
+
+			case RUNOUT_FACE:
+				result = NULL;
+				tmpBase = new ToleranceBase(base);
+				if (base->objMath->GetName() == CylinderApprox().GetName() && control->objMath->GetName() == RectangleApprox().GetName()) {
+					result = parent->pTolerance->RunOutFace((CylinderApprox*)base->objMath, (RectangleApprox*)control->objMath);
+					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				}
+				else if (base->objMath->GetName() == CylinderApprox().GetName() && control->objMath->GetName() == CircleApprox().GetName()) {
+					result = parent->pTolerance->RunOutFace((CylinderApprox*)base->objMath, (CircleApprox*)control->objMath);
+					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				}
+				break;
+
+			
 
 			default:
 				AfxMessageBox(L"Для данного допуска еще не разработано");
@@ -253,3 +306,9 @@ void DialogToleranceSelectObjects::OnBnClickedCancel()
 //{
 //	// TODO: добавьте свой код обработчика уведомлений
 //}
+
+
+void DialogToleranceSelectObjects::OnStnClickedTextInstruction()
+{
+	// TODO: добавьте свой код обработчика уведомлений
+}
