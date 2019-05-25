@@ -54,7 +54,6 @@ void MyFont::Print(double x, double y, const wchar_t* text)
 	// Перемещаемся на указанные координаты
 	glTranslatef(x, y, -1);
 	glRasterPos2f(-1, 0.5);
-	//glRasterPos3f(10, 10, 10);
 	Font->Render(text); // И рендерим текст
 	glEnable(GL_TEXTURE_2D);
 	glPopMatrix();

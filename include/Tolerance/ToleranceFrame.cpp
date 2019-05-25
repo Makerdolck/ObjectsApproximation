@@ -25,7 +25,11 @@ ToleranceFrame::ToleranceFrame(ObjectApprox* controlObject, int toleranceName, d
 	}else if (controlObject->objMath->GetName() == CylinderApprox().GetName()) {
 		CylinderApprox tmp = *((CylinderApprox*)controlObject->objMath);
 		this->PointStart = tmp.PointsForApprox.operator[](0);
+	}else if (controlObject->objMath->GetName() == RectangleApprox().GetName()) {
+		PlaneApprox tmp = *((PlaneApprox*)controlObject->objMath);
+		this->PointStart = tmp.Line.Point;
 	}
+
 }
 
 
@@ -45,6 +49,9 @@ ToleranceFrame::ToleranceFrame(ToleranceBase* base, ObjectApprox* controlObject,
 	}else if (controlObject->objMath->GetName() == RectangleApprox().GetName()) {
 		PlaneApprox tmp = *((PlaneApprox*)controlObject->objMath);
 		this->PointStart = tmp.Line.Point;
+	}else if (controlObject->objMath->GetName() == LineSegmentApprox().GetName()) {
+		LineSegmentApprox tmp = *((LineSegmentApprox*)controlObject->objMath);
+		this->PointStart = (tmp.PointStart - tmp.PointEnd) / 2;
 	}
 	
 }

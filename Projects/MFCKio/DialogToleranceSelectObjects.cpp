@@ -183,16 +183,16 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 				break;
 			case ORIENTATION_PARALLELISM:
 				result = NULL;
+				tmpBase = new ToleranceBase(base);
 				if (base->objMath->GetName() == RectangleApprox().GetName() && control->objMath->GetName() == RectangleApprox().GetName()) {
 					result = parent->pTolerance->OrientationParallelism((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath);
+					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
 				}
 				else if (base->objMath->GetName() == LineSegmentApprox().GetName() && control->objMath->GetName() == LineSegmentApprox().GetName()) {
 					result = parent->pTolerance->OrientationParallelism((LineSegmentApprox*)base->objMath, (LineSegmentApprox*)control->objMath);
-				}
-				tmpBase = new ToleranceBase(base);
-				if (result != NULL) {
 					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
 				}
+			
 				
 				break;
 
@@ -211,6 +211,18 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 		}
 
 		if (frame != nullptr) {
+			for (int j = 0; j < parent->dlgMeasure->toleranceObjectsArray->size(); j++) {
+				if (dynamic_cast<ToleranceFrame*>(parent->dlgMeasure->toleranceObjectsArray->operator[](j))) {
+					ToleranceFrame* existFrame = (ToleranceFrame*)parent->dlgMeasure->toleranceObjectsArray->operator[](j);
+					// Проверка что такая рамка уже существует. Если существует, то начинаем ее перемещать
+					if (existFrame->toleranceName == toleranceName && existFrame->Base->objMath == base->objMath && existFrame->objMath == control->objMath) {
+						parent->pView->selectedToleranceObject = nullptr;
+						parent->pView->flagToleranceMove = true;
+						parent->pView->selectedToleranceObject = existFrame;
+						return;
+					}
+				}
+			}
 			parent->pTolerance->addNewObject(frame);
 			parent->pView->selectedToleranceObject = nullptr;
 			parent->pView->flagToleranceMove = true;
@@ -223,6 +235,7 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 		AfxMessageBox(L"Не выбрана база или контрольный объект");
 	}
 	
+	this->CloseWindow();
 	CDialog::OnOK();
 }
 

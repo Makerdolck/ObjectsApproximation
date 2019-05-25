@@ -38,7 +38,7 @@ double Tolerance::FormStraightness(LineSegmentApprox* line)
 	//str.Format(L"Result: %g", max);
 	double result = round(max, 4) - round(min, 4);
 	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, result);
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 	return max;
 }
 
@@ -63,7 +63,7 @@ double Tolerance::FormFlatness(PlaneApprox* plane)
 	CString str = L"";
 	//str.Format(L"Result: %g", max);
 	str.Format(L"Плоскостность. Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min), 3));
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(fabs(max - min), 3);
 }
@@ -88,7 +88,7 @@ double Tolerance::FormRoundness(CircleApprox* circle)
 	}
 	CString str = L"";
 	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 	return round(fabs(max - min) / 2, 3);
 }
 
@@ -113,7 +113,7 @@ double Tolerance::FormCylindricity(CylinderApprox* cylinder)
 
 	CString str = L"";
 	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max-min)/2, 3));
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+//	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(fabs(max - min) / 2, 3);
 }
@@ -136,7 +136,7 @@ double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control
 
 	CString str = L"";
 	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(fabs(max - min) / 2, 3);
 }
@@ -158,7 +158,7 @@ double Tolerance::OrientationParallelism(LineSegmentApprox *base, LineSegmentApp
 
 	CString str = L"";
 	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(fabs(max - min) / 2, 3);
 }
@@ -283,7 +283,7 @@ int Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* contr
 
 	CString str = L"";
 	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(fabs(max - min) / 2, 3);
 }
@@ -296,7 +296,7 @@ double Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* cir
 	
 	CString str = L"";
 	str.Format(L"Result: %g", distance);
-	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 
 	return distance;
@@ -540,11 +540,6 @@ void Tolerance::DrawAxialLine(std::vector<ObjectApprox*>* objectsArray)
 
 	ObjectApprox* objApprox;
 
-	CircleApprox* circleA = new CircleApprox();
-	CylinderApprox* cylinderA = new CylinderApprox();
-	ConeApprox* coneA = new ConeApprox();
-
-
 	AxialLine* newAxialLine = nullptr;
 
 	for (int i = 0; i < (int)objectsArray->size(); i++)
@@ -556,17 +551,14 @@ void Tolerance::DrawAxialLine(std::vector<ObjectApprox*>* objectsArray)
 
 		if (objApprox->flagSelected)
 		{
-			if (objApprox->objMath->GetName() == circleA->GetName()) {
-				circleA = (CircleApprox*)objApprox->objMath;
-				newAxialLine = new AxialLine(circleA);
+			if (objApprox->objMath->GetName() == CircleApprox().GetName()) {
+				newAxialLine = new AxialLine((CircleApprox*)objApprox->objMath);
 			}
-			else if (objApprox->objMath->GetName() == cylinderA->GetName()) {
-				cylinderA = (CylinderApprox*)objApprox->objMath;
-				newAxialLine = new AxialLine(cylinderA);
+			else if (objApprox->objMath->GetName() == CylinderApprox().GetName()) {
+				newAxialLine = new AxialLine((CylinderApprox*)objApprox->objMath);
 			}
-			else if (objApprox->objMath->GetName() == coneA->GetName()) {
-				coneA = (ConeApprox*)objApprox->objMath;
-				newAxialLine = new AxialLine(coneA);
+			else if (objApprox->objMath->GetName() == ConeApprox().GetName()) {
+				newAxialLine = new AxialLine((ConeApprox*)objApprox->objMath);
 			}
 			else {
 				AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
