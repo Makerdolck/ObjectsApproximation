@@ -6,10 +6,11 @@
 #include <ApproximationCore/_ALLincludesCore.h>
 
 
-
 class ToleranceObject
 {
 public:
+	static int totalObjectCounter;
+
 	ToleranceObject();
 	~ToleranceObject();
 
@@ -25,9 +26,10 @@ public:
 	};
 
 	GeomObjectApprox* objMath;
+	int objID;
 
-	bool flagSelected;
-	bool isVisible; // Видимость во вью
+	bool flagSelected = true;
+	bool isVisible = true; // Видимость во вью
 
 	PointGeometric PointPosition; // Точка остановки линии
 
@@ -37,7 +39,6 @@ protected:
 	PointGeometric centerByPoints(PointGeometric* points, int arraySize);
 
 };
-
 
 
 #endif /* __TOLERANCE_OBJECT_H__ */

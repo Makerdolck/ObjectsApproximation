@@ -269,17 +269,13 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 					ToleranceFrame* existFrame = (ToleranceFrame*)parent->dlgMeasure->toleranceObjectsArray->operator[](j);
 					// Проверка что такая рамка уже существует. Если существует, то начинаем ее перемещать
 					if (existFrame->toleranceName == toleranceName && existFrame->Base->objMath == base->objMath && existFrame->objMath == control->objMath) {
-						parent->pView->selectedToleranceObject = nullptr;
-						parent->pView->flagToleranceMove = true;
-						parent->pView->selectedToleranceObject = existFrame;
+						parent->pView->startSelectObject(existFrame);
 						return;
 					}
 				}
 			}
 			parent->pTolerance->addNewObject(frame);
-			parent->pView->selectedToleranceObject = nullptr;
-			parent->pView->flagToleranceMove = true;
-			parent->pView->selectedToleranceObject = frame;
+			parent->pView->startSelectObject(frame);
 			parent->RedrawWindow();
 		}
 		

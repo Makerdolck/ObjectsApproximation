@@ -131,6 +131,8 @@ protected:
 // Generated message map functions
 protected:
 	ObjectApprox	*GetObjectUnderMouse(CPoint point);
+	ToleranceObject	*GetToleranceObjectUnderMouse(CPoint point);
+
 	HGLRC			SetUpOpenGL(HWND hWnd);
 	void			PaintScene(GLenum mode);
 	void			DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor);
@@ -147,7 +149,6 @@ protected:
 
 
 	// Voronov
-	void drawBitmapText(char* string, double x, double y, double z);
 	void DrawOpenGL_ToleranceFrame(ToleranceFrame* frame);
 	void DrawOpenGL_SizeLine(SizeLine* obj);
 	double angle_point(PointGeometric a, PointGeometric b, PointGeometric c);
@@ -167,12 +168,19 @@ protected:
 
 public:
 	bool flagToleranceMove = false; // Voronov Флаг что двигается размерная линия
-	ToleranceObject* selectedToleranceObject = nullptr; // Voronov 
+	
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+
+
+public:
+		// Voronov
+		bool isToleranceAction = false; // Происходит ли выбор связанный с выбором объекта для измерения допуска или нет
+		ToleranceObject* selectedToleranceObject = nullptr; // Voronov 
+		void startSelectObject(ToleranceObject* selectedObject); // Маркирует isToleranceAction значением true, selectedToleranceObject = selectedObject, selectedObject->flagSelected = true
 };
 
 #ifndef _DEBUG  // debug version in try_OpenGLView.cpp

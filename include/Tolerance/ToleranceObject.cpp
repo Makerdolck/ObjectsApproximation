@@ -2,8 +2,13 @@
 
 #include "ToleranceObject.h"
 
+int ToleranceObject::totalObjectCounter = 0;
+
+
 ToleranceObject::ToleranceObject()
 {
+	totalObjectCounter--;
+	objID = totalObjectCounter;
 }
 
 ToleranceObject::~ToleranceObject()

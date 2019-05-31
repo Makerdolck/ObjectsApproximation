@@ -30,6 +30,7 @@ const GLfloat blueColor[] = { 0.0f,	0.0f,	1.0f,	1.0f };
 const GLfloat simpleElementsColor1[] = { 1.0f,	0.2f,	0.2f,	1.0f };
 const GLfloat simpleElementsColor2[] = { 0.0f,	1.0f,	1.0f,	1.0f };
 
+const GLfloat greenToleranceColor[] = { 0.0f,	1.0f,	0.0f,	1.0f };
 //GLfloat ambientLight[] = { 0.3f, 0.3f,0.3f, 1.0f };
 //GLfloat diffuseLight[] = { 0.7f, 0.7f,0.7f, 1.0f };
 //GLfloat lightPos[] = { -50.0f, 50.0f,100.0f, 1.0f };
@@ -371,11 +372,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 	
 	if (flagToleranceMove) {
 		PointGeometric mouseNewInWorld;
-		//PointGeometric mouseOldInWorld;
-
 		GetWorldCoord(point.x, point.y, 0, mouseNewInWorld);
-		
-		//GetWorldCoord(mouse_x0, mouse_y0, 0, mouseOldInWorld);
 		selectedToleranceObject->PointPosition = mouseNewInWorld;
 		Invalidate(FALSE);
 	}
@@ -546,12 +543,18 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	if (flagToleranceMove) {
 		flagToleranceMove = false;
-		selectedToleranceObject = nullptr;
+		if (selectedToleranceObject != nullptr) {
+			selectedToleranceObject->flagSelected = false;
+			selectedToleranceObject = nullptr;
+			Invalidate(FALSE);
+
+		}
 		return;
 	}
 	
 	
 	ObjectApprox *objApprox = GetObjectUnderMouse(point);
+	ToleranceObject *toleranceObj = GetToleranceObjectUnderMouse(point);
 	
 
 	int a = 0;
@@ -561,14 +564,29 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	else																// Make all elements not selected
 	{
-		if (objectsArray != nullptr)
-		{
-			for (int i = 0; i < (int)objectsArray->size(); i++)
+		if (toleranceObj != nullptr) {
+			//toleranceObj->flagSelected = !toleranceObj->flagSelected;
+			startSelectObject(toleranceObj);
+		}
+		else {
+			if (objectsArray != nullptr)
 			{
-				objApprox = objectsArray->operator[](i);
+				for (int i = 0; i < (int)objectsArray->size(); i++)
+				{
+					objApprox = objectsArray->operator[](i);
 
-				objApprox->flagSelected = false;
+					objApprox->flagSelected = false;
+				}
 			}
+			if (toleranceObjectsArray != nullptr)
+			{
+				for (int i = 0; i < (int)toleranceObjectsArray->size(); i++)
+				{
+					toleranceObjectsArray->operator[](i)->flagSelected = false;
+
+				}
+			}
+			
 		}
 	}
 	
@@ -699,6 +717,84 @@ ObjectApprox *COpenGLView::GetObjectUnderMouse(CPoint point)
 
 	return nullptr;
 }
+
+ToleranceObject* COpenGLView::GetToleranceObjectUnderMouse(CPoint point)
+{
+	mouse_x0 = point.x;  mouse_y0 = point.y;
+
+	prev_x = point.x;
+	prev_y = point.y;
+
+#define BUFSIZE 512
+
+	GLuint selectBuf[BUFSIZE];
+	GLint hits;
+	GLint viewport[4];
+
+	HDC hDC = ::GetDC(this->m_hWnd);
+	wglMakeCurrent(hDC, hRC);
+
+
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glSelectBuffer(BUFSIZE, selectBuf);
+
+	glRenderMode(GL_SELECT);				// Enter the SELECT render mode
+	glInitNames();
+	glPushName(-1);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluPickMatrix((GLdouble)point.x, (GLdouble)(viewport[3] - point.y), 5.0, 5.0, viewport);
+	gluPerspective(30.0, gldAspect, fNearPlane, fFarPlane);
+	glMatrixMode(GL_MODELVIEW);
+	PaintScene(GL_SELECT);
+	glPopMatrix();
+	glFlush();
+
+	hits = glRenderMode(GL_RENDER);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0, 0, glnWidth, glnHeight);
+	gluPerspective(30.0, gldAspect, fNearPlane, fFarPlane);
+
+
+	ToleranceObject * obj = nullptr;
+	int a = 0;
+	if (hits)
+	{
+		int n = 0; double minz = selectBuf[1];
+		for (int i = 1; i < hits; i++)
+		{
+			if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
+		}
+
+		a = selectBuf[3 + n * 4];
+		TRACE("a = %d\n", a);
+		if (toleranceObjectsArray != nullptr)
+		{
+			for (int i = 0; i < (int)toleranceObjectsArray->size(); i++)
+			{
+				obj = toleranceObjectsArray->operator[](i);
+
+				if (obj->objID == a)
+				{
+					return obj;
+				}
+			}
+		}
+	}
+	else
+	{
+		return nullptr;
+	}
+
+	wglMakeCurrent(NULL, NULL);
+	::ReleaseDC(this->m_hWnd, hDC);
+
+	return nullptr;
+}
 //////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Set Up OpenGL Settings
@@ -796,6 +892,16 @@ void COpenGLView::PaintScene(GLenum mode)
 			if (!toleranceObject->isVisible) {
 				continue;
 			}
+			
+
+			if (toleranceObject->flagSelected) {
+				glColor3fv(redColor);
+			}
+			else {
+				glColor3fv(greenToleranceColor);
+			}
+
+			if (mode == GL_SELECT) glLoadName(toleranceObject->objID);
 
 
 			if (dynamic_cast<SizeLine*>(toleranceObject)) {
@@ -928,16 +1034,7 @@ void COpenGLView::PaintScene(GLenum mode)
 
 // Voronov
 
-void COpenGLView::drawBitmapText(char* string, double x, double y, double z)
-{
-	char* c;
-	glRasterPos3f(x, y, z);
 
-	for (c = string; *c != '\0'; c++)
-	{
-		//glutStrokeCharacter(GLUT_STROKE_ROMAN, *c);
-	}
-}
 
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL SizeLine
@@ -948,7 +1045,9 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	PointGeometric pEnd = frame->PointPosition;
 
 	glPointSize(5);
-	glColor3d(0, 100, 0);
+	//glColor3d(0, 100, 0);
+
+	glLineWidth(2);
 
 	glBegin(GL_LINES);
 		glVertex3d(pStart.X, pStart.Y, pStart.Z);
@@ -1044,7 +1143,7 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	
 	
 	glPushMatrix();
-	glColor3d(0, 255, 0);
+	//glColor3d(0, 255, 0);
 	//glTranslatef(centerBage.X, centerBage.Y, centerBage.Z);
 	//glRasterPos3f(centerBage.X, centerBage.Y, centerBage.Z);
 	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
@@ -1063,7 +1162,7 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 {
 	glLineWidth(2);
-	glColor3d(0, 255, 0);
+	//glColor3d(0, 255, 0);
 
 	
 	//
@@ -1232,8 +1331,7 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 	//PointGeometric rightPoint = centerPoint - perp * (obj->diameter / 2);
 	PointGeometric leftPoint = centerPoint + perp * (obj->diameter / 2);
 	PointGeometric rightPoint = centerPoint - perp * (obj->diameter / 2);
-	glLineWidth(1);
-	glColor3d(0, 255, 0);
+	glLineWidth(2);
 
 
 	glPointSize(8);
@@ -1300,7 +1398,7 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
 {
 	glLineWidth(2);
-	glColor3d(0, 255, 0);
+	//glColor3d(0, 255, 0);
 
 	VectorGeometric normalizedVector = VectorGeometric(obj->dirVector);
 	normalizedVector.Normalize();
@@ -1336,7 +1434,7 @@ void COpenGLView::DrawOpenGL_Tolerance_Form_Roudness(FormRoundnessToleranceObjec
 {
 	CircleApprox* circle = (CircleApprox*)obj->objMath;
 	glLineWidth(2);
-	glColor3d(255, 0, 255);
+	//glColor3d(255, 0, 255);
 	glBegin(GL_LINE_LOOP);
 	
 	for (int i = 0; i < circle->PointsForApprox.size(); i++) {
@@ -1672,5 +1770,13 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);
+}
+
+void COpenGLView::startSelectObject(ToleranceObject* selectedObject)
+{
+		selectedToleranceObject = nullptr;
+		flagToleranceMove = true;
+		selectedObject->flagSelected = true;
+		selectedToleranceObject = selectedObject;
 }
 

@@ -657,6 +657,7 @@ void Tolerance::DrawAxialLine(std::vector<ObjectApprox*>* objectsArray)
 
 	if (newAxialLine != nullptr) {
 		addNewObject(newAxialLine);
+		newAxialLine->flagSelected = false;
 	}
 }
 
