@@ -21,6 +21,9 @@ public:
 	~AxialLine();
 
 	VectorGeometric dirVector; // Направляющий вектор
+
+	PointGeometric startPoint;
+	PointGeometric endPoint;
 	PointGeometric centerPoint;
 	double offset; // Компенсация размера объекта
 

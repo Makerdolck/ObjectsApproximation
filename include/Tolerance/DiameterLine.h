@@ -17,6 +17,9 @@ public:
 	DiameterLine(CylinderApprox* cylinder);
 	~DiameterLine();
 
+
+
+	
 	PointGeometric centerPoint;
 	double diameter;
 

@@ -148,7 +148,9 @@ protected:
 	void			DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj);
 
 
+
 	// Voronov
+	void DrawOpenGL_ToleranceBase(ToleranceBase* base);
 	void DrawOpenGL_ToleranceFrame(ToleranceFrame* frame);
 	void DrawOpenGL_SizeLine(SizeLine* obj);
 	double angle_point(PointGeometric a, PointGeometric b, PointGeometric c);

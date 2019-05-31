@@ -917,7 +917,8 @@ void COpenGLView::PaintScene(GLenum mode)
 				DrawOpenGL_Tolerance_Form_Roudness((FormRoundnessToleranceObject*)toleranceObject);
 			}else if (dynamic_cast<ToleranceFrame*>(toleranceObject)) {
 				DrawOpenGL_ToleranceFrame((ToleranceFrame*)toleranceObject);
-
+			}else if (dynamic_cast<ToleranceBase*>(toleranceObject)) {
+				DrawOpenGL_ToleranceBase((ToleranceBase*)toleranceObject);
 			}
 
 			
@@ -1038,14 +1039,39 @@ void COpenGLView::PaintScene(GLenum mode)
 
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL SizeLine
+void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
+{
+	
+	PointGeometric pStart = base->PointStart;
+	PointGeometric pEnd = base->PointPosition;
+
+
+	glLineWidth(2);
+	glBegin(GL_LINES);
+		glVertex3d(pStart.X, pStart.Y, pStart.Z);
+		glVertex3d(pEnd.X, pEnd.Y, pEnd.Z);
+	glEnd();
+
+	// TODO: Треугольник	
+	
+	
+
+	CString frameString = L"";
+	frameString.Format(L"%c", base->baseChar);
+	
+	glPushMatrix();
+	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
+	myFont->Font->Render(frameString);
+	glPopMatrix();
+
+}
+
 void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 {
 	
 	PointGeometric pStart = frame->PointStart;
 	PointGeometric pEnd = frame->PointPosition;
 
-	glPointSize(5);
-	//glColor3d(0, 100, 0);
 
 	glLineWidth(2);
 
@@ -1055,13 +1081,17 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	glEnd();
 
 	// Если мышка указывает справа от точки начала, то меняем направление рамки
-	if (pEnd.X > pStart.X) {
-		//frame->changeBoxDirection();
+	/*if (pEnd.X > pStart.X) {
+		frame->setBoxPosition(1); // Справа от линии
 	}
+	else {
+		frame->setBoxPosition(0); // Слева от линии
+	}*/
 
 
 	PointGeometric centerBage = frame->getCenterBage();
 	PointGeometric centerToleranceValue = frame->getCenterToleranceValue();
+	//PointGeometric centerToleranceBase = frame->getCenterToleranceBaseName();
 	PointGeometric centerToleranceBase = frame->getCenterToleranceBaseName();
 
 	// Допуск
@@ -1135,7 +1165,8 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	}
 	CString frameString = L"";
 	if (frame->Base != nullptr) {
-		frameString.Format(L"%s %g %s", bageStr, frame->toleranceValue, frame->Base->baseName);
+		//frameString.Format(L"%s %g %s", bageStr, frame->toleranceValue, frame->Base->baseName);
+		frameString.Format(L"%s %g %c", bageStr, frame->toleranceValue, frame->Base->baseChar);
 	}
 	else {
 		frameString.Format(L"%s %g", bageStr, frame->toleranceValue);
@@ -1158,6 +1189,7 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	glPopMatrix();
 
 }
+
 
 void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 {
@@ -1296,9 +1328,6 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 
 }
 
-
-
-
 double COpenGLView::angle_point(PointGeometric a, PointGeometric b, PointGeometric c)
 {
 	double x1 = a.X - b.X, x2 = c.X - b.X;
@@ -1309,7 +1338,6 @@ double COpenGLView::angle_point(PointGeometric a, PointGeometric b, PointGeometr
 
 	return acos((x1 * x2 + y1 * y2 + z1 * z1) / (d1 * d2));
 }
-
 
 void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 {
@@ -1398,32 +1426,64 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
 {
 	glLineWidth(2);
-	//glColor3d(0, 255, 0);
 
-	VectorGeometric normalizedVector = VectorGeometric(obj->dirVector);
-	normalizedVector.Normalize();
+	if (flagToleranceMove && selectedToleranceObject == obj) {
+		//obj->PointPosition.Y = obj->PointPosition.Y - 15 - 20;
 
-	VectorGeometric start = obj->dirVector - (normalizedVector * 5) - (normalizedVector * obj->offset);
-	VectorGeometric end = obj->dirVector + (normalizedVector * 3) + (normalizedVector * obj->offset);
 
-	//start = start + obj->centerPoint;
-	//end = end + obj->centerPoint;
+		
 
+		if (obj->PointPosition.Y > 0) {
+			obj->PointPosition.Y = obj->PointPosition.Y * -1;
+		}
+	
+	}
+
+	//VectorGeometric normalizedVector = VectorGeometric(obj->dirVector);
+	//normalizedVector.Normalize();
+	//PointGeometric start = obj->startPoint - obj->dirVector - (normalizedVector * 5) - (normalizedVector * obj->offset);
+	//PointGeometric end = obj->endPoint + obj->dirVector + (normalizedVector * 3) + (normalizedVector * obj->offset);
+	
+	/*
 	start.X += obj->centerPoint.X;
 	start.Y += obj->centerPoint.Y;
 	start.Z += obj->centerPoint.Z;
-
 	end.X += obj->centerPoint.X;
 	end.Y += obj->centerPoint.Y;
 	end.Z += obj->centerPoint.Z;
+	*/
+	
+	/*
+	VectorGeometric mousePointVector = VectorGeometric(obj->PointPosition.X, obj->PointPosition.Y, obj->PointPosition.Z, false);
+	PointGeometric startPoint = PointGeometric();
+	startPoint.X = start.X;
+	startPoint.Y = start.Y;
+	startPoint.Z = start.Z;
+
+	PointGeometric endPoint = PointGeometric();
+	endPoint.X = end.X;
+	endPoint.Y = end.Y;
+	endPoint.Z = end.Z;
+
+	VectorGeometric AB = VectorGeometric(startPoint, endPoint, false);
+	VectorGeometric AP = VectorGeometric(startPoint, obj->PointPosition, false);
+	PointGeometric projectionPoint = startPoint + AB*((AP*AB)/(AB*AB));
+	VectorGeometric AProj = VectorGeometric(startPoint, projectionPoint, false);
+	*/
+	
+	glDisable(GL_LINE_STIPPLE);
 
 	glEnable(GL_LINE_STIPPLE); // разрешаем рисовать
 							// прерывистую линию
 	glLineStipple(2, 58364); // Паттерн 
 	glBegin(GL_LINES);
+	//end = obj->centerPoint +  (normalizedVector * AProj.length() * 2);
+	//glVertex3d(projectionPoint.X, projectionPoint.Y, projectionPoint.Z);
+	//glVertex3d(start.X, start.Y, start.Z);
+	//glVertex3d(end.X, end.Y, end.Z);
+	glVertex3d(obj->startPoint.X, obj->startPoint.Y, obj->startPoint.Z);
+	glVertex3d(obj->endPoint.X, obj->endPoint.Y, obj->endPoint.Z);
 	
-	glVertex3d(start.X, start.Y, start.Z);
-	glVertex3d(end.X, end.Y, end.Z);
 	glEnd();
 
 	glDisable(GL_LINE_STIPPLE);
@@ -1760,9 +1820,23 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (flagToleranceMove) {
 			// Voronov Удаление вспомогательной геометрии	
 			if (selectedToleranceObject != nullptr) {
+				if (dynamic_cast<AxialLine*>(selectedToleranceObject)) {
+
+					for (int j = 0; j < toleranceObjectsArray->size(); j++) {
+						ToleranceObject* tmpBase = toleranceObjectsArray->operator[](j);
+						if (dynamic_cast<ToleranceBase*>(tmpBase)) {
+							std::vector<ToleranceObject*>::iterator k = std::find(toleranceObjectsArray->begin(), toleranceObjectsArray->end(), tmpBase);
+							delete toleranceObjectsArray->operator[](j);
+							toleranceObjectsArray->erase(k);
+						}
+					}
+				}
+				
 				std::vector<ToleranceObject*>::iterator j = std::find(toleranceObjectsArray->begin(), toleranceObjectsArray->end(), selectedToleranceObject);
-				delete selectedToleranceObject;
+				//delete selectedToleranceObject;
 				toleranceObjectsArray->erase(j);
+				selectedToleranceObject = nullptr;
+				flagToleranceMove = false;
 			}
 				
 		}

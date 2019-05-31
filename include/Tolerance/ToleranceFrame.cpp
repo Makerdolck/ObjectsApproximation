@@ -100,3 +100,13 @@ void ToleranceFrame::changeBoxDirection()
 	boxSecondSectionWidth = -boxSecondSectionWidth;
 	boxThirdSectionWidth = -boxThirdSectionWidth;
 }
+
+void ToleranceFrame::setBoxPosition(int position)
+{ 
+	if (position == 0) { // Слева
+
+	}
+	else if (position == 1) { // Справа
+
+	}
+}

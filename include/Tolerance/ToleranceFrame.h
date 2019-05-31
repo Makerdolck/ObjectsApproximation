@@ -33,6 +33,7 @@ public:
 
 
 	void changeBoxDirection();
+	void setBoxPosition(int position);
 	void setFrameSize(double firstSectionWidth, double secondSectionWidth, double thirdSectionWidth, double height);
 	double Width();
 

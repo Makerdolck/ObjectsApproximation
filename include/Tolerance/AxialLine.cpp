@@ -12,27 +12,39 @@ AxialLine::AxialLine(CircleApprox* obj)
 	centerPoint = centerByPoints(&obj->PointsForApprox[0], obj->PointsForApprox.size());
 	dirVector = obj->Line.Vector;
 	offset = 0;
+	VectorGeometric normalizedVector = VectorGeometric(dirVector);
+	normalizedVector.Normalize();
+	startPoint = centerPoint - dirVector - (normalizedVector * 5) - (normalizedVector * offset);
+	endPoint = centerPoint + dirVector + (normalizedVector * 3) + (normalizedVector * offset);
 }
 
 AxialLine::AxialLine(CylinderApprox* obj)
 {
 	objMath = obj;
-	//centerPoint = (centerByPoints(&obj->pointsBottomCircleEdge_Copy[0], obj->pointsBottomCircleEdge_Copy.size()) + 
-	//	centerByPoints(&obj->pointsTopCircleEdge_Copy[0], obj->pointsTopCircleEdge_Copy.size())) / 2;
+	startPoint = obj->PointBottomSurfaceCenter;
+	endPoint = obj->PointTopSurfaceCenter;
+
 	centerPoint = (obj->PointBottomSurfaceCenter + obj->PointTopSurfaceCenter) / 2;
 	dirVector = obj->Line.Vector;
 	offset = obj->Height;
+
+	VectorGeometric normalizedVector = VectorGeometric(dirVector);
+	normalizedVector.Normalize();
+	startPoint = obj->PointBottomSurfaceCenter - dirVector - (normalizedVector * 2) - (normalizedVector * offset);
+	endPoint = obj->PointTopSurfaceCenter + dirVector + (normalizedVector * 2) + (normalizedVector * offset);
 }
 
 AxialLine::AxialLine(ConeApprox* obj)
 {
 	objMath = obj;
-	/*centerPoint = (centerByPoints(&obj->pointsBottomCircleEdge_Copy[0], obj->pointsBottomCircleEdge_Copy.size()) +
-		centerByPoints(&obj->pointsTopCircleEdge_Copy[0], obj->pointsTopCircleEdge_Copy.size())) / 2;
-		*/
 	centerPoint = (obj->PointBottomSurfaceCenter + obj->PointTopSurfaceCenter) / 2;
 	dirVector = obj->Line.Vector;
 	offset = obj->Height;
+
+	VectorGeometric normalizedVector = VectorGeometric(dirVector);
+	normalizedVector.Normalize();
+	startPoint = obj->PointBottomSurfaceCenter - dirVector - (normalizedVector * 5) - (normalizedVector * offset);
+	endPoint = obj->PointTopSurfaceCenter + dirVector + (normalizedVector * 3) + (normalizedVector * offset);
 }
 
 

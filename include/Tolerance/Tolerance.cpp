@@ -657,6 +657,54 @@ void Tolerance::DrawAxialLine(std::vector<ObjectApprox*>* objectsArray)
 
 	if (newAxialLine != nullptr) {
 		addNewObject(newAxialLine);
+		//newAxialLine->flagSelected = false;
+	}
+}
+
+void Tolerance::DrawBaseLine(std::vector<ObjectApprox*>* objectsArray)
+{
+	if (objectsArray == nullptr)
+	{
+		AfxMessageBox(L"objectsArray == nullptr", MB_ICONWARNING | MB_OK);
+		return;
+	}
+	if (objectsArray->size() < 1) {
+		AfxMessageBox(L"Нет объектов", MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+
+	ObjectApprox* objApprox;
+
+	AxialLine* newAxialLine = nullptr;
+
+	for (int i = 0; i < (int)objectsArray->size(); i++)
+	{
+		objApprox = objectsArray->operator[](i);
+
+		if (objApprox->flagReady == false)
+			continue;
+
+		if (objApprox->flagSelected)
+		{
+			if (objApprox->objMath->GetName() == CircleApprox().GetName()) {
+				newAxialLine = new AxialLine((CircleApprox*)objApprox->objMath);
+			}
+			else if (objApprox->objMath->GetName() == CylinderApprox().GetName()) {
+				newAxialLine = new AxialLine((CylinderApprox*)objApprox->objMath);
+			}
+			else if (objApprox->objMath->GetName() == ConeApprox().GetName()) {
+				newAxialLine = new AxialLine((ConeApprox*)objApprox->objMath);
+			}
+			else {
+				AfxMessageBox(L"Еще не разработано", MB_ICONWARNING | MB_OK);
+			}
+		}
+
+	}
+
+	if (newAxialLine != nullptr) {
+		addNewObject(newAxialLine);
 		newAxialLine->flagSelected = false;
 	}
 }

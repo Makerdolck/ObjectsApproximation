@@ -92,6 +92,8 @@ public:
 	//void DrawToleranceFrame(std::vector<ObjectApprox*>* objectsArray);
 	void DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray);
 	void DrawAxialLine(std::vector<ObjectApprox*>* objectsArray); // Осевая линия
+	void DrawBaseLine(std::vector<ObjectApprox*>* objectsArray);
+	void DrawBaseLine(std::vector<ToleranceObject*>* toleranceObjectsArray);
 	void DrawFormRoundness(std::vector<ObjectApprox*>* objectsArray); // Допуски формы круглости
 
 	void DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsArray);
