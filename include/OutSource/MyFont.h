@@ -22,10 +22,15 @@ public:
 
 	// Создаваемый для нашей программы шрифт
 	FTFont* Font;
+	
 
 	// Простая функция печати текста
 	void Print(double x, double y, double z, const wchar_t* text);
 	void Print(double x, double y, const wchar_t* text);
+	void SetFontSize(double size);
+	double GetFontSize();
+private:
+	double fontSize;
 };
 
 

@@ -359,6 +359,7 @@ BOOL COpenGLView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 	pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
 
+	myFont->SetFontSize(32 - fabs(distanceAimEye / 50)); // Изменение размеров шрифта при масштабе
 
 	Invalidate(FALSE);
 
@@ -1027,10 +1028,9 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 			break;
 
 		case TOLERANCE_NAME::RUNOUT_FACE:
-			bageStr = L"\u2197";
-			break;
 		case TOLERANCE_NAME::RUNOUT_RADIAL:
-			bageStr = L"\u2330";
+			bageStr = L"\u2197";
+			//bageStr = L"\u2330";
 			break;
 
 	}
@@ -1079,30 +1079,31 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 	//glTranslated(x1, y1, z1);
 	
 
-	double offset = 15 + obj->offset; // Расстояние от объекта до размерной линии. obj->offset - компенсация размера объекта.
+	double offset = 15;// +obj->offset; // Расстояние от объекта до размерной линии. obj->offset - компенсация размера объекта.
 	double dx = 1; // Высота "ушек"
 
-	double triangle_width = 1;
-	double triangle_height = 1;
+	double triangle_width = 0.7;
+	double triangle_height = triangle_width;
+	//double triangle_height = 1;
 
 	
 	if (flagToleranceMove && selectedToleranceObject == obj) {
-		obj->PointPosition.Y = obj->PointPosition.Y - 15;
+		obj->PointPosition.Y = obj->PointPosition.Y - 15 - 20;
 
 
 		double tmpY = ((y1 + obj->PointPosition.Y * (x1 - x2) / length));
 
-		if ((tmpY < 0 && obj->PointPosition.Y > 0) || (tmpY > 0 && obj->PointPosition.Y < 0)) {
+		if ((tmpY < 0 && obj->PointPosition.Y > 0)){// || (tmpY > 0 && obj->PointPosition.Y < 0)) {
 			obj->PointPosition.Y = obj->PointPosition.Y * -1;
 		}
 		//TRACE("y = %g; centerLine.Y = %g\n", obj->PointPosition.Y, centerLine.Y);
 	}
 	
 
-	double x1n = x1 + obj->offset * (y2 - y1) / length;
-	double y1n = y1 + obj->offset * (x1 - x2) / length;
-	double x2n = x2 + obj->offset * (y2 - y1) / length;
-	double y2n = y2 + obj->offset * (x1 - x2) / length;
+	double x1n = x1;// +obj->offset * (y2 - y1) / length;
+	double y1n = y1;// + obj->offset * (x1 - x2) / length;
+	double x2n = x2;// + obj->offset * (y2 - y1) / length;
+	double y2n = y2;// + obj->offset * (x1 - x2) / length;
 
 	// Координаты размерной линии
 	//double x1p = x1 + offset * (y2 - y1) / length;
@@ -1129,10 +1130,11 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 	//p2.Y = p2.Y + obj->PointStop.Y;
 
 	VectorGeometric perpSize = VectorGeometric(PointGeometric(x1n, y1n, z1), p1, true);
+	VectorGeometric sizeVector = VectorGeometric(p1, p2, true);
 
 	CString sizeValue = L"";
-	sizeValue.Format(L"%g mm", obj->length());
-	PointGeometric centerLine = ((p2 + p1) / 2) + (perpSize * 2);
+	sizeValue.Format(L"%g mm", Tolerance().round(obj->length(), 2));
+	PointGeometric centerLine = ((p2 + p1) / 2) + (perpSize * 4.5) + sizeVector * 3;// (fabs(myFont->GetFontSize() - 32) * sizeValue.GetLength() / 4);
 	glPushMatrix();
 	glRasterPos3f(centerLine.X, centerLine.Y, centerLine.Z);
 	myFont->Font->Render(sizeValue);
@@ -1212,8 +1214,9 @@ double COpenGLView::angle_point(PointGeometric a, PointGeometric b, PointGeometr
 
 void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 {
-	double triangle_height = 2;
-	double triangle_widht = 2;
+	double triangle_height = 0.7;
+	double triangle_widht = triangle_height;
+	//double triangle_widht = 2;
 
 	VectorGeometric n = obj->objMath->Line.Vector;
 	PointGeometric centerPoint = obj->centerPoint - (n * 0.01);
@@ -1229,7 +1232,7 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 	//PointGeometric rightPoint = centerPoint - perp * (obj->diameter / 2);
 	PointGeometric leftPoint = centerPoint + perp * (obj->diameter / 2);
 	PointGeometric rightPoint = centerPoint - perp * (obj->diameter / 2);
-	glLineWidth(2);
+	glLineWidth(1);
 	glColor3d(0, 255, 0);
 
 
@@ -1286,7 +1289,7 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 	glEnd();
 
 	CString sizeValue = L"";
-	sizeValue.Format(L" \u00D8 %g mm", obj->diameter);
+	sizeValue.Format(L" \u00D8 %g mm", Tolerance().round(obj->diameter, 2));
 	glPushMatrix();
 
 	glRasterPos3f(obj->PointPosition.X, obj->PointPosition.Y, obj->PointPosition.Z);

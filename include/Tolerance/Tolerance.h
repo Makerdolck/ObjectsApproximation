@@ -103,6 +103,7 @@ public:
 
 
 	void addNewObject(ToleranceObject* obj);
+	double round(double value, int num_after_point); // Округление до n цифры после запятой
 private:
 
 	std::vector<ToleranceObject*>* toleranceObjectsArray; // Voronov
@@ -113,7 +114,6 @@ private:
 	double DistanceBetween(PointGeometric A, PointGeometric B, PointGeometric point);
 	double DistanceBetween(PlaneApprox plane, PointGeometric point);
 	double DistanceBetween(VectorGeometric planeNormal, PointGeometric point);
-	double round(double value, int num_after_point); // Округление до n цифры после запятой
 	
 	PointGeometric centerByPoints(PointGeometric* points, int arraySize);
 };

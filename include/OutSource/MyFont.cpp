@@ -20,6 +20,7 @@ MyFont::MyFont(char* ttf, int FSize, int FDepth)
 		MessageBox(NULL, L"Can't set font FaceSize", L"Error", MB_OK);
 		exit(1);
 	}
+	fontSize = FSize;
 	// Устанавливаем глубину
 	Font->Depth(FDepth);
 	// И кодировку - юникод
@@ -59,5 +60,17 @@ void MyFont::Print(double x, double y, const wchar_t* text)
 	glPopMatrix();
 }
 
+void MyFont::SetFontSize(double size) {
+	
+	if (!Font->FaceSize(size)) {
+		MessageBox(NULL, L"Can't set font FaceSize", L"Error", MB_OK);
+		exit(1);
+	}
+	fontSize = size;
+}
 
+double MyFont::GetFontSize()
+{
+	return fontSize;
+}
 

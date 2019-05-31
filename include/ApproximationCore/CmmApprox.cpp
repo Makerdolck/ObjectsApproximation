@@ -13,7 +13,7 @@ CmmApprox::CmmApprox()
 	
 	if (hLibrary == NULL)
 	{
-		MessageBoxW(NULL, L"Библиотека CMM.dll не найдена.", L"Error", MB_OK + MB_ICONERROR);
+		//MessageBoxW(NULL, L"Библиотека CMM.dll не найдена.", L"Error", MB_OK + MB_ICONERROR);
 		return;
 	}
 
