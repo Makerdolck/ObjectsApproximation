@@ -65,13 +65,9 @@ public:
 	double OrientationAngularity(PlaneApprox* base, PlaneApprox* control, double angle); // Наклон
 	//double OrientationAngularity(PlaneApprox* base, PlaneApprox* control, PlaneApprox* result);
 	//double OrientationAngularity(PlaneGeometric* base, PlaneGeometric* control, PlaneGeometric* result);
-	void rotatePlane(PlaneGeometric* plane, VectorGeometric axis, PlaneGeometric* result, double a);
-	void rotatePlane(PlaneGeometric* plane, VectorGeometric* axis, PlaneGeometric* result, double a);
+	
 	//double OrientationAngularity(PlaneGeometric* base, PlaneGeometric* control);
 
-	void rotatePlane(PlaneGeometric* plane, PlaneGeometric* result, double a);
-
-	void rotatePlane(LineGeometric* axis, PlaneGeometric* plane, double angle);
 
 	
 

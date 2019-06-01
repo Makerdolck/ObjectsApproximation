@@ -1045,6 +1045,39 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 	PointGeometric pStart = base->PointStart;
 	PointGeometric pEnd = base->PointPosition;
 
+	PointGeometric pAxialStart = ((AxialLine*)base->toleranceObject)->startPoint;
+	PointGeometric pAxialEnd = ((AxialLine*)base->toleranceObject)->endPoint;
+	
+
+
+
+	VectorGeometric AB = VectorGeometric(pAxialStart, pAxialEnd, false);
+
+	//VectorGeometric AP = VectorGeometric(pStart, base->PointPosition, false);
+	//LineGeometric ABLine = LineGeometric(pStart, AB);
+	//ABLine.PointProjection()
+	//VectorGeometric BP = 
+	PointGeometric projectionPoint = AB.PointProjection(base->PointPosition, pStart);
+	VectorGeometric AP = VectorGeometric(pAxialStart, projectionPoint, false);
+	//VectorGeometric AProj = VectorGeometric(pStart, projectionPoint, false);
+
+	double axialLineLength = pAxialStart.DistanceToPoint(pAxialEnd);
+	if (pAxialStart.DistanceToPoint(projectionPoint) + pAxialEnd.DistanceToPoint(projectionPoint) <= axialLineLength+ axialLineLength*0.01) {
+		pStart = projectionPoint;
+		
+	}
+	else if (pAxialStart.DistanceToPoint(projectionPoint) < pAxialEnd.DistanceToPoint(projectionPoint) ) {
+		pStart = pAxialStart;
+	}
+	else {
+		pStart = pAxialEnd;
+	}
+	
+	/*glPointSize(6);
+	glBegin(GL_POINTS);
+	glVertex3d(projectionPoint.X, projectionPoint.Y, projectionPoint.Z);
+	
+	glEnd();*/
 
 	glLineWidth(2);
 	glBegin(GL_LINES);
