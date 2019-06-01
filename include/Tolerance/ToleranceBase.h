@@ -12,9 +12,7 @@
 class ToleranceBase : public ToleranceObject
 {
 public:
-	static int baseCounter;
-	static std::vector <char> *charStack;
-	static bool isStackInit;
+	static std::vector <char> charStack;
 	ToleranceBase();
 	ToleranceBase(ObjectApprox* obj);
 	ToleranceBase(LineSegmentApprox* obj);
@@ -32,8 +30,6 @@ public:
 	ToleranceObjectType getType();
 	ToleranceObject* toleranceObject;
 	
-private:
-	char* baseCharArray = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 
 };

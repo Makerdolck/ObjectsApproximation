@@ -1058,7 +1058,7 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 
 	CString frameString = L"";
 	frameString.Format(L"%c", base->baseChar);
-	
+
 	glPushMatrix();
 	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
 	myFont->Font->Render(frameString);
@@ -1826,7 +1826,7 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 						ToleranceObject* tmpBase = toleranceObjectsArray->operator[](j);
 						if (dynamic_cast<ToleranceBase*>(tmpBase)) {
 							std::vector<ToleranceObject*>::iterator k = std::find(toleranceObjectsArray->begin(), toleranceObjectsArray->end(), tmpBase);
-							delete toleranceObjectsArray->operator[](j);
+							delete (ToleranceBase*)tmpBase;
 							toleranceObjectsArray->erase(k);
 						}
 					}
@@ -1834,12 +1834,21 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 				
 				std::vector<ToleranceObject*>::iterator j = std::find(toleranceObjectsArray->begin(), toleranceObjectsArray->end(), selectedToleranceObject);
 				//delete selectedToleranceObject;
+				if (dynamic_cast<ToleranceBase*>(selectedToleranceObject)) {
+					delete (ToleranceBase*)selectedToleranceObject;
+				}
+				else {
+					delete selectedToleranceObject;
+				}
+				
 				toleranceObjectsArray->erase(j);
+
 				selectedToleranceObject = nullptr;
 				flagToleranceMove = false;
 			}
 				
 		}
+		Invalidate(FALSE);
 		
 	}
 

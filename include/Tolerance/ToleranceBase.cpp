@@ -2,47 +2,31 @@
 #include "ToleranceBase.h"
 
 
-int ToleranceBase::baseCounter = 26;
-bool ToleranceBase::isStackInit = false;
-
-std::vector <char> *ToleranceBase::charStack = new std::vector<char>;
+std::vector <char> ToleranceBase::charStack { 'Z', 'Y', 'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M', 'L', 'K', 'J', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A' };
 
 
 ToleranceBase::ToleranceBase()
 {
-	TRACE("WORK\n");
-	if(ToleranceBase::isStackInit == false){
-		while (baseCounter >= 0) {
-			ToleranceBase::charStack->push_back(baseCharArray[baseCounter]);
-			ToleranceBase::baseCounter--;
-		}
-		ToleranceBase::isStackInit = true;
-		TRACE("Stack init!\n");
-	}
-
 }
 
 ToleranceBase::ToleranceBase(ObjectApprox* obj)
 {
-	//baseChar = baseCharArray[baseCounter];
-	//baseCounter++;
 	this->objMath = obj->objMath;
 	this->baseName = obj->Name.c_str();
+	ToleranceBase();
 }
 
 ToleranceBase::ToleranceBase(LineSegmentApprox* obj)
 {
-	//baseChar = baseCharArray[baseCounter];
-	//baseCounter++;
 	this->objMath = obj;
+	ToleranceBase();
 }
 
 ToleranceBase::ToleranceBase(PlaneApprox* obj)
 {
-	//baseChar = baseCharArray[baseCounter];
-	//baseCounter++;
 	this->objMath = obj;
 	PointStart = obj->Line.Point;
+	ToleranceBase();
 
 }
 
@@ -50,17 +34,9 @@ ToleranceBase::ToleranceBase(PlaneApprox* obj)
 
 ToleranceBase::ToleranceBase(AxialLine* obj)
 {
-	ToleranceBase();
-	/*while (baseCounter >= 0) {
-		charStack.push(baseCharArray[baseCounter]);
-		baseCounter--;
-	}*/
-	baseChar = charStack->back();
-	charStack->pop_back();
-	//baseChar = 'A';
-	//TRACE("baseChar: %c\n", charStack->top());
-	//baseChar = baseCharArray[baseCounter];
-	//baseCounter++;
+	baseChar = charStack.back();
+	charStack.pop_back();
+
 	this->toleranceObject = obj;
 	this->objMath = obj->objMath;
 	PointStart = obj->startPoint;
@@ -71,7 +47,7 @@ ToleranceBase::ToleranceBase(ToleranceObject* obj)
 	//baseChar = baseCharArray[baseCounter];
 	//baseCounter++;
 	this->objMath = obj->objMath;
-	
+	ToleranceBase();
 }
 
 
@@ -79,7 +55,8 @@ ToleranceBase::ToleranceBase(ToleranceObject* obj)
 
 ToleranceBase::~ToleranceBase()
 {
-	charStack->push_back(baseChar);
+	charStack.push_back(baseChar);
+	TRACE("Deleted ToleranceBase\n");
 }
 
 ToleranceObject::ToleranceObjectType ToleranceBase::getType()
