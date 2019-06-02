@@ -1069,6 +1069,7 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 		pStart = projectionPoint;
 		
 	}
+	// Возможность выносить линию за пределы осевой
 	else if (pAxialStart.DistanceToPoint(projectionPoint) < pAxialEnd.DistanceToPoint(projectionPoint) ) {
 		pStart = pAxialStart;
 	}
@@ -1101,11 +1102,11 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 	PointGeometric rightPoint = pStart + ABNorm * triangle_width;
 	PointGeometric leftPoint = pStart - ABNorm * triangle_width;
 	PointGeometric topPoint = pStart + lineVector * triangle_height;
-	// Треугольник
+	// Правый треугольник
 	glBegin(GL_TRIANGLES);
-		glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
-		glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
-		glVertex3d(topPoint.X, topPoint.Y, topPoint.Z);
+	glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
+	glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
+	glVertex3d(topPoint.X, topPoint.Y, topPoint.Z);
 	glEnd();
 
 	

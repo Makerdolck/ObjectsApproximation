@@ -169,7 +169,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	bool flagToleranceMove = false; // Voronov Флаг что двигается размерная линия
 	
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
@@ -180,6 +179,7 @@ public:
 
 public:
 		// Voronov
+		bool flagToleranceMove = false; // Voronov Флаг что двигается размерная линия
 		bool isToleranceAction = false; // Происходит ли выбор связанный с выбором объекта для измерения допуска или нет
 		ToleranceObject* selectedToleranceObject = nullptr; // Voronov 
 		void startSelectObject(ToleranceObject* selectedObject); // Маркирует isToleranceAction значением true, selectedToleranceObject = selectedObject, selectedObject->flagSelected = true
