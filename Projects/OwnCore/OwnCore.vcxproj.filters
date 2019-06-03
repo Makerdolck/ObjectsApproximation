@@ -108,9 +108,6 @@
     <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp">
       <Filter>Source Files\ApproxCore</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\ApproximationCore\MeasureTypesEnum.cpp">
-      <Filter>Source Files\ApproxCore</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -200,9 +197,6 @@
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h">
-      <Filter>Header Files\ApproxCore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ApproximationCore\MeasureTypesEnum.h">
       <Filter>Header Files\ApproxCore</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h">

@@ -165,7 +165,7 @@ int PlaneGeometric::PlaneIntersectionPlane(PlaneGeometric Plane2, LineGeometric*
 // ---																										// PlaneAngleLine
 int PlaneGeometric::PlaneAngleLine(LineGeometric Lline) {
 	double degreeCOS;
-	degreeCOS = abs((Lline.Vector.X * Line.Vector.X + Lline.Vector.Y * Line.Vector.Y + Lline.Vector.Z * Line.Vector.Z)) / (sqrt(pow(Lline.Vector.X, 2) + pow(Lline.Vector.Y, 2) + pow(Lline.Vector.Z, 2)) * sqrt(pow(Line.Vector.X, 2) + pow(Line.Vector.Y, 2) + pow(Line.Vector.Z, 2)));
+	degreeCOS = fabs((Lline.Vector.X * Line.Vector.X + Lline.Vector.Y * Line.Vector.Y + Lline.Vector.Z * Line.Vector.Z)) / (sqrt(pow(Lline.Vector.X, 2) + pow(Lline.Vector.Y, 2) + pow(Lline.Vector.Z, 2)) * sqrt(pow(Line.Vector.X, 2) + pow(Line.Vector.Y, 2) + pow(Line.Vector.Z, 2)));
 	double angle;
 	double angle1;
 	angle1 = acos(degreeCOS) * 180 / PI_Approx;
