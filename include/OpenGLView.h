@@ -22,13 +22,10 @@ protected: // create from serialization only
 public:
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTry_OpenGLView)
-	public:
+public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	protected:
-	//}}AFX_VIRTUAL
 
 // Implementation
 public:
@@ -38,84 +35,52 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
+
 protected:
-	GLdouble	gldAspect;
-	GLsizei		glnWidth, 
+	std::vector<ObjectApprox*> *objectsArray;
+
+	GLfloat		gldAspect,
+				fNearPlane,
+				fFarPlane;
+
+	GLint		glnWidth, 
 				glnHeight;
 
 	HGLRC		hRC;
-	double		r;
 
+	bool		flagMiddleButtonDown,
+				flagShiftPressed,
+				flagRotateAxisX,
+				flagRotateAxisY;
 
-	HGLRC		m_hglrc;
+	GLdouble	m_dModelViewMatrix[16];
+	GLdouble	m_dProjectionMatrix[16];
+	GLint		m_iViewport[4];
 
-	bool		flagMiddleButtonDown;
+	const GLfloat blackColor[3] = { 0.0f,	0.0f,	0.0f };
+	const GLfloat redColor[3]	= { 1.0f,	0.0f,	0.0f };
+	const GLfloat blueColor[3]	= { 0.0f,	0.0f,	1.0f };
+	const GLfloat simpleElementsColor1[3] = { 1.0f,	0.2f,	0.2f};
+	const GLfloat simpleElementsColor2[3] = { 0.0f,	1.0f,	1.0f};
 
-	int			mouse_x0,
-				mouse_y0,
+	VectorGeometric		vectorViewX,
+						vectorViewY,
+						vectorViewZ;
 
-				mouseX_old,
-				mouseY_old;
+	PointGeometric		centerOfAllObjects,
+						pointEyeLook,
+						pointAimLook;
 
-	double		m_z;
+	float				distanceAimEye,
+						BoxTrans[16],
+						rotx,
+						roty,
+						prev_rotx,
+						prev_roty;
 
-	GLsizei		wAngleY,
-				wAngleX,
-				wAngleZ;
+	int					prev_x, 
+						prev_y;
 
-	GLfloat		fNearPlane,
-				fFarPlane,
-				fAspect,
-
-				wTransformX,
-				wTransformY,			
-
-				angleLook;
-
-	CRect       m_oldRect;
-
-	int			dd,
-				rotationStep,
-				rotationAngleX,
-				rotationAngleY;
-
-	bool	flagColor1, flagColor2, flagColor3, flagColor4, flagColor5, flagColor6, flagColor7,
-			flagShiftPressed,
-			flagRotateAxisX,
-			flagRotateAxisY;
-
-	//FLOAT m_fLineWidth;
-	// Colors
-	float m_ClearColorRed;
-	float m_ClearColorGreen;
-	float m_ClearColorBlue;
-
-	VectorGeometric		vectorRotationX,
-						vectorRotationY,
-						vectorRotationZ;
-
-	   
-protected:
-	std::vector<ObjectApprox*>	*objectsArray;
-
-	PointGeometric				centerOfAllObjects;
-
-	PointGeometric				pointEyeLook,
-								pointAimLook;
-
-	double						distanceAimEye,
-								offsetView_X,
-								offsetView_Y;
-
-	float						BoxTrans[16];
-	float						rotx = 0,
-								roty = 0,
-								prev_rotx = 0,
-								prev_roty = 0;
-	int							prev_x, prev_y;
-
-	float						coordinateDifferenceX,
-								coordinateDifferenceY;
 
 // Generated message map functions
 protected:

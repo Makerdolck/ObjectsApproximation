@@ -9,28 +9,6 @@
 #include <gl/Glaux.h>
 #include "OpenGLView.h"
 
-GLdouble		m_dModelViewMatrix[16];
-GLdouble		m_dProjectionMatrix[16];
-GLint			m_iViewport[4];
-
-GLint		viewport_test[4];
-GLdouble	modelview_test[16];
-GLdouble	projection_test[16];
-
-bool flagCubeColor_1 = false;
-
-const GLfloat blackColor[] = { 0.0f,	0.0f,	0.0f,	1.0f };
-
-const GLfloat redColor[] = { 1.0f,	0.0f,	0.0f,	1.0f };
-const GLfloat blueColor[] = { 0.0f,	0.0f,	1.0f,	1.0f };
-
-const GLfloat simpleElementsColor1[] = { 1.0f,	0.2f,	0.2f,	1.0f };
-const GLfloat simpleElementsColor2[] = { 0.0f,	1.0f,	1.0f,	1.0f };
-
-//GLfloat ambientLight[] = { 0.3f, 0.3f,0.3f, 1.0f };
-//GLfloat diffuseLight[] = { 0.7f, 0.7f,0.7f, 1.0f };
-//GLfloat lightPos[] = { -50.0f, 50.0f,100.0f, 1.0f };
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -43,22 +21,18 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(COpenGLView, CView)
 
 BEGIN_MESSAGE_MAP(COpenGLView, CView)
-	//{{AFX_MSG_MAP(CTry_OpenGLView)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
 	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONDOWN()
-	//}}AFX_MSG_MAP
 	ON_WM_MOUSEWHEEL()
 	ON_WM_MBUTTONDOWN()
 	ON_WM_MBUTTONUP()
 	ON_WM_MOUSEMOVE()
-//	ON_WM_LBUTTONUP()
-ON_WM_KEYDOWN()
-//ON_WM_RBUTTONDOWN()
-ON_WM_KEYUP()
+	ON_WM_KEYDOWN()
+	ON_WM_KEYUP()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -66,42 +40,13 @@ END_MESSAGE_MAP()
 
 COpenGLView::COpenGLView()
 {
-	m_z = 10.0f;
-
-	//wAngleY = -10.0f;		//10.0f;
-	//wAngleX = 15.0f;		//1.0f;
-	
-	wAngleY = 0;		//10.0f;
-	wAngleX = 0;		//1.0f;
-	wAngleZ = 0;		//5.0f;
-
-	wTransformX = 0;
-	wTransformY = 0;
-
 	fNearPlane	= 1.f;
 	fFarPlane	= 10000.0f;
 
-	flagMiddleButtonDown = false;
-
-
-	flagColor1 = true;
-	flagColor2 = true;
-	flagColor3 = true;
-	flagColor4 = true;
-	flagColor5 = true;
-	flagColor6 = true;
-	flagColor7 = true;
-
-	flagShiftPressed = false;
+	flagMiddleButtonDown	= false;
+	flagShiftPressed		= false;
 
 	objectsArray = nullptr;
-
-	//m_fLineWidth = 0.05;
-	// Colors
-	m_ClearColorRed = 0.0f;
-	m_ClearColorGreen = 0.0f;
-	m_ClearColorBlue = 0.2f;
-
 
 	pointEyeLook.X = 0;
 	pointEyeLook.Y = 0;
@@ -111,27 +56,19 @@ COpenGLView::COpenGLView()
 	pointAimLook.Y = 0;
 	pointAimLook.Z = 0;
 	
-	angleLook = 0;
-
-	vectorRotationX = VectorGeometric(1.f, 0.f, 0.f);
-	vectorRotationY = VectorGeometric(0.f, 1.f, 0.f);
-	//vectorRotationZ = VectorGeometric(0.f, 0.f, 1.f);
-	vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);
+	vectorViewX = VectorGeometric(1.f, 0.f, 0.f);
+	vectorViewY = VectorGeometric(0.f, 1.f, 0.f);
+	vectorViewZ	= VectorGeometric(pointEyeLook, pointAimLook);
 
 	distanceAimEye = pointAimLook.DistanceToPoint(pointEyeLook);
-	offsetView_X = 0;
-	offsetView_Y = 0;
-
-
-	rotationStep = 45;
-	rotationAngleX = 0;
-	rotationAngleY = 0;
 
 	flagRotateAxisX = false;
 	flagRotateAxisY = false;
 
-	coordinateDifferenceX = 0,
-	coordinateDifferenceY = 0;
+	rotx = 0;
+	roty = 0;
+	prev_rotx = 0;
+	prev_roty = 0;
 
 	MatrixIdentity(BoxTrans);
 }
@@ -176,22 +113,14 @@ int COpenGLView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
-	// TODO: Add your specialized creation code here
-	hRC=SetUpOpenGL(m_hWnd);
-	///*for(int i=0;i<4;i++) cube[i].x=i*2-3;
-	//r=0;*/
-	//SetTimer(1000,100,NULL);
-	
+	hRC = SetUpOpenGL(m_hWnd);
+
 	return 0;
 }
 // ---																							// On Destroy
 void COpenGLView::OnDestroy()
 {
 	CView::OnDestroy();
-
-	// TODO: Add your message handler code here
-	//KillTimer(1000);
-
 }
 
 //--------------------------------------------------------------
@@ -201,17 +130,6 @@ void COpenGLView::OnDestroy()
 // ---																							// On Draw
 void COpenGLView::OnDraw(CDC* pDC)
 {
-	GLfloat light0_direction[] = { 0.0,		0.0,	1.0,	0.0 },
-			light1_direction[] = { 0.0,		1.0,	1.0,	0.0 },
-			light2_direction[] = { 0.0,		-1.0,	1.0,	0.0 },
-			light3_direction[] = { 0.0,		1.0,	0.0,	0.0 },
-			light4_direction[] = { 0.0,		0.0,	-1.0,	0.0 };
-
-	GLfloat light_diffuse[]			= { 1.f,		1.f,		1.f },
-			light_diffuseMiddle[]	= { 0.2f,	0.2f,	0.2f },
-			light_diffuseDark[]		= { 0.0f,	0.0f,	0.0f };
-
-
 	wglMakeCurrent(pDC->m_hDC, hRC);
 	//**Draw GL here!
 	//glClearColor(0.0,0.0,0.0,0.0);
@@ -244,18 +162,16 @@ void COpenGLView::OnDraw(CDC* pDC)
 	MatrixCopy(BoxTrans, trans);
 	if (flagRotateAxisY)
 	{
-		//coordinateDifferenceX
 		MatrixCopy(BoxTrans, trans);
 
 		MatrixRotateY(trans, roty - prev_roty);
 
 		MatrixCopy(trans, BoxTrans);  //saving last transformation
-		MatrixTranspose(trans); //making row-major for openGL
+		MatrixTranspose(trans);			//making row-major for openGL
 	}
 	
 	if (flagRotateAxisX)
 	{
-		//coordinateDifferenceX
 		MatrixCopy(BoxTrans, trans);
 
 		MatrixRotateX(trans, rotx - prev_rotx);
@@ -329,27 +245,14 @@ void COpenGLView::OnSize(UINT nType, int cx, int cy)
 // ---																							// On Mouse Wheel
 BOOL COpenGLView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	// TODO: Add your message handler code here and/or call default
-	double step = 3.0f+fabs(((int)pointEyeLook.Z)/25);
-	LineGeometric		lineOffset = LineGeometric(pointAimLook, vectorRotationZ * (-1));
-
-	/*if (zDelta < 0)
-		m_z += step;
-	else
-		m_z -= step;*/
-
+	double			step		= 3.0f+fabs(((int)pointEyeLook.Z)/25);
+	LineGeometric	lineOffset	= LineGeometric(pointAimLook, vectorViewZ * (-1));
 
 
 	if (zDelta < 0)
-	{
 		distanceAimEye += step;
-		//pointEyeLook.Z += step;
-	}	
 	else
-	{
 		distanceAimEye -= step;
-		//pointEyeLook.Z -= step;
-	}
 
 	pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
 
@@ -366,24 +269,19 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		if (point.x - prev_x != 0)
 		{
 			flagRotateAxisY = true;
-			//coordinateDifferenceX = point.x - prev_x;
 			roty += (float)((point.x - prev_x) * 0.5);
 		}
 		else
 			flagRotateAxisY = false;
-		//roty += (point.x - prev_x) * 0.5;
 		if (point.y - prev_y != 0)
 		{
 			flagRotateAxisX = true;
-			//coordinateDifferenceY = point.y - prev_y;
 			rotx += (float)((point.y - prev_y) * 0.5);
 		}
 		else
 			flagRotateAxisX = false;
-		//rotx += (point.y - prev_y) * 0.5;
 
 		Invalidate(FALSE);		//The end
-
 	}
 
 	if (flagMiddleButtonDown)
@@ -392,7 +290,7 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		PointGeometric mouseOldInWorld;
 
 		GetWorldCoord(point.x, point.y, 0, mouseNewInWorld);
-		GetWorldCoord(mouse_x0, mouse_y0, 0, mouseOldInWorld);
+		GetWorldCoord(prev_x, prev_y, 0, mouseOldInWorld);
 	
 		double	stepOffsetX,
 				stepOffsetY;
@@ -423,67 +321,58 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 		lineOffsetAim.Point = pointAimLook;
 		
 
-		if (mouse_x0 - point.x < 0)
+		if (prev_x - point.x < 0)
 		{
-			lineOffsetEye.Vector = vectorRotationX * (-1);
-			lineOffsetAim.Vector = vectorRotationX * (-1);
+			lineOffsetEye.Vector = vectorViewX * (-1);
+			lineOffsetAim.Vector = vectorViewX * (-1);
 
 			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetX);
 			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetX);
 
 			lineOffsetEye.Point = pointEyeLook;
 			lineOffsetAim.Point = pointAimLook;
-
-			offsetView_X -= stepOffsetX;
 		}
-		if (mouse_x0 - point.x > 0)
+		if (prev_x - point.x > 0)
 		{
-			lineOffsetEye.Vector = vectorRotationX;
-			lineOffsetAim.Vector = vectorRotationX;
+			lineOffsetEye.Vector = vectorViewX;
+			lineOffsetAim.Vector = vectorViewX;
 
 			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetX);
 			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetX);
 
 			lineOffsetEye.Point = pointEyeLook;
 			lineOffsetAim.Point = pointAimLook;
-
-			offsetView_X = stepOffsetX;
 		}
 
-		if (mouse_y0 - point.y < 0)
+		if (prev_y - point.y < 0)
 		{
-			lineOffsetEye.Vector = vectorRotationY;
-			lineOffsetAim.Vector = vectorRotationY;
+			lineOffsetEye.Vector = vectorViewY;
+			lineOffsetAim.Vector = vectorViewY;
 
 			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetY);
 			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetY);
 
 			lineOffsetEye.Point = pointEyeLook;
 			lineOffsetAim.Point = pointAimLook;
-
-			offsetView_Y += stepOffsetY;
 		}
-		if (mouse_y0 - point.y > 0)
+		if (prev_y - point.y > 0)
 		{
-			lineOffsetEye.Vector = vectorRotationY * (-1);
-			lineOffsetAim.Vector = vectorRotationY * (-1);
+			lineOffsetEye.Vector = vectorViewY * (-1);
+			lineOffsetAim.Vector = vectorViewY * (-1);
 
 			pointEyeLook = lineOffsetEye.CreatePointOnDistance(stepOffsetY);
 			pointAimLook = lineOffsetAim.CreatePointOnDistance(stepOffsetY);
 
 			lineOffsetEye.Point = pointEyeLook;
 			lineOffsetAim.Point = pointAimLook;
-
-			offsetView_Y -= stepOffsetY;
 		}
 
 		Invalidate(FALSE);
-
 	}
 
 
-	mouse_x0 = point.x;
-	mouse_y0 = point.y;
+	//mouse_x0 = point.x;
+	//mouse_y0 = point.y;
 
 	prev_x = point.x;
 	prev_y = point.y;
@@ -510,7 +399,8 @@ void COpenGLView::OnMButtonUp(UINT nFlags, CPoint point)
 // ---																							// On Left Button Down
 void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	mouse_x0 = point.x;  mouse_y0 = point.y;
+	//mouse_x0 = point.x; 
+	//mouse_y0 = point.y;
 
 	prev_x = point.x;
 	prev_y = point.y;
@@ -589,7 +479,8 @@ void COpenGLView::GetScreenCoord(GLdouble wX, GLdouble wY, GLdouble wZ, PointGeo
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Get Object Under Mouse
 ObjectApprox *COpenGLView::GetObjectUnderMouse(CPoint point)
 {
-	mouse_x0 = point.x;  mouse_y0 = point.y;
+	//mouse_x0 = point.x;  
+	//mouse_y0 = point.y;
 
 	prev_x = point.x;
 	prev_y = point.y;
@@ -697,7 +588,6 @@ HGLRC COpenGLView::SetUpOpenGL(HWND hWnd)
 
 	int nMyPixelFormatID;
 	HDC hDC;
-	HGLRC hRC;
 
 	hDC = ::GetDC(hWnd);
 	nMyPixelFormatID = ChoosePixelFormat(hDC, &pfd);
@@ -730,12 +620,6 @@ HGLRC COpenGLView::SetUpOpenGL(HWND hWnd)
 void COpenGLView::PaintScene(GLenum mode)
 {
 	glPushMatrix();
-
-	//glRotated(r,0.0,1.0,0.0);
-
-	//if (mode == GL_SELECT) glLoadName(105);
-	//DrawOpenGL_Cube(1, 0, -1, 0, flagCubeColor_1);
-
 
 	if (objectsArray == nullptr)
 	{
@@ -1071,103 +955,18 @@ void COpenGLView::DrawOpenGL_ObjViaTriangles(GeomObjectApprox obj)
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// On Key Down for __Test__ (AND for Shift checking)
 void COpenGLView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	// TODO: Add your message handler code here and/or call default
-
-	float fraction = 0.1f;
-
-	double radiusOfLook = pointAimLook.DistanceToPoint(pointEyeLook);
-
-	LineGeometric		lineOffset;
-	VectorGeometric		vectorRotationX_Old = vectorRotationX,
-						vectorRotationY_Old = vectorRotationY;
-
 	if (nChar == VK_SHIFT)
-	{
 		flagShiftPressed = true;
-	}
-
-
-
-	//VectorGeometric		vectorRotationX_Old = vectorRotationX,
-	//					vectorRotationY_Old = vectorRotationY;
-
-	//double	stepOffsetX = distanceAimEye * sqrt(2) * fabs(pOld.X - pNew.X) / (glnWidth / 8.f),
-	//		stepOffsetY = distanceAimEye * sqrt(2) * fabs(pOld.Y - pNew.Y) / (glnHeight / 8.f);
-
-	switch (nChar) {
-	case  VK_RIGHT :
-
-		//lineOffset = LineGeometric(pointEyeLook, vectorRotationY);
-
-		//pointEyeLook = lineOffset.CreatePointOnDistance(stepOffsetY);
-
-		//vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
-
-		//vectorRotationY = vectorRotationZ ^ vectorRotationX;
-
-		//if (vectorRotationY* vectorRotationY_Old < 0)
-		//{
-		//	vectorRotationY = vectorRotationY * (-1);
-		//}
-
-
-		rotationAngleY = (-1) * rotationStep;
-		//rotationAngleY = rotationStep;
-		wAngleY += rotationStep;
-		break;
-	case VK_LEFT:
-
-		//lineOffset = LineGeometric(pointEyeLook, vectorRotationY * (-1));
-
-		//pointEyeLook = lineOffset.CreatePointOnDistance(stepOffsetY);
-
-		//vectorRotationZ = VectorGeometric(pointEyeLook, pointAimLook);						// Vector Z
-
-		//vectorRotationY = vectorRotationZ ^ vectorRotationX;
-
-		//if (vectorRotationY* vectorRotationY_Old < 0)
-		//{
-		//	vectorRotationY = vectorRotationY * (-1);
-		//}
-
-
-		rotationAngleY = rotationStep;
-		//rotationAngleY = (-1)*rotationStep;
-		wAngleY -= rotationStep;
-		break;
-	case VK_UP:
-		
-
-		rotationAngleX =  rotationStep;
-		//rotationAngleX = (-1) * rotationStep;
-		wAngleX -= rotationStep;
-		break;
-	case VK_DOWN:
-	
-
-
-
-		rotationAngleX = (-1) * rotationStep;
-		//rotationAngleX = rotationStep;
-		wAngleX += rotationStep;
-		break;
-	}
-
-
-	Invalidate(FALSE);
 
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
-
-
 void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	if (nChar == VK_SHIFT)
-	{
 		flagShiftPressed = false;
-	}
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);
 }
+
 
