@@ -136,7 +136,7 @@ void COpenGLView::OnDraw(CDC* pDC)
 
 	glClearDepth(1.0f);                                  //Specifies the clear value for the depth buffer 
 	glClearColor(0.99f, 0.99f, 0.99f, 1.0f);             //Set Background Color
-	glColor3fv(redColor);
+	//glColor3fv(redColor);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 
@@ -219,9 +219,9 @@ void COpenGLView::OnSize(UINT nType, int cx, int cy)
 	// get the new size of the client window
     // note that we size according to the height,
     // not the smaller of the height or width.
-    glnWidth = (GLsizei)cx;
-    glnHeight = (GLsizei)cy;
-    gldAspect = (GLdouble)glnWidth/(GLdouble)glnHeight;
+    glnWidth = (GLint)cx;
+    glnHeight = (GLint)cy;
+    gldAspect = (GLfloat)glnWidth/(GLfloat)glnHeight;
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -235,7 +235,6 @@ void COpenGLView::OnSize(UINT nType, int cx, int cy)
 
 	wglMakeCurrent( NULL, NULL );
     ::ReleaseDC( this->m_hWnd, hDC );
-	
 }
 
 //--------------------------------------------------------------
@@ -305,7 +304,6 @@ void COpenGLView::OnMouseMove(UINT nFlags, CPoint point)
 
 		VectorGeometric vectorX(point0_0, pointX_0),
 						vectorY(point0_0, point0_Y);
-			
 
 		LineGeometric		lineOffsetEye,
 							lineOffsetAim;
@@ -531,7 +529,11 @@ ObjectApprox *COpenGLView::GetObjectUnderMouse(CPoint point)
 		int n = 0; double minz = selectBuf[1];
 		for (int i = 1; i < hits; i++)
 		{
-			if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
+			if (selectBuf[1 + i * 4] < minz) 
+			{ 
+				n = i; 
+				minz = selectBuf[1 + i * 4]; 
+			}
 		}
 
 		a = selectBuf[3 + n * 4];
@@ -883,7 +885,6 @@ void COpenGLView::DrawOpenGL_LineSegment(LineSegmentApprox *obj)
 					(GLfloat)obj->PointEnd.Z /*- centerOfAllObjects.Z*/);
 	glEnd();
 
-
 	glLineWidth(1);
 }
 ///////////////////////////////////////////////////////
@@ -968,5 +969,46 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);
 }
+
+
+//ObjectApprox* COpenGLView::GetObjectUnderMouse(CPoint point)
+//{
+//	...
+//
+//	hits = glRenderMode(GL_RENDER);
+//
+//	glMatrixMode(GL_PROJECTION);
+//	glLoadIdentity();
+//	glViewport(0, 0, glnWidth, glnHeight);
+//	gluPerspective(30.0, gldAspect, fNearPlane, fFarPlane);
+//
+//	ObjectApprox* objApprox = nullptr;
+//	int a = 0;
+//	if (hits)
+//	{
+//		int n = 0; double minz = selectBuf[1];
+//		for (int i = 1; i < hits; i++)
+//		{
+//			if (selectBuf[1 + i * 4] < minz) { n = i; minz = selectBuf[1 + i * 4]; }
+//		}
+//
+//		a = selectBuf[3 + n * 4];
+//
+//		if (objectsArray != nullptr)
+//		{
+//			for (int i = 0; i < (int)objectsArray->size(); i++)
+//			{
+//				objApprox = objectsArray->operator[](i);
+//
+//				if (objApprox->objID == a)
+//				{
+//					return objApprox;
+//				}
+//			}
+//		}
+//	}
+//
+//	return nullptr;
+//}
 
 
