@@ -12,6 +12,12 @@ ToleranceBase::ToleranceBase()
 ToleranceBase::ToleranceBase(ObjectApprox* obj)
 {
 	this->objMath = obj->objMath;
+
+	if (obj->objMath->GetName() == CylinderApprox().GetName()) {
+		CylinderApprox tmp = *((CylinderApprox*)obj->objMath);
+		this->PointStart = tmp.PointsForApprox.operator[](0);
+	}
+
 	baseChar = charStack.back();
 	charStack.pop_back();
 }
@@ -43,12 +49,14 @@ ToleranceBase::ToleranceBase(AxialLine* obj)
 	PointStart = obj->startPoint;
 }
 
+
+
 ToleranceBase::ToleranceBase(ToleranceObject* obj)
 {
 	baseChar = charStack.back();
 	charStack.pop_back();
 	this->objMath = obj->objMath;
-	ToleranceBase();
+	
 }
 
 

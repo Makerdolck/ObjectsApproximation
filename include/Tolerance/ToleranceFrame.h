@@ -17,6 +17,7 @@ public:
 	~ToleranceFrame();
 
 	int toleranceName; // ID названия допуска
+	CString toleranceBage; // Значок отклонения
 	double toleranceValue; // Значение отклонения
 
 	ToleranceBase *Base = nullptr; // База
@@ -41,4 +42,7 @@ public:
 
 	virtual ToleranceObjectType getType(); // Тип объекта
 	*/
+
+private:
+	void setBageString();
 };

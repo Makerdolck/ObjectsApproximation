@@ -5,6 +5,7 @@
 
 ToleranceFrame::ToleranceFrame()
 {
+	
 }
 
 ToleranceFrame::ToleranceFrame(ObjectApprox* controlObject, int toleranceName, double toleranceValue)
@@ -30,6 +31,7 @@ ToleranceFrame::ToleranceFrame(ObjectApprox* controlObject, int toleranceName, d
 		this->PointStart = tmp.Line.Point;
 	}
 
+	setBageString();
 }
 
 
@@ -53,12 +55,61 @@ ToleranceFrame::ToleranceFrame(ToleranceBase* base, ObjectApprox* controlObject,
 		LineSegmentApprox tmp = *((LineSegmentApprox*)controlObject->objMath);
 		this->PointStart = (tmp.PointStart - tmp.PointEnd) / 2;
 	}
-	
+	setBageString();
 }
 
 
 ToleranceFrame::~ToleranceFrame()
 {
+}
+
+void ToleranceFrame::setBageString()
+{
+	switch (toleranceName) {
+		case TOLERANCE_NAME::FORM_STRAIGHTNESS:
+			toleranceBage = L"\u23E4";
+			break;
+		case TOLERANCE_NAME::FORM_FLATNESS:
+			toleranceBage = L"\u23E5";
+			break;
+		case TOLERANCE_NAME::FORM_ROUNDNESS:
+			toleranceBage = L"\u25CB";
+			break;
+		case TOLERANCE_NAME::FORM_CYLINDRICITY:
+			toleranceBage = L"\u232D";
+			break;
+
+		case TOLERANCE_NAME::ORIENTATION_PERPENDICULARITY:
+			toleranceBage = L"\u27C2";
+			break;
+		case TOLERANCE_NAME::ORIENTATION_ANGULARITY:
+			toleranceBage = L"\u2220";
+			break;
+		case TOLERANCE_NAME::ORIENTATION_PARALLELISM:
+			toleranceBage = L"\u2225";
+			break;
+
+		case TOLERANCE_NAME::LOCATION_COAXIALITY:
+			toleranceBage = L"\u25CE";
+			break;
+		case TOLERANCE_NAME::LOCATION_CONCENTRICITY:
+			toleranceBage = L"\u25CE";
+			break;
+		case TOLERANCE_NAME::LOCATION_POSITION:
+			toleranceBage = L"\u2316";
+			break;
+		case TOLERANCE_NAME::LOCATION_SYMMETRY:
+			toleranceBage = L"\u232F";
+			break;
+
+		case TOLERANCE_NAME::RUNOUT_FACE:
+		case TOLERANCE_NAME::RUNOUT_RADIAL:
+			toleranceBage = L"\u2197";
+			break;
+	
+		default:
+			toleranceBage = L"\u003F";
+	}
 }
 
 /*

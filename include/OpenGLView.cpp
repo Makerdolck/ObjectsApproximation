@@ -1045,26 +1045,72 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 {
 	PointGeometric pStart = base->PointStart;
 	PointGeometric pEnd = base->PointPosition;
+	VectorGeometric ABNorm;
 
 
-	PointGeometric pAxialStart = ((AxialLine*)base->toleranceObject)->startPoint;
-	PointGeometric pAxialEnd = ((AxialLine*)base->toleranceObject)->endPoint;
-	VectorGeometric AB = VectorGeometric(pAxialStart, pAxialEnd, false);
-	
-	PointGeometric projectionPoint = AB.PointProjection(base->PointPosition, pStart);
+	if (base->toleranceObject != nullptr) {
+		if (dynamic_cast<AxialLine*>(base->toleranceObject)) {
+			PointGeometric pAxialStart = ((AxialLine*)base->toleranceObject)->startPoint;
+			PointGeometric pAxialEnd = ((AxialLine*)base->toleranceObject)->endPoint;
+			VectorGeometric AB = VectorGeometric(pAxialStart, pAxialEnd, false);
+			PointGeometric projectionPoint = AB.PointProjection(base->PointPosition, pStart);
 
-	double axialLineLength = pAxialStart.DistanceToPoint(pAxialEnd);
-	if (pAxialStart.DistanceToPoint(projectionPoint) + pAxialEnd.DistanceToPoint(projectionPoint) <= axialLineLength+ axialLineLength*0.01) {
-		pStart = projectionPoint;
+			double axialLineLength = pAxialStart.DistanceToPoint(pAxialEnd);
+			if (pAxialStart.DistanceToPoint(projectionPoint) + pAxialEnd.DistanceToPoint(projectionPoint) <= axialLineLength+ axialLineLength*0.01) {
+				pStart = projectionPoint;
 		
-	}
-	else if (pAxialStart.DistanceToPoint(projectionPoint) < pAxialEnd.DistanceToPoint(projectionPoint) ) {
-		pStart = pAxialStart;
+			}
+			else if (pAxialStart.DistanceToPoint(projectionPoint) < pAxialEnd.DistanceToPoint(projectionPoint) ) {
+				pStart = pAxialStart;
+			}
+			else {
+				pStart = pAxialEnd;
+			}
+			AB.Normalize();
+			ABNorm = AB;
+		}
 	}
 	else {
-		pStart = pAxialEnd;
+
+		if (base->objMath->GetName() == LineSegmentApprox().GetName()) {
+			ABNorm = VectorGeometric(((LineSegmentApprox*)base->objMath)->PointStart, ((LineSegmentApprox*)base->objMath)->PointEnd, true);
+		}
+		else if (base->objMath->GetName() == CylinderApprox().GetName()) {
+			CylinderApprox *tmpCylinder = ((CylinderApprox*)base->objMath);
+			PointGeometric pAxialStart = tmpCylinder->PointTopSurfaceCenter;
+			PointGeometric pAxialEnd = tmpCylinder->PointBottomSurfaceCenter;
+			VectorGeometric AB = VectorGeometric(pAxialStart, pAxialEnd, false);
+			ABNorm = VectorGeometric(pAxialStart, pAxialEnd, true);
+
+			PointGeometric projectionPoint1 = AB.PointProjection(base->PointPosition, pAxialStart); // Вдоль оси
+			PointGeometric projectionPoint2 = AB.PointProjection(pAxialStart, base->PointPosition); // Вокруг оси
+			VectorGeometric AprojPoint2 = VectorGeometric(pAxialStart, projectionPoint2, true);
+
+			PointGeometric radiusPoint = pAxialStart + AprojPoint2 * tmpCylinder->Radius; // Точка на окружности
+			VectorGeometric radiusVector = VectorGeometric(pAxialStart, radiusPoint, true); // Вектор радиуса
+
+			glPointSize(2);
+			glBegin(GL_POINTS);
+			glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
+			glEnd();
+
+			pStart = projectionPoint1 + radiusVector * tmpCylinder->Radius; // Настоящая точка начала
+
+			// Линия от цилиндра (точка радиуса) до точки настоящего начала
+			glLineWidth(1);
+			glBegin(GL_LINES);
+			glVertex3d(pStart.X, pStart.Y, pStart.Z);
+			glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
+			glEnd();
+
+		}
+		else if (base->objMath->GetName() == RectangleApprox().GetName()) {
+			ABNorm = ((RectangleApprox*)base->objMath)->VectorX;
+			ABNorm.Normalize();
+		}
+
+
 	}
-	
 
 	glLineWidth(2);
 	glBegin(GL_LINES);
@@ -1072,9 +1118,8 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 		glVertex3d(pEnd.X, pEnd.Y, pEnd.Z);
 	glEnd();
 
-	// TODO: Треугольник	
-	VectorGeometric ABNorm = AB;
-	ABNorm.Normalize();
+
+	
 
 	VectorGeometric lineVector = VectorGeometric(pStart, pEnd, true);
 	
@@ -1097,7 +1142,7 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 	frameString.Format(L"%c", base->baseChar);
 	glPushMatrix();
 	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
-	kioFont->Font->Render(frameString);
+	kioFont->Font->Render(frameString); // TODO: Сделать русский язык
 	glPopMatrix();
 	
 
@@ -1138,66 +1183,70 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	PointGeometric pStart = frame->PointStart;
 	PointGeometric pEnd = frame->PointPosition;
 
+
+
+	VectorGeometric ABNorm;
+	
+	if (frame->objMath->GetName() == LineSegmentApprox().GetName()) {
+		ABNorm = VectorGeometric(((LineSegmentApprox*)frame->objMath)->PointStart, ((LineSegmentApprox*)frame->objMath)->PointEnd, true);
+	}
+	else if (frame->objMath->GetName() == CylinderApprox().GetName()) {
+		PointGeometric pAxialStart = ((CylinderApprox*)frame->objMath)->PointTopSurfaceCenter;
+		PointGeometric pAxialEnd = ((CylinderApprox*)frame->objMath)->PointBottomSurfaceCenter;
+		VectorGeometric AB = VectorGeometric(pAxialStart, pAxialEnd, false);
+		ABNorm = VectorGeometric(pAxialStart, pAxialEnd, true);
+
+		PointGeometric projectionPoint1 = AB.PointProjection(frame->PointPosition, pAxialStart); // Вдоль оси
+		PointGeometric projectionPoint2 = AB.PointProjection(pAxialStart, frame->PointPosition); // Вокруг оси
+		VectorGeometric AprojPoint2 = VectorGeometric(pAxialStart, projectionPoint2, true);
+
+		PointGeometric radiusPoint = pAxialStart + AprojPoint2 * ((CylinderApprox*)frame->objMath)->Radius; // Точка на окружности
+		VectorGeometric radiusVector = VectorGeometric(pAxialStart, radiusPoint, true); // Вектор радиуса
+		
+		glPointSize(2);
+		glBegin(GL_POINTS);
+		glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
+		glEnd();
+		
+		pStart = projectionPoint1 + radiusVector * ((CylinderApprox*)frame->objMath)->Radius; // Настоящая точка начала
+
+		// Линия от цилиндра (точка радиуса) до точки настоящего начала
+		glLineWidth(1);
+		glBegin(GL_LINES);
+		glVertex3d(pStart.X, pStart.Y, pStart.Z);
+		glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
+		glEnd();
+		
+	}else if (frame->objMath->GetName() == RectangleApprox().GetName()) {
+		ABNorm = ((RectangleApprox*)frame->objMath)->VectorX;
+		ABNorm.Normalize();
+	}
+
 	glLineWidth(2);
 	glBegin(GL_LINES);
 		glVertex3d(pStart.X, pStart.Y, pStart.Z);
 		glVertex3d(pEnd.X, pEnd.Y, pEnd.Z);
 	glEnd();
+	VectorGeometric lineVector = VectorGeometric(pStart, pEnd, true);
 
-	// Если мышка указывает справа от точки начала, то меняем направление рамки
-	/*if (pEnd.X > pStart.X) {
-		frame->setBoxPosition(1); // Справа от линии
-	}
-	else {
-		frame->setBoxPosition(0); // Слева от линии
-	}*/
+
+	double triangle_height = 0.6;
+	double triangle_width = 0.3;
+
+	PointGeometric rightPoint = pStart + ABNorm * triangle_width + lineVector * triangle_height;
+	PointGeometric leftPoint = pStart - ABNorm * triangle_width + lineVector * triangle_height;
+	PointGeometric topPoint = pStart;
+	// Треугольник
+	glBegin(GL_TRIANGLES);
+	glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
+	glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
+	glVertex3d(topPoint.X, topPoint.Y, topPoint.Z);
+	glEnd();
+
 
 	
-	CString bageStr = L"";
-	switch (frame->toleranceName) {
-		case TOLERANCE_NAME::FORM_STRAIGHTNESS:
-			bageStr = L"\u23E4";
-			break;
-		case TOLERANCE_NAME::FORM_FLATNESS:
-			bageStr = L"\u23E5";
-			break;
-		case TOLERANCE_NAME::FORM_ROUNDNESS:
-			bageStr = L"\u25CB";
-			break;
-		case TOLERANCE_NAME::FORM_CYLINDRICITY:
-			bageStr = L"\u232D";
-			break;
-
-		case TOLERANCE_NAME::ORIENTATION_PERPENDICULARITY:
-			bageStr = L"\u27C2";
-			break;
-		case TOLERANCE_NAME::ORIENTATION_ANGULARITY:
-			bageStr = L"\u2220";
-			break;
-		case TOLERANCE_NAME::ORIENTATION_PARALLELISM:
-			bageStr = L"\u2225";
-			break;
-
-		case TOLERANCE_NAME::LOCATION_COAXIALITY:
-			bageStr = L"\u25CE";
-			break;
-		case TOLERANCE_NAME::LOCATION_CONCENTRICITY:
-			bageStr = L"\u25CE";
-			break;
-		case TOLERANCE_NAME::LOCATION_POSITION:
-			bageStr = L"\u2316";
-			break;
-		case TOLERANCE_NAME::LOCATION_SYMMETRY:
-			bageStr = L"\u232F";
-			break;
-
-		case TOLERANCE_NAME::RUNOUT_FACE:
-		case TOLERANCE_NAME::RUNOUT_RADIAL:
-			bageStr = L"\u2197";
-			//bageStr = L"\u2330";
-			break;
-
-	}
+	CString bageStr = frame->toleranceBage;
+	
 	
 
 
@@ -1211,10 +1260,7 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	}
 	frameString.Format(L"%s %g", bageStr, frame->toleranceValue);
 	
-	/*glPushMatrix();
-	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
-	myFont->Font->Render(frameString);
-	glPopMatrix();*/
+	
 
 
 	float modelview[16];

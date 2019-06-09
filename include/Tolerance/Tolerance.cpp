@@ -19,21 +19,19 @@ Tolerance::~Tolerance()
 
 double Tolerance::FormStraightness(LineSegmentApprox* line)
 {
-	double min = DistanceBetween(line->PointsForApprox.operator[](0), line->PointsForApprox.operator[](line->PointsForApprox.size()-1), line->PointsForApprox.operator[](1));
+	PointGeometric pStart = line->PointsForApprox.operator[](0);
+	PointGeometric pEnd = line->PointsForApprox.operator[](line->PointsForApprox.size() - 1);
+
+	double min = DistanceBetween(pStart, pEnd, line->PointsForApprox.operator[](1));
 	double max = min;
 	for (int i = 1; i < line->PointsForApprox.size()-1; i++) {
-		double distance = DistanceBetween(line->PointsForApprox.operator[](0), line->PointsForApprox.operator[](line->PointsForApprox.size() - 1), line->PointsForApprox.operator[](i));
+		double distance = DistanceBetween(pStart, pEnd, line->PointsForApprox.operator[](i));
 
 		if (distance > max) {
 			max = distance;
 		}
-		if (min > distance) {
-			min = distance;
-		}
 	}
 
-	//double result = round(max,3) - round(min, 3);
-//	return result;
 	return round(max,3);
 }
 
@@ -73,7 +71,7 @@ double Tolerance::FormRoundness(CircleApprox* circle)
 		}
 	}
 
-	return round(fabs(max - min) / 2, 3);
+	return round(fabs(max - min), 3);
 }
 
 double Tolerance::FormCylindricity(CylinderApprox* cylinder)
@@ -94,7 +92,7 @@ double Tolerance::FormCylindricity(CylinderApprox* cylinder)
 		}
 	}
 
-	return round(fabs(max - min) / 2, 3);
+	return round(fabs(max - min), 3);
 }
 
 double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control)

@@ -18,12 +18,13 @@ public:
 	ToleranceBase(LineSegmentApprox* obj);
 	ToleranceBase(PlaneApprox* obj);
 	ToleranceBase(AxialLine* obj);
+
 	ToleranceBase(ToleranceObject* obj);
 	~ToleranceBase();
 
 	PointGeometric PointStart; // Начальная точка линии
 	char baseChar; // Буква базы
-	ToleranceObject* toleranceObject; // К какому объекту относится база
+	ToleranceObject* toleranceObject = nullptr; // К какому объекту относится база
 
 	ToleranceObjectType getType();
 };
