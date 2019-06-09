@@ -12,7 +12,7 @@
 
 #include <OutSource/Matrix.h>
 #include "Tolerance/includes.h"
-#include "OutSource/MyFont.h"
+#include "OutSource/KIOFont.h"
 
 
 class COpenGLView : public CView
@@ -109,7 +109,7 @@ protected:
 	PointGeometric				pointEyeLook,
 								pointAimLook;
 
-	MyFont *myFont;
+	KIOFont *kioFont;
 
 	double						distanceAimEye,
 								offsetView_X,
@@ -153,10 +153,10 @@ protected:
 	void DrawOpenGL_ToleranceBase(ToleranceBase* base);
 	void DrawOpenGL_ToleranceFrame(ToleranceFrame* frame);
 	void DrawOpenGL_SizeLine(SizeLine* obj);
-	double angle_point(PointGeometric a, PointGeometric b, PointGeometric c);
 	void DrawOpenGL_DiameterLine(DiameterLine* obj);
 	void DrawOpenGL_AxialLine(AxialLine* obj);
 	void DrawOpenGL_Tolerance_Form_Roudness(FormRoundnessToleranceObject* obj);
+	double angle_point(PointGeometric a, PointGeometric b, PointGeometric c);
 	//-----------------------
 
 	//{{AFX_MSG(CTry_OpenGLView)

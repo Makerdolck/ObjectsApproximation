@@ -8,20 +8,15 @@
 #include "ToleranceObject.h"
 
 
-class DiameterLine :
-	public ToleranceObject
+class DiameterLine : public ToleranceObject
 {
 public:
-
 	DiameterLine(CircleApprox* circle);
 	DiameterLine(CylinderApprox* cylinder);
 	~DiameterLine();
-
-
-
 	
-	PointGeometric centerPoint;
-	double diameter;
+	PointGeometric centerPoint; // Центральная точка окружности/цилиндра
+	double diameter; // Числовое значение диаметра объекта
 
 
 	ToleranceObjectType getType();

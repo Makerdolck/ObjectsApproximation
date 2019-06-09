@@ -16,17 +16,19 @@ public:
 	ToleranceFrame(ToleranceBase *base, ObjectApprox *controlObject, int toleranceName, double toleranceValue);
 	~ToleranceFrame();
 
-	double boxHeight = 3; // Высота прямоугольника
-	double boxFirstSectionWidth = 3; // Ширина прямоугольника под значок допуска
-	double boxSecondSectionWidth = 6; // Ширина прямоугольника под значение отклонения
-	double boxThirdSectionWidth = 3; // Ширина прямоугольника под имя базы
-	
-	int toleranceName; // Название допуска
+	int toleranceName; // ID названия допуска
 	double toleranceValue; // Значение отклонения
 
 	ToleranceBase *Base = nullptr; // База
 	PointGeometric PointStart; // Откуда идёт линия
 
+	/*double boxHeight = 3; // Высота прямоугольника
+	double boxFirstSectionWidth = 3; // Ширина прямоугольника под значок допуска
+	double boxSecondSectionWidth = 6; // Ширина прямоугольника под значение отклонения
+	double boxThirdSectionWidth = 3; // Ширина прямоугольника под имя базы
+	*/
+
+	/*
 	PointGeometric getCenterBage(); // Центр места под значок
 	PointGeometric getCenterToleranceValue(); // Центр места под текст
 	PointGeometric getCenterToleranceBaseName(); // Центр места под имя базы
@@ -38,7 +40,5 @@ public:
 	double Width();
 
 	virtual ToleranceObjectType getType(); // Тип объекта
-
-private:
-	
+	*/
 };

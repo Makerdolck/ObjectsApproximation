@@ -140,7 +140,8 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectBaseObject()
 	parent->pView->isToleranceAction = true;
 	base = getSelectedObject();
 	if (base != nullptr) {
-		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(base->Name.c_str());
+		//((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(base->Name.c_str());
+		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(L"A");
 		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->EnableWindow(true);
 	}
 	

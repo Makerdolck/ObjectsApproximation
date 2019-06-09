@@ -20,11 +20,10 @@ public:
 
 	PointGeometric	PointStart;
 	PointGeometric	PointEnd; 
-	double offset = 0; // Расстояние от объекта до размерной линии
+	//double offset = 0; // Расстояние от объекта до размерной линии
 
 	ToleranceObjectType getType();
 	double length();
-
 
 };
 

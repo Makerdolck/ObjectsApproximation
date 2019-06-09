@@ -61,6 +61,7 @@ ToleranceFrame::~ToleranceFrame()
 {
 }
 
+/*
 PointGeometric ToleranceFrame::getCenterBage()
 {
 	return PointGeometric(PointPosition.X - Width() + boxFirstSectionWidth / 2, PointPosition.Y + boxHeight / 2, PointPosition.Z);
@@ -110,3 +111,4 @@ void ToleranceFrame::setBoxPosition(int position)
 
 	}
 }
+*/

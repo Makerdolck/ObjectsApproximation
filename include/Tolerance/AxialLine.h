@@ -9,30 +9,19 @@
 
 
 
-class AxialLine :
-	public ToleranceObject
+class AxialLine : public ToleranceObject
 {
 public:
-	AxialLine();
-	AxialLine(CircleApprox* obj);
+	AxialLine(CircleApprox* obj); // Удалить
 	AxialLine(CylinderApprox* obj);
 	AxialLine(ConeApprox* obj);
-
 	~AxialLine();
-
-	VectorGeometric dirVector; // Направляющий вектор
 
 	PointGeometric startPoint;
 	PointGeometric endPoint;
-	PointGeometric centerPoint;
-	double offset; // Компенсация размера объекта
-
+	
 
 	ToleranceObjectType getType();
-	
-
-	
-
 };
 
 #endif

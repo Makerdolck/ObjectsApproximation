@@ -12,22 +12,23 @@ ToleranceBase::ToleranceBase()
 ToleranceBase::ToleranceBase(ObjectApprox* obj)
 {
 	this->objMath = obj->objMath;
-	this->baseName = obj->Name.c_str();
-	ToleranceBase();
+	baseChar = charStack.back();
+	charStack.pop_back();
 }
 
 ToleranceBase::ToleranceBase(LineSegmentApprox* obj)
 {
 	this->objMath = obj;
-	ToleranceBase();
+	baseChar = charStack.back();
+	charStack.pop_back();
 }
 
 ToleranceBase::ToleranceBase(PlaneApprox* obj)
 {
 	this->objMath = obj;
 	PointStart = obj->Line.Point;
-	ToleranceBase();
-
+	baseChar = charStack.back();
+	charStack.pop_back();
 }
 
 
@@ -44,8 +45,8 @@ ToleranceBase::ToleranceBase(AxialLine* obj)
 
 ToleranceBase::ToleranceBase(ToleranceObject* obj)
 {
-	//baseChar = baseCharArray[baseCounter];
-	//baseCounter++;
+	baseChar = charStack.back();
+	charStack.pop_back();
 	this->objMath = obj->objMath;
 	ToleranceBase();
 }

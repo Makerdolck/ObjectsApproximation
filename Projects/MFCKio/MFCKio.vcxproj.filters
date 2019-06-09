@@ -136,14 +136,14 @@
     <ClCompile Include="..\..\include\Tolerance\DiameterLine.cpp">
       <Filter>Source Files\Tolerance</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\OutSource\MyFont.cpp">
-      <Filter>Source Files\OutSource</Filter>
-    </ClCompile>
     <ClCompile Include="DialogToleranceSelectObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\include\Tolerance\ToleranceFrame.cpp">
       <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\OutSource\KIOFont.cpp">
+      <Filter>Source Files\OutSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -294,14 +294,14 @@
     <ClInclude Include="..\..\include\Tolerance\DiameterLine.h">
       <Filter>Header Files\Tolerance</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\OutSource\MyFont.h">
-      <Filter>Header Files\OutSource</Filter>
-    </ClInclude>
     <ClInclude Include="DialogToleranceSelectObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Tolerance\ToleranceFrame.h">
       <Filter>Header Files\Tolerance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OutSource\KIOFont.h">
+      <Filter>Header Files\OutSource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,6 @@ ToleranceObject::ToleranceObject()
 
 ToleranceObject::~ToleranceObject()
 {
-	TRACE("Deleted ToleranceObject");
 }
 
 ToleranceObject::ToleranceObjectType ToleranceObject::getType()

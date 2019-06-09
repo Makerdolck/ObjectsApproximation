@@ -19,16 +19,10 @@ Tolerance::~Tolerance()
 
 double Tolerance::FormStraightness(LineSegmentApprox* line)
 {
-	//LineGeometric lineGeom = LineGeometric(line->Vector);
-	
-	//double min = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](0));
-	//double max = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](0));	
-	//double min = DistanceBetween(line->PointStart, line->PointEnd, line->PointsForApprox.operator[](0));
 	double min = DistanceBetween(line->PointsForApprox.operator[](0), line->PointsForApprox.operator[](line->PointsForApprox.size()-1), line->PointsForApprox.operator[](1));
-	double max = DistanceBetween(line->PointsForApprox.operator[](0), line->PointsForApprox.operator[](line->PointsForApprox.size()-1), line->PointsForApprox.operator[](1));
+	double max = min;
 	for (int i = 1; i < line->PointsForApprox.size()-1; i++) {
 		double distance = DistanceBetween(line->PointsForApprox.operator[](0), line->PointsForApprox.operator[](line->PointsForApprox.size() - 1), line->PointsForApprox.operator[](i));
-		//double distance = lineGeom.DistanceToPoint(line->PointsForApprox.operator[](i));
 
 		if (distance > max) {
 			max = distance;
@@ -38,21 +32,16 @@ double Tolerance::FormStraightness(LineSegmentApprox* line)
 		}
 	}
 
-	CString str = L"";
-	//str.Format(L"Result: %g", max);
-	double result = round(max, 4) - round(min, 4);
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, result);
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+	//double result = round(max,3) - round(min, 3);
+//	return result;
 	return round(max,3);
 }
 
 double Tolerance::FormFlatness(PlaneApprox* plane)
 {
-	//double max = DistanceBetween(plane->PointProjection(plane->PointsForApprox.operator[](0)), plane->PointsForApprox.operator[](0));
 	double min = DistanceBetween(*plane, plane->PointsForApprox.operator[](0));
 	double max = min;
 	for (int i = 0; i < plane->PointsForApprox.size(); i++) {
-		//double result = DistanceBetween(plane->PointProjection(plane->PointsForApprox.operator[](i)), plane->PointsForApprox.operator[](i));
 		double result = DistanceBetween(*plane, plane->PointsForApprox.operator[](i));
 		if (result > max) {
 			max = result;
@@ -61,13 +50,6 @@ double Tolerance::FormFlatness(PlaneApprox* plane)
 			min = result;
 		}
 	}
-
-
-
-	CString str = L"";
-	//str.Format(L"Result: %g", max);
-	str.Format(L"Плоскостность. Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min), 3));
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(fabs(max - min), 3);
 }
@@ -90,12 +72,9 @@ double Tolerance::FormRoundness(CircleApprox* circle)
 			min = DistanceBetween(centerPoint, tmpPoint);
 		}
 	}
-	CString str = L"";
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
+
 	return round(fabs(max - min) / 2, 3);
 }
-
 
 double Tolerance::FormCylindricity(CylinderApprox* cylinder)
 {
@@ -115,16 +94,11 @@ double Tolerance::FormCylindricity(CylinderApprox* cylinder)
 		}
 	}
 
-	CString str = L"";
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max-min)/2, 3));
-//	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-
 	return round(fabs(max - min) / 2, 3);
 }
 
 double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control)
 {
-
 	double min = DistanceBetween(*base, control->PointsForApprox.operator[](0));
 	double max = min;
 
@@ -137,10 +111,6 @@ double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control
 			min = distance;
 		}
 	}
-
-	CString str = L"";
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(fabs(max - min) / 2, 3);
 }
@@ -160,18 +130,12 @@ double Tolerance::OrientationParallelism(LineSegmentApprox *base, LineSegmentApp
 		}
 	}
 
-	CString str = L"";
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-
 	return round(fabs(max - min) / 2, 3);
 }
-
 
 double Tolerance::OrientationAngularity(PlaneApprox* base, PlaneApprox* control, double angle)
 {
 	VectorGeometric rotatedPlane = rotatePlane(base, base->Line.Vector ^ control->Line.Vector, angle);
-
 
 	double min = DistanceBetween(rotatedPlane, control->PointsForApprox.operator[](0));
 	double max = min;
@@ -186,120 +150,7 @@ double Tolerance::OrientationAngularity(PlaneApprox* base, PlaneApprox* control,
 		}
 	}
 
-	CString str = L"";
-	str.Format(L"Angle: %g; Min: %g; Max: %g; Result: %g", AngleBetween(base->Line.Vector, control->Line.Vector), min, max, fabs(max - min));
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-	
-	return fabs(max-min);
-	
-}
-
-
-VectorGeometric Tolerance::getIntersectionVector(PlaneApprox Plane1, PlaneApprox Plane2) {
-	double D1 = 0;
-	double D2 = 0;
-	D1 = 1 * (Plane1.Line.Vector.X * Plane1.Line.Point.X + Plane1.Line.Vector.Y * Plane1.Line.Point.Y + Plane1.Line.Vector.Z * Plane1.Line.Point.Z);
-	D2 = 1 * (Plane2.Line.Vector.X * Plane2.Line.Point.X + Plane2.Line.Vector.Y * Plane2.Line.Point.Y + Plane2.Line.Vector.Z * Plane2.Line.Point.Z);
-
-	VectorGeometric VectorPr;
-	LineGeometric LineInter;
-	VectorPr = Plane1.Line.Vector ^ Plane2.Line.Vector;
-	LineInter.Vector = VectorGeometric(VectorPr.X, VectorPr.Y, VectorPr.Z, false);
-	if ((VectorPr.X == 0) && (VectorPr.Y == 0) && (VectorPr.Z = 0)) {
-		return VectorPr;
-	}
-
-	else {
-		/*if (VectorPr.X != 0) {
-			double del;
-			del = Line.Vector.Y * Plane2.Line.Vector.Z - Line.Vector.Z*Plane2.Line.Vector.Y;
-			LineInter.Point.Y = (D1*Plane2.Line.Vector.Z - Line.Vector.Z*D2) / del;
-			LineInter.Point.Z = (Line.Vector.Y*D2 - Plane2.Line.Vector.Y*D1) / del;
-
-		}*/
-		double del;
-		del = Plane1.Line.Vector.Y * Plane2.Line.Vector.Z - Plane1.Line.Vector.Z * Plane2.Line.Vector.Y;
-		if (del != 0) {
-			LineInter.Point.Y = (D1 * Plane2.Line.Vector.Z - Plane1.Line.Vector.Z * D2) / del;
-			LineInter.Point.Z = (Plane1.Line.Vector.Y * D2 - Plane2.Line.Vector.Y * D1) / del;
-		}
-		if (del == 0) {
-			del = Plane1.Line.Vector.X * Plane2.Line.Vector.Z - Plane1.Line.Vector.Z * Plane2.Line.Vector.X;
-			LineInter.Point.X = (D1 * Plane2.Line.Vector.Z - Plane1.Line.Vector.Z * D2) / del;
-			LineInter.Point.Z = (Plane1.Line.Vector.X * D2 - Plane2.Line.Vector.X * D1) / del;
-		}
-
-		//*line = LineInter;
-		//return 1;
-		//return LineInter;
-		return LineInter.Vector;
-	}
-}
-
-VectorGeometric Tolerance::rotatePlane(PlaneApprox* plane, VectorGeometric axis, double a) {
-	
-	axis.Normalize();
-	double x = axis.X;
-	double y = axis.Y;
-	double z = axis.Z;
-	a = a / 180 * M_PI;
-	
-	
-	double matrix[3][3] = { 
-		{cos(a) + (1 - cos(a)) * pow(x, 2), (1 - cos(a)) * x * y - sin(a) * z, (1 - cos(a)) * x * z + sin(a) * y},
-		{(1 - cos(a)) * y * x + sin(a) * z, cos(a) + (1 - cos(a)) * pow(y, 2), (1 - cos(a)) * y * z - sin(a) * x},
-		{(1 - cos(a)) * z * x - sin(a) * y, (1 - cos(a)) * z * y + sin(a) * x, cos(a) + (1 - cos(a)) * pow(z, 2)} 
-	};
-
-
-	RectangleApprox *test = (RectangleApprox*) plane;
-	double vector[3] = { test->Plane.Line.Vector.X,test->Plane.Line.Vector.Y,test->Plane.Line.Vector.Z };
-	double resultVector[3] = { 0,0,0 };
-	for (int i = 0; i < 3; i++) {
-		
-		for (int j = 0; j < 3; j++) {
-			resultVector[i] += (matrix[i][j] * vector[j]);
-		}
-		
-	}
-	VectorGeometric result = VectorGeometric(resultVector[0], resultVector[1], resultVector[2], false);
-
-	return result;
-	
-}
-
-
-VectorGeometric Tolerance::rotatePlane(VectorGeometric* v, VectorGeometric axis, double a) {
-	
-	double x = axis.X;
-	double y = axis.Y;
-	double z = axis.Z;
-	a = a * 180 / M_PI;
-	
-	
-	double matrix[3][3] = { 
-		{cos(a) + (1 - cos(a)) * pow(x, 2), (1 - cos(a)) * x * y - sin(a) * z, (1 - cos(a)) * x * z + sin(a) * y},
-		{(1 - cos(a)) * y * x + sin(a) * z, cos(a) + (1 - cos(a)) * pow(y, 2), (1 - cos(a)) * y * z - sin(a) * x},
-		{(1 - cos(a)) * z * x - sin(a) * y, (1 - cos(a)) * z * y + sin(a) * x, cos(a) + (1 - cos(a)) * pow(z, 2)} 
-	};
-
-
-
-	double vector[3] = { v->X, v->Y, v->Z };
-	double resultVector[3] = { 0,0,0 };
-	for (int i = 0; i < 3; i++) {
-		double tmp = 0;
-		for (int j = 0; j < 3; j++) {
-			tmp += matrix[i][j] * vector[j];
-		}
-		resultVector[i] = tmp;
-	}
-	VectorGeometric result = VectorGeometric(resultVector[0], resultVector[1], resultVector[2], false);
-
-	
-//	result.Line.Vector = 
-	return result;
-	
+	return round(fabs(max-min),3);
 }
 
 double Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* control)
@@ -317,30 +168,19 @@ double Tolerance::OrientationPerpendicularity(PlaneApprox* base, PlaneApprox* co
 		}
 	}
 
-	CString str = L"";
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-
 	return round(fabs(max - min) / 2, 3);
 }
 
 double Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* circleB)
 {
-
 	PointGeometric projCenterPoint = circleA->Line.Vector.PointProjection(centerByPoints(&circleA->PointsForApprox[0], circleA->PointsForApprox.size()), centerByPoints(&circleB->PointsForApprox[0], circleB->PointsForApprox.size()));
 	double distance = DistanceBetween(centerByPoints(&circleA->PointsForApprox[0], circleA->PointsForApprox.size()), projCenterPoint);
-	
-	CString str = L"";
-	str.Format(L"Result: %g", distance);
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-
 
 	return round(distance, 3);
 }
 
 double Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB)
 {
-
 	double bottomDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, cylinderB->PointBottomSurfaceCenter);
 	double topDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, cylinderB->PointTopSurfaceCenter);
 	
@@ -348,34 +188,9 @@ double Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* 
 	if (topDistance > bottomDistance) {
 		max = topDistance;
 	}
-	
-	CString str = L"";
-	str.Format(L"Top: %g; Bottom: %g; Result: %g", topDistance, bottomDistance, round(max, 3));
-	//AfxMessageBox(str, MB_ICONWARNING | MB_OK);
 
 	return round(max, 3);
 }
-
-
-PointGeometric Tolerance::centerByPoints(PointGeometric* points, int arraySize)
-{
-	double sumX = 0, sumY = 0, sumZ = 0;
-
-	for (int i = 0; i < arraySize; i++)
-	{
-		sumX += points[i].X;
-		sumY += points[i].Y;
-		sumZ += points[i].Z;
-	}
-
-	double x = sumX / (double)arraySize;
-	double y = sumY / (double)arraySize;
-	double z = sumZ / (double)arraySize;
-
-	return PointGeometric(x, y, z);
-}
-
-
 
 double Tolerance::RunOutFace(CylinderApprox* base, RectangleApprox* control)
 {
@@ -400,12 +215,11 @@ double Tolerance::RunOutFace(CylinderApprox* base, RectangleApprox* control)
 
 double Tolerance::RunOutFace(CylinderApprox* base, CircleApprox* control)
 {
-	return 0.0;
+	return 0.0; // TODO
 }
 
 double Tolerance::RunOutRadial(CylinderApprox* base, CylinderApprox* control)
 {
-
 	PointGeometric bottomCenter = base->PointBottomSurfaceCenter;
 	PointGeometric topCenter = base->PointTopSurfaceCenter;
 	VectorGeometric axial = VectorGeometric(bottomCenter, topCenter, false);
@@ -422,13 +236,142 @@ double Tolerance::RunOutRadial(CylinderApprox* base, CylinderApprox* control)
 		}
 	}
 
-	CString str = L"";
-	str.Format(L"Min: %g; Max: %g; Result: %g", min, max, round(fabs(max - min) / 2, 3));
-	//	AfxMessageBox(str, MB_ICONWARNING | MB_OK);
-
 	return round(fabs(max - min) / 2, 3);
 }
 
+void Tolerance::addNewObject(ToleranceObject* obj)
+{
+	toleranceObjectsArray->push_back(obj);
+}
+
+VectorGeometric Tolerance::rotatePlane(PlaneApprox* plane, VectorGeometric axis, double a) {
+	
+	axis.Normalize();
+	double x = axis.X;
+	double y = axis.Y;
+	double z = axis.Z;
+	a = a / 180 * M_PI;
+	
+	double matrix[3][3] = { 
+		{cos(a) + (1 - cos(a)) * pow(x, 2), (1 - cos(a)) * x * y - sin(a) * z, (1 - cos(a)) * x * z + sin(a) * y},
+		{(1 - cos(a)) * y * x + sin(a) * z, cos(a) + (1 - cos(a)) * pow(y, 2), (1 - cos(a)) * y * z - sin(a) * x},
+		{(1 - cos(a)) * z * x - sin(a) * y, (1 - cos(a)) * z * y + sin(a) * x, cos(a) + (1 - cos(a)) * pow(z, 2)} 
+	};
+
+	RectangleApprox *test = (RectangleApprox*) plane;
+	double vector[3] = { test->Plane.Line.Vector.X,test->Plane.Line.Vector.Y,test->Plane.Line.Vector.Z };
+	double resultVector[3] = { 0,0,0 };
+	for (int i = 0; i < 3; i++) {
+		
+		for (int j = 0; j < 3; j++) {
+			resultVector[i] += (matrix[i][j] * vector[j]);
+		}
+		
+	}
+	VectorGeometric result = VectorGeometric(resultVector[0], resultVector[1], resultVector[2], false);
+
+	return result;
+	
+}
+
+VectorGeometric Tolerance::rotatePlane(VectorGeometric* v, VectorGeometric axis, double a) {
+	
+	double x = axis.X;
+	double y = axis.Y;
+	double z = axis.Z;
+	a = a * 180 / M_PI;
+	
+	double matrix[3][3] = { 
+		{cos(a) + (1 - cos(a)) * pow(x, 2), (1 - cos(a)) * x * y - sin(a) * z, (1 - cos(a)) * x * z + sin(a) * y},
+		{(1 - cos(a)) * y * x + sin(a) * z, cos(a) + (1 - cos(a)) * pow(y, 2), (1 - cos(a)) * y * z - sin(a) * x},
+		{(1 - cos(a)) * z * x - sin(a) * y, (1 - cos(a)) * z * y + sin(a) * x, cos(a) + (1 - cos(a)) * pow(z, 2)} 
+	};
+
+	double vector[3] = { v->X, v->Y, v->Z };
+	double resultVector[3] = { 0,0,0 };
+	for (int i = 0; i < 3; i++) {
+		double tmp = 0;
+		for (int j = 0; j < 3; j++) {
+			tmp += matrix[i][j] * vector[j];
+		}
+		resultVector[i] = tmp;
+	}
+	VectorGeometric result = VectorGeometric(resultVector[0], resultVector[1], resultVector[2], false);
+
+	return result;
+	
+}
+
+PointGeometric Tolerance::centerByPoints(PointGeometric* points, int arraySize)
+{
+	double sumX = 0, sumY = 0, sumZ = 0;
+
+	for (int i = 0; i < arraySize; i++)
+	{
+		sumX += points[i].X;
+		sumY += points[i].Y;
+		sumZ += points[i].Z;
+	}
+
+	double x = sumX / (double)arraySize;
+	double y = sumY / (double)arraySize;
+	double z = sumZ / (double)arraySize;
+
+	return PointGeometric(x, y, z);
+}
+
+double Tolerance::AngleBetween(PlaneApprox plane1, PlaneApprox plane2)
+{
+	return AngleBetween(plane1.Line.Vector, plane2.Line.Vector);
+}
+
+double Tolerance::AngleBetween(VectorGeometric n1, VectorGeometric n2)
+{
+	double angleCos = angleCos = n1 * n2 / (n1.length() * n2.length());
+	return acos(angleCos) * 180 / M_PI;
+}
+
+double Tolerance::DistanceBetween(PointGeometric point1, PointGeometric point2)
+{
+	return sqrt(pow(point2.X - point1.X, 2) + pow(point2.Y - point1.Y, 2) + pow(point2.Z - point1.Z, 2));
+}
+
+double Tolerance::DistanceBetween(PointGeometric A, PointGeometric B, PointGeometric point)
+{
+	VectorGeometric AB = VectorGeometric(A, B, false);
+	VectorGeometric AC = VectorGeometric(A, point, false);
+	VectorGeometric res = (AC ^ AB);
+	return res.length() / AB.length();
+}
+
+double Tolerance::DistanceBetween(PlaneApprox plane, PointGeometric point)
+{
+	PointGeometric centerPoint = plane.Line.Point;
+	VectorGeometric N = plane.Line.Vector;
+	double d = 0;
+	if (plane.PointsForApprox.size() > 1) {
+		d = -(N * plane.PointsForApprox.operator[](1));
+	}
+
+	double result = (N.X * point.X + N.Y * point.Y + N.Z * point.Z + d) / N.length();
+	return round(result, 3);
+}
+
+double Tolerance::DistanceBetween(VectorGeometric planeNormal, PointGeometric point)
+{
+	double result = (planeNormal.X * point.X + planeNormal.Y * point.Y + planeNormal.Z * point.Z ) / planeNormal.length();
+	return round(result, 3);
+}
+
+// Округление value до num_after_point после запятой
+double Tolerance::round(double value, int num_after_point) {
+	int n = pow(10, num_after_point);
+	int nValue = (int)(value * n);
+	return  ((double)nValue)/n;
+}
+
+
+/*
 SizeLine* Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 {
 	if (objectsArray == nullptr)
@@ -480,7 +423,7 @@ SizeLine* Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 		if (!objApprox->flagReady || !objApprox->flagSelected)
 			continue;
 
-		
+
 		if(countSelectedObject == 1){
 			if (objApprox->objMath->GetName() == planeA->GetName()) {
 				AfxMessageBox(L"Невозможно узнать размер для плоскости (Недопустимый объект)", MB_ICONWARNING | MB_OK);
@@ -535,6 +478,7 @@ SizeLine* Tolerance::DrawSizeLine(std::vector<ObjectApprox*>* objectsArray)
 	return nullptr;
 }
 
+
 void Tolerance::DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray) {
 	if (objectsArray == nullptr)
 	{
@@ -549,7 +493,7 @@ void Tolerance::DrawDiameterLine(std::vector<ObjectApprox*>* objectsArray) {
 
 	ObjectApprox* objApprox;
 
-	
+
 	CircleApprox* circleA = new CircleApprox();
 	ConeApprox* coneA = new ConeApprox();
 	CylinderApprox* cylinderA = new CylinderApprox();
@@ -765,7 +709,6 @@ void Tolerance::DrawFormRoundness(std::vector<ObjectApprox*>* objectsArray)
 	}
 }
 
-
 void Tolerance::DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsArray)
 {
 	if (objectsArray == nullptr)
@@ -813,19 +756,19 @@ void Tolerance::DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsAr
 
 
 		if (countSelectedObject == 2) {
-			
+
 			if (objectNum == 1) {
-				
+
 					planeBase = (PlaneApprox*)objApprox->objMath;
 					objectNum++;
 					continue;
 			}
 			else {
-				
+
 					planeControl = (PlaneApprox*)objApprox->objMath;
 					OrientationParallelism(planeBase, planeControl);
 					break;
-				
+
 			}
 		}
 		else {
@@ -836,9 +779,6 @@ void Tolerance::DrawOrientationParallelism(std::vector<ObjectApprox*>* objectsAr
 
 
 }
-
-
-
 
 void Tolerance::DrawLocationConcentricity(std::vector<ObjectApprox*>* objectsArray)
 {
@@ -887,19 +827,19 @@ void Tolerance::DrawLocationConcentricity(std::vector<ObjectApprox*>* objectsArr
 
 
 		if (countSelectedObject == 2) {
-			
+
 			if (objectNum == 1) {
-				
+
 					circleA = (CircleApprox*)objApprox->objMath;
 					objectNum++;
 					continue;
 			}
 			else {
-				
+
 					circleB = (CircleApprox*)objApprox->objMath;
 					LocationConcentricity(circleA, circleB);
 					break;
-				
+
 			}
 		}
 		else {
@@ -958,9 +898,9 @@ void Tolerance::DrawLocationCoaxiality(std::vector<ObjectApprox*>* objectsArray)
 
 
 		if (countSelectedObject == 2) {
-			
+
 			if (objectNum == 1) {
-				
+
 				cylinderA = (CylinderApprox*)objApprox->objMath;
 				objectNum++;
 				continue;
@@ -980,82 +920,4 @@ void Tolerance::DrawLocationCoaxiality(std::vector<ObjectApprox*>* objectsArray)
 
 }
 
-
-
-
-void Tolerance::addNewObject(ToleranceObject* obj)
-{
-	toleranceObjectsArray->push_back(obj);
-}
-
-double Tolerance::AngleBetween(PlaneApprox plane1, PlaneApprox plane2)
-{
-	VectorGeometric n1 = plane1.Line.Vector;
-	VectorGeometric n2 = plane2.Line.Vector;
-	return AngleBetween(n1, n2);
-}
-
-double Tolerance::AngleBetween(VectorGeometric n1, VectorGeometric n2)
-{
-	double angleCos = 0;
-	//angleCos = (n1.X * n2.X + n1.Y * n2.Y + n1.Z * n2.Z) / (n1.length() * n2.length());
-	angleCos = n1 * n2 / (n1.length() * n2.length());
-	return acos(angleCos) * 180 / M_PI;
-}
-
-
-
-double Tolerance::DistanceBetween(PointGeometric point1, PointGeometric point2)
-{
-	return sqrt(pow(point2.X - point1.X, 2) + pow(point2.Y - point1.Y, 2) + pow(point2.Z - point1.Z, 2));
-}
-
-double Tolerance::DistanceBetween(PointGeometric A, PointGeometric B, PointGeometric point)
-{
-	VectorGeometric AB = VectorGeometric(A, B, false);
-	VectorGeometric AC = VectorGeometric(A, point, false);
-	VectorGeometric res = (AC ^ AB);
-	return res.length() / AB.length();
-}
-
-
-
-
-
-double Tolerance::DistanceBetween(PlaneApprox plane, PointGeometric point)
-{
-	PointGeometric centerPoint = plane.Line.Point;
-	VectorGeometric N = plane.Line.Vector;
-	PointGeometric tmp = PointGeometric(0.00, 25.00048, 89.997153);
-	double d = -(N * plane.PointsForApprox.operator[](1));
-	//double d = -(N * plane.Line.Point);
-	//double d = -(N * tmp);
-	//double d = 0;
-	double result = (N.X * point.X + N.Y * point.Y + N.Z * point.Z + d) / N.length();
-	return round(result, 3);
-
-}
-
-double Tolerance::DistanceBetween(VectorGeometric planeNormal, PointGeometric point)
-{
-	
-	VectorGeometric N = planeNormal;
-
-	//double d = -(N * plane.PointsForApprox.operator[](0));
-
-	double d = 0;
-	double result = (N.X * point.X + N.Y * point.Y + N.Z * point.Z + d) / N.length();
-	return round(result, 3);
-
-}
-
-
-
-
-
-// Округление value до num_after_point после запятой
-double Tolerance::round(double value, int num_after_point) {
-	int n = pow(10, num_after_point);
-	int nValue = (int)(value * n);
-	return  ((double)nValue)/n;
-}
+*/

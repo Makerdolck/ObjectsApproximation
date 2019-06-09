@@ -21,17 +21,11 @@ public:
 	ToleranceBase(ToleranceObject* obj);
 	~ToleranceBase();
 
+	PointGeometric PointStart; // Начальная точка линии
+	char baseChar; // Буква базы
+	ToleranceObject* toleranceObject; // К какому объекту относится база
 
-	PointGeometric PointStart; // Откуда идёт линия
-
-
-	CString baseName;
-	char baseChar;
 	ToleranceObjectType getType();
-	ToleranceObject* toleranceObject;
-	
-
-
 };
 
 
