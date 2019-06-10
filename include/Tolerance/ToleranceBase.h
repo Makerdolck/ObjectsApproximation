@@ -12,7 +12,8 @@
 class ToleranceBase : public ToleranceObject
 {
 public:
-	static std::vector <char> charStack;
+//	static std::vector <char> charStack;
+	static std::vector <CString> charStack;
 	ToleranceBase();
 	ToleranceBase(ObjectApprox* obj);
 	ToleranceBase(LineSegmentApprox* obj);
@@ -23,7 +24,8 @@ public:
 	~ToleranceBase();
 
 	PointGeometric PointStart; // Начальная точка линии
-	char baseChar; // Буква базы
+	//char baseChar; // Буква базы
+	CString baseChar; // Буква базы
 	ToleranceObject* toleranceObject = nullptr; // К какому объекту относится база
 
 	ToleranceObjectType getType();

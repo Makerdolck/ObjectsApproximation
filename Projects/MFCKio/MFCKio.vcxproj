@@ -222,6 +222,33 @@
     <ClInclude Include="..\..\include\ApproximationCore\TorusApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\VectorGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\_ALLincludesCore.h" />
+    <ClInclude Include="..\..\include\ftgl\FTBBox.h" />
+    <ClInclude Include="..\..\include\ftgl\FTBitmapGlyph.h" />
+    <ClInclude Include="..\..\include\ftgl\FTCharmap.h" />
+    <ClInclude Include="..\..\include\ftgl\FTCharToGlyphIndexMap.h" />
+    <ClInclude Include="..\..\include\ftgl\FTContour.h" />
+    <ClInclude Include="..\..\include\ftgl\FTExtrdGlyph.h" />
+    <ClInclude Include="..\..\include\ftgl\FTFace.h" />
+    <ClInclude Include="..\..\include\ftgl\FTFont.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGL.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGLBitmapFont.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGLExtrdFont.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGLOutlineFont.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGLPixmapFont.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGLPolygonFont.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGLTextureFont.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGlyph.h" />
+    <ClInclude Include="..\..\include\ftgl\FTGlyphContainer.h" />
+    <ClInclude Include="..\..\include\ftgl\FTLibrary.h" />
+    <ClInclude Include="..\..\include\ftgl\FTList.h" />
+    <ClInclude Include="..\..\include\ftgl\FTOutlineGlyph.h" />
+    <ClInclude Include="..\..\include\ftgl\FTPixmapGlyph.h" />
+    <ClInclude Include="..\..\include\ftgl\FTPoint.h" />
+    <ClInclude Include="..\..\include\ftgl\FTPolyGlyph.h" />
+    <ClInclude Include="..\..\include\ftgl\FTSize.h" />
+    <ClInclude Include="..\..\include\ftgl\FTTextureGlyph.h" />
+    <ClInclude Include="..\..\include\ftgl\FTVector.h" />
+    <ClInclude Include="..\..\include\ftgl\FTVectoriser.h" />
     <ClInclude Include="..\..\include\Intersection.h" />
     <ClInclude Include="..\..\include\OpenGLView.h" />
     <ClInclude Include="..\..\include\OutSource\DVector\Dvector.h" />
@@ -349,8 +376,13 @@
     <Image Include="res\writesmall.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\include\ftgl\ftgl_dynamic_MT.dll" />
     <None Include="res\MFCKio.rc2" />
     <None Include="res\ribbon.mfcribbon-ms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\include\OutSource\arial_default.ttf" />
+    <Font Include="..\..\include\OutSource\seguisym.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

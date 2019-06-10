@@ -12,6 +12,7 @@
 class SizeLine : public ToleranceObject
 {
 public:
+	SizeLine(ObjectApprox *obj1, ObjectApprox* obj2);
 	SizeLine(PointApprox *point1, PointApprox *point2);
 	SizeLine(LineSegmentApprox *lineSegment);
 	SizeLine(CylinderApprox* cylinder);

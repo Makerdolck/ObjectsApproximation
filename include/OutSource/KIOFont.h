@@ -13,10 +13,11 @@ class KIOFont {
 public:
 	KIOFont();
 	// Конструктор класса - передаём ему имя .ttf-файла, размер и глубину шрифта.
-	KIOFont(char* ttf, int FSize);
+	KIOFont(char* badgeTTF, char* russianTTF, int FSize);
 	~KIOFont();
 
-	FTFont* Font; // Создаваемый для нашей программы шрифт
+	FTFont* BadgeFont; // Английский шрифт
+	FTFont* RussianFont; // Русский шрифт
 	
 	void SetFontSize(double size);
 	double GetFontSize();

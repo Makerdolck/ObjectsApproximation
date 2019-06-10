@@ -303,6 +303,87 @@
     <ClInclude Include="..\..\include\OutSource\KIOFont.h">
       <Filter>Header Files\OutSource</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTBBox.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTBitmapGlyph.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTCharmap.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTCharToGlyphIndexMap.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTContour.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTExtrdGlyph.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTFace.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTFont.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGL.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGLBitmapFont.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGLExtrdFont.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGLOutlineFont.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGLPixmapFont.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGLPolygonFont.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGLTextureFont.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGlyph.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTGlyphContainer.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTLibrary.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTList.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTOutlineGlyph.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTPixmapGlyph.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTPoint.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTPolyGlyph.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTSize.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTTextureGlyph.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTVector.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ftgl\FTVectoriser.h">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\buttons.bmp">
@@ -418,6 +499,9 @@
     <None Include="res\MFCKio.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\include\ftgl\ftgl_dynamic_MT.dll">
+      <Filter>Source Files\OutSource\ftgl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -471,10 +555,21 @@
     <Filter Include="Source Files\Tolerance">
       <UniqueIdentifier>{894e1e31-589d-4c14-8329-4598814be2ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\OutSource\ftgl">
+      <UniqueIdentifier>{e23d5cbe-5fb2-45f7-a96c-a5f50e5040d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MFCKio.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\include\OutSource\seguisym.ttf">
+      <Filter>Source Files\OutSource</Filter>
+    </Font>
+    <Font Include="..\..\include\OutSource\arial_default.ttf">
+      <Filter>Source Files\OutSource</Filter>
+    </Font>
   </ItemGroup>
 </Project>
