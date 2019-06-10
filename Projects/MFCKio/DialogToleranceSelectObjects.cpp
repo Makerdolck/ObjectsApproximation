@@ -18,6 +18,7 @@ DialogToleranceSelectObjects::DialogToleranceSelectObjects(CWnd* pParent, TOLERA
 	parent = (CMainFrame *) pParent;
 	this->toleranceName = toleranceName;
 	this->objectsArray = parent->dlgMeasure->objectsArray;
+	this->toleranceObjectsArray = parent->dlgMeasure->toleranceObjectsArray;
 	unselectAllObjects();
 	parent->pView->isToleranceAction = true;
 
@@ -63,6 +64,14 @@ void DialogToleranceSelectObjects::unselectAllObjects()
 			objectsArray->operator[](i)->flagSelected = false;
 		}
 	}
+	if (toleranceObjectsArray != nullptr)
+	{
+		for (int i = 0; i < (int)toleranceObjectsArray->size(); i++)
+		{
+			toleranceObjectsArray->operator[](i)->flagSelected = false;
+		}
+	}
+
 	parent->pView->RedrawWindow();
 }
 
@@ -74,6 +83,23 @@ ObjectApprox* DialogToleranceSelectObjects::getSelectedObject()
 		{
 			if (objectsArray->operator[](i)->flagSelected) {
 				return objectsArray->operator[](i);
+			}
+		}
+	}
+	return nullptr;
+}
+
+ToleranceBase* DialogToleranceSelectObjects::getSelectedBase()
+{
+	if (toleranceObjectsArray != nullptr)
+	{
+		for (int i = 0; i < (int)toleranceObjectsArray->size(); i++)
+		{
+			if (toleranceObjectsArray->operator[](i)->flagSelected) {
+				if (dynamic_cast<ToleranceBase*>(toleranceObjectsArray->operator[](i))) {
+					return (ToleranceBase*)toleranceObjectsArray->operator[](i);
+				}
+
 			}
 		}
 	}
@@ -138,17 +164,21 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectBaseObject()
 	base = nullptr;
 
 	parent->pView->isToleranceAction = true;
-	base = getSelectedObject();
+	base = getSelectedBase();
 	if (base != nullptr) {
 		//((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(base->Name.c_str());
-		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(L"A");
+		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(base->baseChar);
 		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->EnableWindow(true);
+		if (control != nullptr) {
+			((CButton*)GetDlgItem(IDOK))->EnableWindow(true);
+		}
+	}
+	else {
+		AfxMessageBox(L"Необходимо выбрать базу, а не объект!");
 	}
 	
 	unselectAllObjects();
-	if (base != nullptr && control != nullptr) {
-		((CButton*)GetDlgItem(IDOK))->EnableWindow(true);
-	}
+	
 }
 
 
@@ -176,85 +206,83 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 	unselectAllObjects();
 	parent->pView->isToleranceAction = false;
 	if (base != nullptr && control != nullptr) {
-		if (base->Name == control->Name) {
+		if (base->toleranceObject != nullptr) {
+			if (base->toleranceObject->objMath == control->objMath || base->objMath == control->objMath) {
+				AfxMessageBox(L"В качестве базы и контрольного объекта выбран один и тот же объект");
+			}
+		}else if (base->objMath == control->objMath) {
 			AfxMessageBox(L"В качестве базы и контрольного объекта выбран один и тот же объект");
 			return;
 		}
 		double angle = 0;
 		CString sWindowText;
-		ToleranceBase* tmpBase = nullptr;
 		ToleranceFrame* frame = nullptr;
 		double result = NULL;
 		switch (toleranceName) {
 			case LOCATION_CONCENTRICITY:
 				result = parent->pTolerance->LocationConcentricity((CircleApprox*)base->objMath, (CircleApprox*)control->objMath);
-				tmpBase = new ToleranceBase(base);
-				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				
+				frame = new ToleranceFrame(base, control, toleranceName, result);
 				break;
 
 			case LOCATION_COAXIALITY:
 				result = parent->pTolerance->LocationCoaxiality((CylinderApprox*)base->objMath, (CylinderApprox*)control->objMath);
-				tmpBase = new ToleranceBase(base);
-				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+			
+				frame = new ToleranceFrame(base, control, toleranceName, result);
 				break;
 
 			case ORIENTATION_PARALLELISM:
 				result = NULL;
-				tmpBase = new ToleranceBase(base);
+				
 				if (base->objMath->GetName() == RectangleApprox().GetName() && control->objMath->GetName() == RectangleApprox().GetName()) {
 					result = parent->pTolerance->OrientationParallelism((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath);
-					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+					frame = new ToleranceFrame(base, control, toleranceName, result);
 				}
 				else if (base->objMath->GetName() == LineSegmentApprox().GetName() && control->objMath->GetName() == LineSegmentApprox().GetName()) {
 					result = parent->pTolerance->OrientationParallelism((LineSegmentApprox*)base->objMath, (LineSegmentApprox*)control->objMath);
-					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+					frame = new ToleranceFrame(base, control, toleranceName, result);
 				}
 				break;
 
 			case ORIENTATION_ANGULARITY:
-				tmpBase = new ToleranceBase(base);
-			
 				((CEdit*)GetDlgItem(IDC_EDIT_ANGULARITY))->GetWindowTextW(sWindowText);
 				
 				//angle = atof((const char*)(LPCTSTR)(sWindowText));
 				angle = atof((const char*)sWindowText.operator LPCTSTR());
 				angle = wcstod(sWindowText, nullptr);
 				result = parent->pTolerance->OrientationAngularity((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath, angle);
-				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				frame = new ToleranceFrame(base, control, toleranceName, result);
 
 				break;
 
 			case ORIENTATION_PERPENDICULARITY:
-				tmpBase = new ToleranceBase(base);
+				
 				result = parent->pTolerance->OrientationAngularity((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath, 90);
-				//tmpBase = new ToleranceBase(base);
-				frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+				frame = new ToleranceFrame(base, control, toleranceName, result);
 
 				break;
 
 			case RUNOUT_RADIAL:
 				result = NULL;
-				tmpBase = new ToleranceBase(base);
 				if (base->objMath->GetName() == CylinderApprox().GetName() && control->objMath->GetName() == CylinderApprox().GetName()) {
 					result = parent->pTolerance->RunOutRadial((CylinderApprox*)base->objMath, (CylinderApprox*)control->objMath);
-					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+					frame = new ToleranceFrame(base, control, toleranceName, result);
 				}
 				else if (base->objMath->GetName() == LineSegmentApprox().GetName() && control->objMath->GetName() == LineSegmentApprox().GetName()) {
 					result = parent->pTolerance->OrientationParallelism((LineSegmentApprox*)base->objMath, (LineSegmentApprox*)control->objMath);
-					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+					frame = new ToleranceFrame(base, control, toleranceName, result);
 				}
 				break;
 
 			case RUNOUT_FACE:
 				result = NULL;
-				tmpBase = new ToleranceBase(base);
 				if (base->objMath->GetName() == CylinderApprox().GetName() && control->objMath->GetName() == RectangleApprox().GetName()) {
 					result = parent->pTolerance->RunOutFace((CylinderApprox*)base->objMath, (RectangleApprox*)control->objMath);
-					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+					frame = new ToleranceFrame(base, control, toleranceName, result);
 				}
 				else if (base->objMath->GetName() == CylinderApprox().GetName() && control->objMath->GetName() == CircleApprox().GetName()) {
 					result = parent->pTolerance->RunOutFace((CylinderApprox*)base->objMath, (CircleApprox*)control->objMath);
-					frame = new ToleranceFrame(tmpBase, control, toleranceName, result);
+					frame = new ToleranceFrame(base, control, toleranceName, result);
 				}
 				break;
 

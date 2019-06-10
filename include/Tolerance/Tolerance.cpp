@@ -179,14 +179,16 @@ double Tolerance::LocationConcentricity(CircleApprox* circleA, CircleApprox* cir
 
 double Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB)
 {
+	
 	double bottomDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, cylinderB->PointBottomSurfaceCenter);
 	double topDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, cylinderB->PointTopSurfaceCenter);
-	
+
+
 	double max = bottomDistance;
 	if (topDistance > bottomDistance) {
 		max = topDistance;
 	}
-
+	TRACE("bottomDistance: %g, topDistance: %g\n", bottomDistance, topDistance);
 	return round(max, 3);
 }
 

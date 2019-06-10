@@ -30,8 +30,9 @@ public:
 	TOLERANCE_NAME toleranceName;
 
 	std::vector<ObjectApprox*>* objectsArray;
+	std::vector<ToleranceObject*>* toleranceObjectsArray;
 
-	ObjectApprox* base;
+	ToleranceBase* base;
 	ObjectApprox* control;
 
 	CStatic instruction;
@@ -45,6 +46,7 @@ private:
 	CMainFrame* parent;
 	void unselectAllObjects();
 	ObjectApprox* getSelectedObject();
+	ToleranceBase* getSelectedBase();
 	BOOL OnInitDialog();
 	void changeName();
 
