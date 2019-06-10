@@ -1086,14 +1086,45 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 	}
 	else {
 		if (base->objMath->GetName() == LineSegmentApprox().GetName()) {
-			ABNorm = VectorGeometric(((LineSegmentApprox*)base->objMath)->PointStart, ((LineSegmentApprox*)base->objMath)->PointEnd, true);
+			PointGeometric pLineStart = ((LineSegmentApprox*)base->objMath)->PointStart;
+			PointGeometric pLineEnd = ((LineSegmentApprox*)base->objMath)->PointEnd;
+			VectorGeometric AB = VectorGeometric(pLineStart, pLineEnd, false);
+			ABNorm = AB;
+			ABNorm.Normalize();
+
+			PointGeometric projectionPoint1 = AB.PointProjection(base->PointPosition, pLineStart); // Вдоль оси
+			
+
+			double lineLength = pLineStart.DistanceToPoint(pLineEnd);
+			if (pLineStart.DistanceToPoint(projectionPoint1) + pLineEnd.DistanceToPoint(projectionPoint1) <= lineLength + lineLength * 0.01) {
+				pStart = projectionPoint1;
+			}
+			else {
+				PointGeometric tmpEnd = pLineStart;
+				if (pLineStart.DistanceToPoint(projectionPoint1) < pLineEnd.DistanceToPoint(projectionPoint1)) {
+					tmpEnd = pLineStart;
+					pStart = projectionPoint1;
+				}
+				else {
+					tmpEnd = pLineEnd;
+					pStart = projectionPoint1;
+				}
+				
+				glLineWidth(2);
+				glBegin(GL_LINES);
+				glVertex3d(pStart.X, pStart.Y, pStart.Z);
+				glVertex3d(tmpEnd.X, tmpEnd.Y, tmpEnd.Z);
+				glEnd();
+				
+			}
 		}
 		else if (base->objMath->GetName() == CylinderApprox().GetName()) {
 			CylinderApprox *tmpCylinder = ((CylinderApprox*)base->objMath);
 			PointGeometric pAxialStart = tmpCylinder->PointTopSurfaceCenter;
 			PointGeometric pAxialEnd = tmpCylinder->PointBottomSurfaceCenter;
 			VectorGeometric AB = VectorGeometric(pAxialStart, pAxialEnd, false);
-			ABNorm = VectorGeometric(pAxialStart, pAxialEnd, true);
+			ABNorm = AB;
+			ABNorm.Normalize();
 
 			PointGeometric projectionPoint1 = AB.PointProjection(base->PointPosition, pAxialStart); // Вдоль оси
 			PointGeometric projectionPoint2 = AB.PointProjection(pAxialStart, base->PointPosition); // Вокруг оси
@@ -1130,9 +1161,6 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 		glVertex3d(pStart.X, pStart.Y, pStart.Z);
 		glVertex3d(pEnd.X, pEnd.Y, pEnd.Z);
 	glEnd();
-
-
-	
 
 	VectorGeometric lineVector = VectorGeometric(pStart, pEnd, true);
 	
@@ -1289,11 +1317,14 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	if (frame->Base != nullptr) {
 		//frameString.Format(L"%s %g %s", bageStr, frame->toleranceValue, frame->Base->baseName);
 		frameString.Format(L"%s %g %c", bageStr, frame->toleranceValue, frame->Base->baseChar);
-		boxWidth = (frameString.GetLength()-3.4) * distanceAimEye / 58;
+		boxWidth = (frameString.GetLength()-3.4) * distanceAimEye / 60;
 	}
 	else {
 		frameString.Format(L"%s %g", bageStr, frame->toleranceValue);
+		boxWidth = ((double)frameString.GetLength()/100) * distanceAimEye;
 	}
+	boxWidth = ((double)frameString.GetLength() / 100) * distanceAimEye;
+	//boxWidth = (frameString.GetLength() - 3.4) * distanceAimEye / 58;
 	frameString.Format(L"%s %g", bageStr, frame->toleranceValue);
 
 
