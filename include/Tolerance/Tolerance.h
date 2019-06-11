@@ -71,7 +71,6 @@ public:
 	VectorGeometric rotatePlane(PlaneApprox* plane, VectorGeometric axis, double a);
 	VectorGeometric rotatePlane(VectorGeometric* v, VectorGeometric axis, double a);
 
-private:
 	std::vector<ToleranceObject*>* toleranceObjectsArray; // Voronov
 	double AngleBetween(PlaneApprox plane1, PlaneApprox plane2);
 	double AngleBetween(VectorGeometric n1, VectorGeometric n2);
@@ -80,4 +79,5 @@ private:
 	double DistanceBetween(PlaneApprox plane, PointGeometric point);
 	double DistanceBetween(VectorGeometric planeNormal, PointGeometric point);
 	PointGeometric centerByPoints(PointGeometric* points, int arraySize);
+private:
 };

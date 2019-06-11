@@ -1662,8 +1662,74 @@ void COpenGLView::DrawOpenGL_Circle(GeomObjectApprox obj)
 		}		
 
 	glEnd();
-
 	glLineWidth(1);
+
+	/*
+	glPointSize(1);
+	glBegin(GL_POINTS);
+	for (int i = 0; i < obj.PointsForApprox.size(); i++) {
+		PointGeometric point = obj.PointsForApprox.operator[](i);
+		glVertex3d(point.X, point.Y, point.Z);
+	}
+	glEnd();
+
+	CircleApprox* circle = (CircleApprox*)& obj;
+	PointGeometric pmin;
+	PointGeometric pmax;
+	PointGeometric pCenter = circle->Line.Point;
+	VectorGeometric vecNorm = circle->Line.Vector;
+	vecNorm.Normalize();
+	PointGeometric pTop = pCenter + vecNorm * 10;
+	VectorGeometric AB = vecNorm;
+	AB.Normalize();
+	double ABLength = pCenter.DistanceToPoint(pTop);
+	double min = 1000;
+	double max = -1000;
+
+	for (int i = 0; i < circle->PointsForApprox.size(); i++) {
+		PointGeometric pointProjection = AB.PointProjection(circle->PointsForApprox.operator[](i), pCenter);
+		glBegin(GL_POINTS);
+			glVertex3d(pointProjection.X, pointProjection.Y, pointProjection.Z);
+		glEnd();
+
+		glBegin(GL_LINES);
+
+			glVertex3d(pointProjection.X, pointProjection.Y, pointProjection.Z);
+			glVertex3d(circle->PointsForApprox.operator[](i).X, circle->PointsForApprox.operator[](i).Y, circle->PointsForApprox.operator[](i).Z);
+
+		glEnd();
+
+
+		double distanceToCenter = pointProjection.DistanceToPoint(circle->PointsForApprox.operator[](i));
+
+		CString sizeValue = L"";
+		sizeValue.Format(L"%g", distanceToCenter);
+		glPushMatrix();
+
+		glRasterPos3f(circle->PointsForApprox.operator[](i).X, circle->PointsForApprox.operator[](i).Y, circle->PointsForApprox.operator[](i).Z);
+		kioFont->RussianFont->Render(sizeValue);
+		glPopMatrix();
+
+		TRACE("distance: %g\n", distanceToCenter);
+		
+			if (distanceToCenter > max) {
+				max = distanceToCenter;
+				pmax = circle->PointsForApprox.operator[](i);
+			}else if (distanceToCenter < min) {
+				min = distanceToCenter;
+				pmin = circle->PointsForApprox.operator[](i);
+			}
+	}
+
+	glPointSize(15);
+	glBegin(GL_POINTS);
+		glVertex3d(pCenter.X, pCenter.Y, pCenter.Z);
+		glVertex3d(pmax.X, pmax.Y, pmax.Z);
+		glVertex3d(pmin.X, pmin.Y, pmin.Z);
+	glEnd();
+	*/
+
+	
 }
 ///////////////////////////////////////////////////////
 
@@ -1682,6 +1748,8 @@ void COpenGLView::DrawOpenGL_Point(PointApprox *obj)
 	glEnd();
 
 	glPointSize(1);
+
+
 }
 ///////////////////////////////////////////////////////
 
@@ -1700,9 +1768,48 @@ void COpenGLView::DrawOpenGL_LineSegment(LineSegmentApprox *obj)
 					(GLfloat)obj->PointEnd.Y /*- centerOfAllObjects.Y*/,	
 					(GLfloat)obj->PointEnd.Z /*- centerOfAllObjects.Z*/);
 	glEnd();
-
-
 	glLineWidth(1);
+
+
+
+	/*
+	glPointSize(1);
+	glBegin(GL_POINTS);
+	for (int i = 0; i < obj->PointsForApprox.size(); i++) {
+		PointGeometric point = obj->PointsForApprox.operator[](i);
+		glVertex3d(point.X, point.Y, point.Z);
+	}
+	glEnd();
+
+	PointGeometric pStart = obj->PointsForApprox.operator[](0);
+	PointGeometric pEnd = obj->PointsForApprox.operator[](obj->PointsForApprox.size()-1);
+	PointGeometric pMax;
+	
+	double max = 0;
+	for (int i = 1; i < obj->PointsForApprox.size() - 1; i++) {
+		double distance = Tolerance().DistanceBetween(pStart, pEnd, obj->PointsForApprox.operator[](i));
+
+		CString sizeValue = L"";
+		sizeValue.Format(L"%g", distance);
+		glPushMatrix();
+
+		glRasterPos3f(obj->PointsForApprox.operator[](i).X, obj->PointsForApprox.operator[](i).Y, obj->PointsForApprox.operator[](i).Z);
+		kioFont->RussianFont->Render(sizeValue);
+		glPopMatrix();
+
+		if (distance > max) {
+			max = distance;
+			pMax = obj->PointsForApprox.operator[](i);
+			TRACE("distance: %g\n", distance);
+		}
+	}
+
+	glPointSize(15);
+	glBegin(GL_POINTS);
+
+		glVertex3d(pMax.X, pMax.Y, pMax.Z);
+	
+	glEnd();*/
 }
 ///////////////////////////////////////////////////////
 
@@ -1737,6 +1844,77 @@ void COpenGLView::DrawOpenGL_PlaneViaRectangle(GeomObjectApprox obj)
 		
 	}
 	glEnd();
+
+	/*
+	glPointSize(2);
+	glBegin(GL_POINTS);
+	for (int i = 0; i < obj.PointsForApprox.size(); i++) {
+		PointGeometric point = obj.PointsForApprox.operator[](i);
+		glVertex3d(point.X, point.Y, point.Z);
+	}
+	glEnd();
+
+	PlaneApprox *plane = (PlaneApprox*)& obj;
+	PointGeometric pmin;
+	PointGeometric pmax;
+
+	PointGeometric pCenter = plane->Line.Point;
+	VectorGeometric vecNorm = plane->Line.Vector;
+	vecNorm.Normalize();
+	PointGeometric pTop = pCenter + vecNorm * 10;
+	VectorGeometric AB = VectorGeometric(pCenter, pTop, false);
+	double ABLength = pCenter.DistanceToPoint(pTop);
+	double min = -1000;
+	double max = -1000;
+
+	for (int i = 0; i < plane->PointsForApprox.size(); i++) {
+		PointGeometric pointProjection = AB.PointProjection(plane->PointsForApprox.operator[](i), pCenter);
+		glBegin(GL_POINTS);
+			glVertex3d(pointProjection.X, pointProjection.Y, pointProjection.Z);
+		glEnd();
+
+		glBegin(GL_LINES);
+		
+			glVertex3d(pointProjection.X, pointProjection.Y, pointProjection.Z);
+			glVertex3d(plane->PointsForApprox.operator[](i).X, plane->PointsForApprox.operator[](i).Y, plane->PointsForApprox.operator[](i).Z);
+		
+		glEnd();
+
+
+		double distanceToCenter = pointProjection.DistanceToPoint(pCenter);
+
+		CString sizeValue = L"";
+		sizeValue.Format(L"%g", distanceToCenter);
+		glPushMatrix();
+
+		glRasterPos3f(plane->PointsForApprox.operator[](i).X, plane->PointsForApprox.operator[](i).Y, plane->PointsForApprox.operator[](i).Z);
+		kioFont->RussianFont->Render(sizeValue);
+		glPopMatrix();
+
+		TRACE("distance: %g\n", distanceToCenter);
+		double distanceToTop = pointProjection.DistanceToPoint(pTop);
+		if (distanceToCenter + distanceToTop <= ABLength) {
+			if (distanceToCenter > max) {
+				max = distanceToCenter;
+				pmax = plane->PointsForApprox.operator[](i);
+			}
+		}
+		else {
+			if (distanceToCenter > min) {
+				min = distanceToCenter;
+				pmin = plane->PointsForApprox.operator[](i);
+			}
+		}
+	}
+
+	glPointSize(7);
+	glBegin(GL_POINTS);
+
+		glVertex3d(pmax.X, pmax.Y, pmax.Z);
+		glVertex3d(pmin.X, pmin.Y, pmin.Z);
+
+	glEnd();*/
+
 }
 ///////////////////////////////////////////////////////
 

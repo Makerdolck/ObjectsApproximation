@@ -37,41 +37,61 @@ double Tolerance::FormStraightness(LineSegmentApprox* line)
 
 double Tolerance::FormFlatness(PlaneApprox* plane)
 {
-	double min = DistanceBetween(*plane, plane->PointsForApprox.operator[](0));
-	double max = min;
+	
+	PointGeometric pCenter = plane->Line.Point;
+	VectorGeometric vecNorm = plane->Line.Vector;
+	vecNorm.Normalize();
+	PointGeometric pTop = pCenter + vecNorm * 10;
+	VectorGeometric AB = VectorGeometric(pCenter, pTop, false);
+	double ABLength = pCenter.DistanceToPoint(pTop);
+	double min = -1000;
+	double max = -1000;
+
 	for (int i = 0; i < plane->PointsForApprox.size(); i++) {
-		double result = DistanceBetween(*plane, plane->PointsForApprox.operator[](i));
-		if (result > max) {
-			max = result;
+		PointGeometric pointProjection = AB.PointProjection(plane->PointsForApprox.operator[](i), pCenter);
+		double distanceToCenter = pointProjection.DistanceToPoint(pCenter);
+		TRACE("distance: %g\n", distanceToCenter);
+		double distanceToTop = pointProjection.DistanceToPoint(pTop);
+		if (distanceToCenter + distanceToTop <= ABLength) {
+			if (distanceToCenter > max) {
+				max = distanceToCenter;
+			}
 		}
-		if (result < min) {
-			min = result;
+		else {
+			if (distanceToCenter > min) {
+				min = distanceToCenter;
+			}
 		}
 	}
-
+	TRACE("Max: %g; Min: %g\n", max, min);
 	return round(fabs(max - min), 3);
 }
 
 double Tolerance::FormRoundness(CircleApprox* circle)
 {
-	double min = 0;
-	double max = 0;
-	PointGeometric centerPoint = centerByPoints(&circle->PointsForApprox[0], circle->PointsForApprox.size());
-	min = DistanceBetween(centerPoint, circle->PointsForApprox.operator[](0));
-	
+	PointGeometric pCenter = circle->Line.Point;
+	VectorGeometric vecNorm = circle->Line.Vector;
+	vecNorm.Normalize();
+
+	PointGeometric pointProjection = vecNorm.PointProjection(circle->PointsForApprox.operator[](0), pCenter);
+	double distanceToCenter = pointProjection.DistanceToPoint(circle->PointsForApprox.operator[](0));
+
+	double min = distanceToCenter;
+	double max = distanceToCenter;
 
 	for (int i = 0; i < circle->PointsForApprox.size(); i++) {
-		PointGeometric tmpPoint = circle->PointsForApprox.operator[](i);
-		if (max < DistanceBetween(centerPoint, tmpPoint)) {
-			max = DistanceBetween(centerPoint, tmpPoint);
-		}
+		pointProjection = vecNorm.PointProjection(circle->PointsForApprox.operator[](i), pCenter);
+		distanceToCenter = pointProjection.DistanceToPoint(circle->PointsForApprox.operator[](i));
 
-		if (min > DistanceBetween(centerPoint, tmpPoint)) {
-			min = DistanceBetween(centerPoint, tmpPoint);
+		if (distanceToCenter > max) {
+			max = distanceToCenter;
+		}
+		if (distanceToCenter < min) {
+			min = distanceToCenter;
 		}
 	}
 
-	return round(fabs(max - min), 3);
+	return round(fabs(fabs(max)-fabs(min)),3);
 }
 
 double Tolerance::FormCylindricity(CylinderApprox* cylinder)
@@ -80,7 +100,27 @@ double Tolerance::FormCylindricity(CylinderApprox* cylinder)
 	PointGeometric topCenter = cylinder->PointTopSurfaceCenter;
 	VectorGeometric axial = VectorGeometric(bottomCenter, topCenter, false);
 	
-	double max = axial.DistanceToPoint(cylinder->PointsForApprox.operator[](0), bottomCenter);
+	PointGeometric pointProjection = axial.PointProjection(cylinder->PointsForApprox.operator[](0), topCenter);
+	double distanceToCenter = pointProjection.DistanceToPoint(cylinder->PointsForApprox.operator[](0));
+
+	double min = distanceToCenter;
+	double max = distanceToCenter;
+
+	for (int i = 0; i < cylinder->PointsForApprox.size(); i++) {
+		pointProjection = axial.PointProjection(cylinder->PointsForApprox.operator[](i), topCenter);
+		distanceToCenter = pointProjection.DistanceToPoint(cylinder->PointsForApprox.operator[](i));
+
+		if (distanceToCenter > max) {
+			max = distanceToCenter;
+		}
+		if (distanceToCenter < min) {
+			min = distanceToCenter;
+		}
+	}
+
+	return round(fabs(fabs(max) - fabs(min)), 3);
+
+	/*double max = axial.DistanceToPoint(cylinder->PointsForApprox.operator[](0), bottomCenter);
 	double min = axial.DistanceToPoint(cylinder->PointsForApprox.operator[](0), bottomCenter);
 	for (int i = 0; i < cylinder->PointsForApprox.size(); i++) {
 		double distance = VectorGeometric(bottomCenter, topCenter, false).DistanceToPoint(cylinder->PointsForApprox.operator[](i), bottomCenter);
@@ -92,7 +132,7 @@ double Tolerance::FormCylindricity(CylinderApprox* cylinder)
 		}
 	}
 
-	return round(fabs(max - min), 3);
+	return round(fabs(max - min), 3);*/
 }
 
 double Tolerance::OrientationParallelism(PlaneApprox *base, PlaneApprox *control)
