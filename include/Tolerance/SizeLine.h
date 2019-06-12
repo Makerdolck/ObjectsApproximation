@@ -21,6 +21,8 @@ public:
 
 	PointGeometric	PointStart;
 	PointGeometric	PointEnd; 
+
+	GeomObjectApprox* objMath2;
 	//double offset = 0; // Расстояние от объекта до размерной линии
 
 	ToleranceObjectType getType();

@@ -5,6 +5,7 @@
 #include <vector>
 #include "includes.h"
 
+#define M_PI 3.1415926535897932384626433832795;
 
 // ISO 1101:2017 http://geo-dim-tol.ir/files/iso1101.pdf
 // √Œ—“ 53442-2015 https://internet-law.ru/gosts/gost/60536/

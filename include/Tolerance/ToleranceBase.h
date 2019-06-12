@@ -18,6 +18,7 @@ public:
 	ToleranceBase(ObjectApprox* obj);
 	ToleranceBase(LineSegmentApprox* obj);
 	ToleranceBase(PlaneApprox* obj);
+	ToleranceBase(CircleApprox* obj);
 	ToleranceBase(AxialLine* obj);
 
 	ToleranceBase(ToleranceObject* obj);

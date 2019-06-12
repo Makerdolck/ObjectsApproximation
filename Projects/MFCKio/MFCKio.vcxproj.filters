@@ -145,6 +145,9 @@
     <ClCompile Include="..\..\include\OutSource\KIOFont.cpp">
       <Filter>Source Files\OutSource</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\include\Tolerance\AngleLine.cpp">
+      <Filter>Source Files\Tolerance</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTreeView.h">
@@ -383,6 +386,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ftgl\FTVectoriser.h">
       <Filter>Source Files\OutSource\ftgl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Tolerance\AngleLine.h">
+      <Filter>Header Files\Tolerance</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

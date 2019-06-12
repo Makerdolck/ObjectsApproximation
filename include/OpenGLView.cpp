@@ -10,7 +10,7 @@
 #include <gl/Glaux.h>
 #include "OpenGLView.h"
 #include "gl/GL.h"
-
+#define M_PI 3.1415926535897932384626433832795;
 
 GLdouble		m_dModelViewMatrix[16];
 GLdouble		m_dProjectionMatrix[16];
@@ -929,6 +929,8 @@ void COpenGLView::PaintScene(GLenum mode)
 				DrawOpenGL_ToleranceFrame((ToleranceFrame*)toleranceObject);
 			}else if (dynamic_cast<ToleranceBase*>(toleranceObject)) {
 				DrawOpenGL_ToleranceBase((ToleranceBase*)toleranceObject);
+			}else if (dynamic_cast<AngleLine*>(toleranceObject)) {
+				DrawOpenGL_AngleLine((AngleLine*)toleranceObject);
 			}
 		}
 	}
@@ -1151,6 +1153,17 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 		else if (base->objMath->GetName() == RectangleApprox().GetName()) {
 			ABNorm = ((RectangleApprox*)base->objMath)->VectorX;
 			ABNorm.Normalize();
+		}else if (base->objMath->GetName() == CircleApprox().GetName()) {
+			CircleApprox circle = *((CircleApprox*)base->objMath);
+			ABNorm = circle.Line.Vector;
+			ABNorm.Normalize();
+			pStart = circle.Line.Point;
+			PlaneGeometric circlePlane = PlaneGeometric(pStart, circle.Line.Vector);
+			PointGeometric pEndProj = circlePlane.PointProjection(pEnd);
+			pEnd = pEndProj;
+			VectorGeometric radiusVector = VectorGeometric(pStart, pEndProj, true);
+			ABNorm = ABNorm ^ radiusVector;
+			pStart = pStart + radiusVector * circle.Radius;
 		}
 
 
@@ -1261,6 +1274,17 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	}else if (frame->objMath->GetName() == RectangleApprox().GetName()) {
 		ABNorm = ((RectangleApprox*)frame->objMath)->VectorX;
 		ABNorm.Normalize();
+	}else if (frame->objMath->GetName() == CircleApprox().GetName()) {
+		CircleApprox circle = *((CircleApprox*)frame->objMath);
+		ABNorm = circle.Line.Vector;
+		ABNorm.Normalize();
+		pStart = circle.Line.Point;
+		PlaneGeometric circlePlane = PlaneGeometric(pStart, circle.Line.Vector);
+		PointGeometric pEndProj = circlePlane.PointProjection(pEnd);
+		pEnd = pEndProj;
+		VectorGeometric radiusVector = VectorGeometric(pStart, pEndProj, true);
+		ABNorm = ABNorm ^ radiusVector;
+		pStart = pStart + radiusVector * circle.Radius;
 	}
 
 	glLineWidth(2);
@@ -1371,9 +1395,68 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	glPopMatrix();
 }
 
+void COpenGLView::DrawOpenGL_AngleLine(AngleLine* obj)
+{
+	glLineWidth(1);
+	ConeApprox* cone = (ConeApprox*)obj->objMath;
+	PointGeometric pEnd = obj->PointPosition;
+	PointGeometric pointOnAB = cone->PointBottomSurfaceCenter;
+	VectorGeometric AB = VectorGeometric(cone->PointBottomSurfaceCenter, cone->PointTopSurfaceCenter, false);
+	VectorGeometric ABNorm = AB;
+	ABNorm.Normalize();
+
+	PointGeometric coneTopPoint = pointOnAB + ABNorm * cone->HeightPhantom;
+
+	PointGeometric projectionPoint1 = AB.PointProjection(obj->PointPosition, pointOnAB); // Вдоль оси
+	double coneHeight = pointOnAB.DistanceToPoint(cone->PointTopSurfaceCenter);
+	if (projectionPoint1.DistanceToPoint(pointOnAB) + projectionPoint1.DistanceToPoint(cone->PointTopSurfaceCenter) <= coneHeight + 0.01) {
+		projectionPoint1 = projectionPoint1;
+	}
+	else if (projectionPoint1.DistanceToPoint(pointOnAB) < projectionPoint1.DistanceToPoint(cone->PointTopSurfaceCenter)) {
+		projectionPoint1 = pointOnAB; }
+	else { projectionPoint1 = cone->PointTopSurfaceCenter; }
+
+	PointGeometric projectionPoint2 = AB.PointProjection(pointOnAB, obj->PointPosition); // Вокруг оси
+	VectorGeometric AprojVec2 = VectorGeometric(pointOnAB, projectionPoint2, true);
+
+	double projToPhantomDistance = projectionPoint1.DistanceToPoint(coneTopPoint);
+	double angleInRad = cone->Angle / 180 * M_PI;
+	double radiusInProj = projToPhantomDistance * tan(angleInRad);
+	PointGeometric radiusPoint = projectionPoint1 + AprojVec2 * radiusInProj; // Точка на окружности
+
+	//От точки начала до точки остановки 
+	glBegin(GL_LINES);
+	glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
+	glVertex3d(pEnd.X, pEnd.Y, pEnd.Z);
+	glEnd();
+
+	// Треугольник
+	double triangleWidth = 1;
+	double triangleHeight = triangleWidth;
+	VectorGeometric lineVec = VectorGeometric(radiusPoint, pEnd, true);
+	PointGeometric leftTrianglePoint = radiusPoint + ABNorm * triangleWidth + lineVec * triangleHeight;
+	PointGeometric rightTrianglePoint = radiusPoint - ABNorm * triangleWidth + lineVec * triangleHeight;
+	
+	glBegin(GL_TRIANGLES);
+	glVertex3d(leftTrianglePoint.X, leftTrianglePoint.Y, leftTrianglePoint.Z);
+	glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
+	glVertex3d(rightTrianglePoint.X, rightTrianglePoint.Y, rightTrianglePoint.Z);
+
+	glEnd();
+	
+
+	// Текст
+	CString sizeValue = L"";
+	sizeValue.Format(L"\u299F %g\u00B0", Tolerance().round(((ConeApprox*)obj->objMath)->Angle, 2));
+	glPushMatrix();
+	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
+	kioFont->BadgeFont->Render(sizeValue);
+	glPopMatrix();
+}
+
 void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 {
-	glLineWidth(1.49);
+	glLineWidth(1);
 	PointGeometric pMouseEnd = obj->PointPosition;
 
 	VectorGeometric AB = VectorGeometric(obj->PointStart, obj->PointEnd, false);

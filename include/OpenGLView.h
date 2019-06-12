@@ -152,10 +152,11 @@ protected:
 	// Voronov
 	void DrawOpenGL_ToleranceBase(ToleranceBase* base);
 	void DrawOpenGL_ToleranceFrame(ToleranceFrame* frame);
+	void DrawOpenGL_AngleLine(AngleLine* obj);
+
 	void DrawOpenGL_SizeLine(SizeLine* obj);
 	void DrawOpenGL_DiameterLine(DiameterLine* obj);
 	void DrawOpenGL_AxialLine(AxialLine* obj);
-	void DrawOpenGL_Tolerance_Form_Roudness(FormRoundnessToleranceObject* obj);
 	double angle_point(PointGeometric a, PointGeometric b, PointGeometric c);
 	//-----------------------
 

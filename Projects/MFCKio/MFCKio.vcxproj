@@ -255,6 +255,7 @@
     <ClInclude Include="..\..\include\OutSource\KIOFont.h" />
     <ClInclude Include="..\..\include\OutSource\Matrix.h" />
     <ClInclude Include="..\..\include\OutSource\Reference.h" />
+    <ClInclude Include="..\..\include\Tolerance\AngleLine.h" />
     <ClInclude Include="..\..\include\Tolerance\AxialLine.h" />
     <ClInclude Include="..\..\include\Tolerance\DiameterLine.h" />
     <ClInclude Include="..\..\include\Tolerance\FormRoundnessToleranceObject.h" />
@@ -308,6 +309,7 @@
     <ClCompile Include="..\..\include\OutSource\KIOFont.cpp" />
     <ClCompile Include="..\..\include\OutSource\Matrix.cpp" />
     <ClCompile Include="..\..\include\OutSource\Reference.cpp" />
+    <ClCompile Include="..\..\include\Tolerance\AngleLine.cpp" />
     <ClCompile Include="..\..\include\Tolerance\AxialLine.cpp" />
     <ClCompile Include="..\..\include\Tolerance\DiameterLine.cpp" />
     <ClCompile Include="..\..\include\Tolerance\FormRoundessToleranceObject.cpp" />

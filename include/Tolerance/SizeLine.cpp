@@ -7,6 +7,8 @@ SizeLine::SizeLine(ObjectApprox* obj1, ObjectApprox* obj2)
 {
 	this->PointStart = obj1->objMath->Line.Point;
 	this->PointEnd = obj2->objMath->Line.Point;
+	objMath = obj1->objMath;
+	objMath2 = obj2->objMath;
 }
 
 SizeLine::SizeLine(PointApprox *point1, PointApprox *point2)

@@ -40,6 +40,14 @@ ToleranceBase::ToleranceBase(PlaneApprox* obj)
 	charStack.pop_back();
 }
 
+ToleranceBase::ToleranceBase(CircleApprox* obj)
+{
+	this->objMath = obj;
+	PointStart = obj->PointsForApprox.operator[](0);
+	baseChar = charStack.back();
+	charStack.pop_back();
+}
+
 
 
 ToleranceBase::ToleranceBase(AxialLine* obj)
