@@ -363,7 +363,6 @@ BOOL COpenGLView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
 
 	int fSize = fabs(32 - fabs(distanceAimEye / 20));
-	TRACE("fSize: %d, distnceAimEye: %g\n", fSize, distanceAimEye);
 	if (distanceAimEye > 180) {
 		fSize = 22;
 	}
@@ -785,7 +784,6 @@ ToleranceObject* COpenGLView::GetToleranceObjectUnderMouse(CPoint point)
 		}
 
 		a = selectBuf[3 + n * 4];
-		TRACE("a = %d\n", a);
 		if (toleranceObjectsArray != nullptr)
 		{
 			for (int i = 0; i < (int)toleranceObjectsArray->size(); i++)

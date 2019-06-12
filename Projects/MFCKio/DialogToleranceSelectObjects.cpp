@@ -188,15 +188,16 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectControlObject()
 	
 	parent->pView->isToleranceAction = true;
 	control = getSelectedObject();
-	if (base != nullptr) {
+	if (control != nullptr) {
 		((CStatic*)GetDlgItem(IDC_TEXT_CONTROL_NAME))->SetWindowTextW(control->Name.c_str());
 		((CStatic*)GetDlgItem(IDC_TEXT_CONTROL_NAME))->EnableWindow(true);
+		if (base != nullptr) {
+			((CStatic*)GetDlgItem(IDOK))->EnableWindow(true);
+		}
 	}
 	
 	unselectAllObjects();
-	if (base != nullptr && control != nullptr) {
-		((CStatic*)GetDlgItem(IDOK))->EnableWindow(true);
-	}
+	
 }
 
 
