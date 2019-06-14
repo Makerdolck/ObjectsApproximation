@@ -80,8 +80,8 @@ double ConeApprox::FunctionApprox(PointGeometric *points, int arraySize)		// R -
 		R = Line.DistanceToPoint(points[i]);
 
 		r = height / tan(Angle* PI_Approx / 180) + RadiusSmaller;
-
-		sum += pow(R - r, 2);
+		
+		sum += pow((R - r) * sin(Angle * PI_Approx / 180), 2);
 	}
 
 	return sum;
