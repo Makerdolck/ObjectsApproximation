@@ -12,7 +12,7 @@
 class AxialLine : public ToleranceObject
 {
 public:
-	AxialLine(CircleApprox* obj); // Удалить
+	
 	AxialLine(CylinderApprox* obj);
 	AxialLine(ConeApprox* obj);
 	~AxialLine();

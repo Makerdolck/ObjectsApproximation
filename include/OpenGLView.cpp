@@ -362,18 +362,8 @@ BOOL COpenGLView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 	pointEyeLook = lineOffset.CreatePointOnDistance(distanceAimEye);
 
-	int fSize = fabs(32 - fabs(distanceAimEye / 20));
-	if (distanceAimEye > 180) {
-		fSize = 22;
-	}
-	else if (distanceAimEye > 100) {
-		fSize = 32;
-	}else if (distanceAimEye > 80) {
-		fSize = 36;
-	}else if (distanceAimEye > 0) {
-		fSize = 50;
-	}
-	kioFont->SetFontSize(32); // Изменение размеров шрифта при масштабе
+
+	//kioFont->SetFontSize(32); // Изменение размеров шрифта при масштабе
 
 	Invalidate(FALSE);
 
@@ -564,21 +554,18 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		return;
 	}
-	
-	
+
 	ObjectApprox *objApprox = GetObjectUnderMouse(point);
 	ToleranceObject *toleranceObj = GetToleranceObjectUnderMouse(point);
-	
 
 	int a = 0;
 	if (objApprox != nullptr)
 	{
 		objApprox->flagSelected = !objApprox->flagSelected;
 	}
-	else																// Make all elements not selected
+	else																
 	{
 		if (toleranceObj != nullptr) {
-			//toleranceObj->flagSelected = !toleranceObj->flagSelected;
 			startSelectObject(toleranceObj);
 		}
 		else {
@@ -1049,7 +1036,6 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 	PointGeometric pEnd = base->PointPosition;
 	VectorGeometric ABNorm;
 
-
 	if (base->toleranceObject != nullptr) {
 		if (dynamic_cast<AxialLine*>(base->toleranceObject)) {
 			PointGeometric pAxialStart = ((AxialLine*)base->toleranceObject)->startPoint;
@@ -1179,10 +1165,10 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 	double triangle_height = 0.5;
 	double triangle_width = triangle_height;
 
+	// Треугольник
 	PointGeometric rightPoint = pStart + ABNorm * triangle_width;
 	PointGeometric leftPoint = pStart - ABNorm * triangle_width;
 	PointGeometric topPoint = pStart + lineVector * triangle_height;
-	// Треугольник
 	glBegin(GL_TRIANGLES);
 		glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
 		glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
@@ -1190,13 +1176,14 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 	glEnd();
 
 	
-
+	// Буква базы
 	glPushMatrix();
 	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
 	kioFont->RussianFont->Render(base->baseChar);
 	glPopMatrix();
 
 
+	
 	float modelview[16];
 	int i, j;
 	// save the current modelview matrix
@@ -1216,9 +1203,9 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 	// set the modelview with no rotations and scaling
 	glLoadMatrixf(modelview);
 	
+	// Рамка допуска
 	double boxWidth = 1 * distanceAimEye / 55;
 	double boxHeight = 1.1 * distanceAimEye / 55;
-	
 	glBegin(GL_LINE_LOOP);
 		glVertex2d(0, 0);
 		glVertex2d(boxWidth, 0);
@@ -1226,7 +1213,6 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 		glVertex2d(0, boxHeight);
 		glVertex2d(0, 0);
 	glEnd();
-
 	glPopMatrix();
 }
 
@@ -1234,9 +1220,6 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 {
 	PointGeometric pStart = frame->PointStart;
 	PointGeometric pEnd = frame->PointPosition;
-
-
-
 	VectorGeometric ABNorm;
 	
 	if (frame->objMath->GetName() == LineSegmentApprox().GetName()) {
@@ -1292,38 +1275,23 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	glEnd();
 	VectorGeometric lineVector = VectorGeometric(pStart, pEnd, true);
 
-
+	// Треугольник
 	double triangle_height = 0.6;
 	double triangle_width = 0.3;
-
 	PointGeometric rightPoint = pStart + ABNorm * triangle_width + lineVector * triangle_height;
 	PointGeometric leftPoint = pStart - ABNorm * triangle_width + lineVector * triangle_height;
 	PointGeometric topPoint = pStart;
-	// Треугольник
 	glBegin(GL_TRIANGLES);
 	glVertex3d(rightPoint.X, rightPoint.Y, rightPoint.Z);
 	glVertex3d(leftPoint.X, leftPoint.Y, leftPoint.Z);
 	glVertex3d(topPoint.X, topPoint.Y, topPoint.Z);
 	glEnd();
 
-
-	
-	CString bageStr = frame->toleranceBage;
-	
-	
-
-
-	
-
-
 	float modelview[16];
 	int i, j;
 	glPushMatrix();
 	glTranslated(pEnd.X, pEnd.Y, pEnd.Z);
-	// Получаем текущую матрицу
 	glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
-	
-	// убираем все повороты
 	for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++) {
 			if (i == j)
@@ -1331,32 +1299,22 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 			else
 				modelview[i * 4 + j] = 0.0;
 		}
-	// Устанавливаем камеру без поворотов
 	glLoadMatrixf(modelview);
-	double k = pointEyeLook.DistanceToPoint(pEnd);
-	double boxWidth = 4.6* distanceAimEye / 60;
+	
+	CString bageStr = frame->toleranceBage;
 	CString frameString = L"";
 	if (frame->Base != nullptr) {
-		//frameString.Format(L"%s %g %s", bageStr, frame->toleranceValue, frame->Base->baseName);
 		frameString.Format(L"%s %g %c", bageStr, frame->toleranceValue, frame->Base->baseChar);
-		boxWidth = (frameString.GetLength()-3.4) * distanceAimEye / 60;
 	}
 	else {
 		frameString.Format(L"%s %g", bageStr, frame->toleranceValue);
-		boxWidth = ((double)frameString.GetLength()/100) * distanceAimEye;
 	}
-	boxWidth = ((double)frameString.GetLength() / 100) * distanceAimEye;
-	//boxWidth = (frameString.GetLength() - 3.4) * distanceAimEye / 58;
+	double boxWidth = ((double)frameString.GetLength() / 100) * distanceAimEye;
 	frameString.Format(L"%s %g", bageStr, frame->toleranceValue);
 
 
-
-	
-	
-
-	//double boxWidth = frameString.GetLength() * k / 60;
-	double bageWidth = 1 * distanceAimEye / 60;
-	double boxHeight = 1 * distanceAimEye / 60;
+	double bageWidth = distanceAimEye / 60;
+	double boxHeight = distanceAimEye / 60;
 
 	glBegin(GL_LINE_LOOP);
 		glVertex2d(0, 0);
@@ -1382,158 +1340,12 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 			glVertex2d(boxWidth-bageWidth, 0);
 			glVertex2d(boxWidth-bageWidth, boxHeight);
 		glEnd();
-		//frameString.Format(L"%c", frame->Base->baseChar);
-		//frameString.Format(L"%c", 'A');
 		glPushMatrix();
 		glRasterPos3f(boxWidth - bageWidth, 0,0);
 		kioFont->RussianFont->Render(frame->Base->baseChar);
-		glPopMatrix();
 	}
-	
 	glPopMatrix();
 }
-
-void COpenGLView::DrawOpenGL_AngleLine(AngleLine* obj)
-{
-	glLineWidth(1);
-	ConeApprox* cone = (ConeApprox*)obj->objMath;
-	PointGeometric pEnd = obj->PointPosition;
-	PointGeometric pointOnAB = cone->PointBottomSurfaceCenter;
-	VectorGeometric AB = VectorGeometric(cone->PointBottomSurfaceCenter, cone->PointTopSurfaceCenter, false);
-	VectorGeometric ABNorm = AB;
-	ABNorm.Normalize();
-
-	PointGeometric coneTopPoint = pointOnAB + ABNorm * cone->HeightPhantom;
-
-	PointGeometric projectionPoint1 = AB.PointProjection(obj->PointPosition, pointOnAB); // Вдоль оси
-	double coneHeight = pointOnAB.DistanceToPoint(cone->PointTopSurfaceCenter);
-	if (projectionPoint1.DistanceToPoint(pointOnAB) + projectionPoint1.DistanceToPoint(cone->PointTopSurfaceCenter) <= coneHeight + 0.01) {
-		projectionPoint1 = projectionPoint1;
-	}
-	else if (projectionPoint1.DistanceToPoint(pointOnAB) < projectionPoint1.DistanceToPoint(cone->PointTopSurfaceCenter)) {
-		projectionPoint1 = pointOnAB; }
-	else { projectionPoint1 = cone->PointTopSurfaceCenter; }
-
-	PointGeometric projectionPoint2 = AB.PointProjection(pointOnAB, obj->PointPosition); // Вокруг оси
-	VectorGeometric AprojVec2 = VectorGeometric(pointOnAB, projectionPoint2, true);
-
-	double projToPhantomDistance = projectionPoint1.DistanceToPoint(coneTopPoint);
-	double angleInRad = cone->Angle / 180 * M_PI;
-	double radiusInProj = projToPhantomDistance * tan(angleInRad);
-	PointGeometric radiusPoint = projectionPoint1 + AprojVec2 * radiusInProj; // Точка на окружности
-
-	//От точки начала до точки остановки 
-	glBegin(GL_LINES);
-	glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
-	glVertex3d(pEnd.X, pEnd.Y, pEnd.Z);
-	glEnd();
-
-	// Треугольник
-	double triangleWidth = 1;
-	double triangleHeight = triangleWidth;
-	VectorGeometric lineVec = VectorGeometric(radiusPoint, pEnd, true);
-	PointGeometric leftTrianglePoint = radiusPoint + ABNorm * triangleWidth + lineVec * triangleHeight;
-	PointGeometric rightTrianglePoint = radiusPoint - ABNorm * triangleWidth + lineVec * triangleHeight;
-	
-	glBegin(GL_TRIANGLES);
-	glVertex3d(leftTrianglePoint.X, leftTrianglePoint.Y, leftTrianglePoint.Z);
-	glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
-	glVertex3d(rightTrianglePoint.X, rightTrianglePoint.Y, rightTrianglePoint.Z);
-
-	glEnd();
-	
-
-	// Текст
-	CString sizeValue = L"";
-	sizeValue.Format(L"\u299F %g\u00B0", Tolerance().round(((ConeApprox*)obj->objMath)->Angle, 2));
-	glPushMatrix();
-	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
-	kioFont->BadgeFont->Render(sizeValue);
-	glPopMatrix();
-}
-
-void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
-{
-	glLineWidth(1);
-	PointGeometric pMouseEnd = obj->PointPosition;
-
-	VectorGeometric AB = VectorGeometric(obj->PointStart, obj->PointEnd, false);
-	VectorGeometric ABNormalized = VectorGeometric(obj->PointStart, obj->PointEnd, true);
-
-	PointGeometric projectionPoint1 = AB.PointProjection(pMouseEnd, obj->PointStart); // Вдоль оси
-
-	VectorGeometric ABPerp = VectorGeometric(projectionPoint1, pMouseEnd, true); // Перпендикуляр вектору между объектами в сторону курсора мыши
-
-	// Высота параллельных прямых
-	double height = pMouseEnd.DistanceToPoint(projectionPoint1);
-
-	// Параллельные прямые
-	PointGeometric leftLineTop = obj->PointStart + ABPerp * height;
-	PointGeometric rightLineTop = obj->PointEnd + ABPerp * height;
-	glBegin(GL_LINES);
-		glVertex3d(obj->PointStart.X, obj->PointStart.Y, obj->PointStart.Z);
-		glVertex3d(leftLineTop.X , leftLineTop.Y, leftLineTop.Z);
-	glEnd();
-
-	glBegin(GL_LINES);
-		glVertex3d(obj->PointEnd.X, obj->PointEnd.Y, obj->PointEnd.Z);
-		glVertex3d(rightLineTop.X, rightLineTop.Y, rightLineTop.Z);
-	glEnd();
-
-	// Ушки
-	double dh = 0.3;
-	PointGeometric leftLineTopDh = obj->PointStart + ABPerp * (height + dh);
-	PointGeometric rightLineTopDh = obj->PointEnd + ABPerp * (height + dh);
-	glBegin(GL_LINES);
-		glVertex3d(leftLineTop.X, leftLineTop.Y, leftLineTop.Z);
-		glVertex3d(leftLineTopDh.X, leftLineTopDh.Y, leftLineTopDh.Z);
-	glEnd();
-
-	glBegin(GL_LINES);
-		glVertex3d(rightLineTop.X, rightLineTop.Y, rightLineTop.Z);
-		glVertex3d(rightLineTopDh.X, rightLineTopDh.Y, rightLineTopDh.Z);
-	glEnd();
-
-	// Линия между параллельными прямыми
-	glBegin(GL_LINES);
-		glVertex3d(leftLineTop.X, leftLineTop.Y, leftLineTop.Z);
-		glVertex3d(rightLineTop.X, rightLineTop.Y, rightLineTop.Z);
-	glEnd();
-
-
-	// Треугольники
-	double lineWidth = leftLineTop.DistanceToPoint(rightLineTop);
-	double triangle_width = 0.025 * lineWidth;
-	double triangle_height = triangle_width;
-	// Левый
-		PointGeometric leftTriangleTop = leftLineTop + ABNormalized * triangle_height + ABPerp * triangle_width;
-		PointGeometric leftTriangleBottom= leftLineTop + ABNormalized * triangle_height - ABPerp * triangle_width;
-		glBegin(GL_TRIANGLES);
-			glVertex3d(leftTriangleTop.X, leftTriangleTop.Y, leftTriangleTop.Z);
-			glVertex3d(leftLineTop.X, leftLineTop.Y, leftLineTop.Z);
-			glVertex3d(leftTriangleBottom.X, leftTriangleBottom.Y, leftTriangleBottom.Z);
-		glEnd();
-
-	// Правый
-		PointGeometric rightTriangleTop = rightLineTop - ABNormalized * triangle_height + ABPerp * triangle_width;
-		PointGeometric rightTriangleBottom = rightLineTop - ABNormalized * triangle_height - ABPerp * triangle_width;
-		glBegin(GL_TRIANGLES);
-			glVertex3d(rightTriangleTop.X, rightTriangleTop.Y, rightTriangleTop.Z);
-			glVertex3d(rightLineTop.X, rightLineTop.Y, rightLineTop.Z);
-			glVertex3d(rightTriangleBottom.X, rightTriangleBottom.Y, rightTriangleBottom.Z);
-		glEnd();
-
-
-	// Текст
-	CString sizeValue = L"";
-	sizeValue.Format(L"%g мм", Tolerance().round(obj->length(), 2));
-	PointGeometric centerLine = ((leftLineTop + rightLineTop) / 2) + (ABPerp * 2.5) + ABNormalized * 3;
-	glPushMatrix();
-	glRasterPos3f(centerLine.X, centerLine.Y, centerLine.Z);
-	kioFont->RussianFont->Render(sizeValue);
-	glPopMatrix();
-}
-
 
 void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 {
@@ -1619,6 +1431,155 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 	glPopMatrix();
 }
 
+void COpenGLView::DrawOpenGL_AngleLine(AngleLine* obj)
+{
+	glLineWidth(1);
+	ConeApprox* cone = (ConeApprox*)obj->objMath;
+	PointGeometric pEnd = obj->PointPosition;
+	PointGeometric pointOnAB = cone->PointBottomSurfaceCenter;
+	VectorGeometric AB = VectorGeometric(cone->PointBottomSurfaceCenter, cone->PointTopSurfaceCenter, false);
+	VectorGeometric ABNorm = AB;
+	ABNorm.Normalize();
+
+	PointGeometric coneTopPoint = pointOnAB + ABNorm * cone->HeightPhantom;
+
+	PointGeometric projectionPoint1 = AB.PointProjection(obj->PointPosition, pointOnAB); // Вдоль оси
+	double coneHeight = pointOnAB.DistanceToPoint(cone->PointTopSurfaceCenter);
+	if (projectionPoint1.DistanceToPoint(pointOnAB) + projectionPoint1.DistanceToPoint(cone->PointTopSurfaceCenter) <= coneHeight + 0.01) {
+		projectionPoint1 = projectionPoint1;
+	}
+	else if (projectionPoint1.DistanceToPoint(pointOnAB) < projectionPoint1.DistanceToPoint(cone->PointTopSurfaceCenter)) {
+		projectionPoint1 = pointOnAB; }
+	else { projectionPoint1 = cone->PointTopSurfaceCenter; }
+
+	PointGeometric projectionPoint2 = AB.PointProjection(pointOnAB, obj->PointPosition); // Вокруг оси
+	VectorGeometric AprojVec2 = VectorGeometric(pointOnAB, projectionPoint2, true);
+
+	double projToPhantomDistance = projectionPoint1.DistanceToPoint(coneTopPoint);
+	double angleInRad = cone->Angle / 180 * M_PI;
+	double radiusInProj = projToPhantomDistance * tan(angleInRad);
+	PointGeometric radiusPoint = projectionPoint1 + AprojVec2 * radiusInProj; // Точка на окружности
+
+	//От точки начала до точки остановки 
+	glBegin(GL_LINES);
+	glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
+	glVertex3d(pEnd.X, pEnd.Y, pEnd.Z);
+	glEnd();
+
+	// Треугольник
+	double triangleWidth = 0.5;
+	double triangleHeight = triangleWidth;
+	VectorGeometric lineVec = VectorGeometric(radiusPoint, pEnd, true);
+	PointGeometric leftTrianglePoint = radiusPoint + ABNorm * triangleWidth + lineVec * triangleHeight;
+	PointGeometric rightTrianglePoint = radiusPoint - ABNorm * triangleWidth + lineVec * triangleHeight;
+	
+	glBegin(GL_TRIANGLES);
+	glVertex3d(leftTrianglePoint.X, leftTrianglePoint.Y, leftTrianglePoint.Z);
+	glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
+	glVertex3d(rightTrianglePoint.X, rightTrianglePoint.Y, rightTrianglePoint.Z);
+
+	glEnd();
+	
+
+	// Текст
+	CString sizeValue = L"";
+	sizeValue.Format(L"\u299F %g\u00B0", Tolerance().round(((ConeApprox*)obj->objMath)->Angle, 2));
+	glPushMatrix();
+	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
+	kioFont->BadgeFont->Render(sizeValue);
+	glPopMatrix();
+}
+
+void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
+{
+	glLineWidth(1);
+	PointGeometric pMouseEnd = obj->PointPosition;
+
+	VectorGeometric AB = VectorGeometric(obj->PointStart, obj->PointEnd, false);
+	VectorGeometric ABNormalized = VectorGeometric(obj->PointStart, obj->PointEnd, true);
+	PointGeometric projectionPoint1 = AB.PointProjection(pMouseEnd, obj->PointStart); // Вдоль оси
+	if (obj->objMath->GetName() == CylinderApprox().GetName() && obj->objMath2->GetName() == CylinderApprox().GetName()) {
+		CylinderApprox* cylinder = (CylinderApprox*)obj->objMath;
+		AB = VectorGeometric(cylinder->PointBottomSurfaceCenter, cylinder->PointTopSurfaceCenter, false);
+		ABNormalized = AB;
+		ABNormalized.Normalize();
+	 projectionPoint1 = AB.PointProjection(obj->PointStart, pMouseEnd ); // Вдоль оси
+	}
+
+
+
+	VectorGeometric ABPerp = VectorGeometric(projectionPoint1, pMouseEnd, true); // Перпендикуляр вектору между объектами в сторону курсора мыши
+
+	// Высота параллельных прямых
+	double height = pMouseEnd.DistanceToPoint(projectionPoint1);
+
+	// Параллельные прямые
+	PointGeometric leftLineTop = obj->PointStart + ABPerp * height;
+	PointGeometric rightLineTop = obj->PointEnd + ABPerp * height;
+	glBegin(GL_LINES);
+		glVertex3d(obj->PointStart.X, obj->PointStart.Y, obj->PointStart.Z);
+		glVertex3d(leftLineTop.X , leftLineTop.Y, leftLineTop.Z);
+	glEnd();
+
+	glBegin(GL_LINES);
+		glVertex3d(obj->PointEnd.X, obj->PointEnd.Y, obj->PointEnd.Z);
+		glVertex3d(rightLineTop.X, rightLineTop.Y, rightLineTop.Z);
+	glEnd();
+
+	// Ушки
+	double dh = 0.3;
+	PointGeometric leftLineTopDh = obj->PointStart + ABPerp * (height + dh);
+	PointGeometric rightLineTopDh = obj->PointEnd + ABPerp * (height + dh);
+	glBegin(GL_LINES);
+		glVertex3d(leftLineTop.X, leftLineTop.Y, leftLineTop.Z);
+		glVertex3d(leftLineTopDh.X, leftLineTopDh.Y, leftLineTopDh.Z);
+	glEnd();
+
+	glBegin(GL_LINES);
+		glVertex3d(rightLineTop.X, rightLineTop.Y, rightLineTop.Z);
+		glVertex3d(rightLineTopDh.X, rightLineTopDh.Y, rightLineTopDh.Z);
+	glEnd();
+
+	// Линия между параллельными прямыми
+	glBegin(GL_LINES);
+		glVertex3d(leftLineTop.X, leftLineTop.Y, leftLineTop.Z);
+		glVertex3d(rightLineTop.X, rightLineTop.Y, rightLineTop.Z);
+	glEnd();
+
+
+	// Треугольники
+	double lineWidth = leftLineTop.DistanceToPoint(rightLineTop);
+	double triangle_width = 0.025 * lineWidth;
+	double triangle_height = triangle_width;
+	// Левый
+		PointGeometric leftTriangleTop = leftLineTop + ABNormalized * triangle_height + ABPerp * triangle_width;
+		PointGeometric leftTriangleBottom= leftLineTop + ABNormalized * triangle_height - ABPerp * triangle_width;
+		glBegin(GL_TRIANGLES);
+			glVertex3d(leftTriangleTop.X, leftTriangleTop.Y, leftTriangleTop.Z);
+			glVertex3d(leftLineTop.X, leftLineTop.Y, leftLineTop.Z);
+			glVertex3d(leftTriangleBottom.X, leftTriangleBottom.Y, leftTriangleBottom.Z);
+		glEnd();
+
+	// Правый
+		PointGeometric rightTriangleTop = rightLineTop - ABNormalized * triangle_height + ABPerp * triangle_width;
+		PointGeometric rightTriangleBottom = rightLineTop - ABNormalized * triangle_height - ABPerp * triangle_width;
+		glBegin(GL_TRIANGLES);
+			glVertex3d(rightTriangleTop.X, rightTriangleTop.Y, rightTriangleTop.Z);
+			glVertex3d(rightLineTop.X, rightLineTop.Y, rightLineTop.Z);
+			glVertex3d(rightTriangleBottom.X, rightTriangleBottom.Y, rightTriangleBottom.Z);
+		glEnd();
+
+
+	// Текст
+	CString sizeValue = L"";
+	sizeValue.Format(L"%g мм", Tolerance().round(obj->length(), 2));
+	PointGeometric centerLine = ((leftLineTop + rightLineTop) / 2) + (ABPerp * 2.5) + ABNormalized * 3;
+	glPushMatrix();
+	glRasterPos3f(centerLine.X, centerLine.Y, centerLine.Z);
+	kioFont->RussianFont->Render(sizeValue);
+	glPopMatrix();
+}
+
 void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
 {
 	glLineWidth(2);
@@ -1632,16 +1593,7 @@ void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
 }
 /////////////////////////////////////////////
 
-double COpenGLView::angle_point(PointGeometric a, PointGeometric b, PointGeometric c)
-{
-	double x1 = a.X - b.X, x2 = c.X - b.X;
-	double y1 = a.Y - b.Y, y2 = c.Y - b.Y;
-	double z1 = a.Z - b.Z, z2 = c.Z - b.Z;
-	double d1 = sqrt(x1 * x1 + y1 * y1 + z1 * z1);
-	double d2 = sqrt(x2 * x2 + y2 * y2 + z2 * z2);
 
-	return acos((x1 * x2 + y1 * y2 + z1 * z1) / (d1 * d2));
-}
 
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL Cube (Test)
 void COpenGLView::DrawOpenGL_Cube(double param, double cx, double cy, double cz, bool flagColor)
@@ -2131,7 +2083,6 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_DELETE)
 	{
 		if (flagToleranceMove) {
-			// Voronov Удаление вспомогательной геометрии	
 			if (selectedToleranceObject != nullptr) {
 				if (dynamic_cast<AxialLine*>(selectedToleranceObject)) {
 
@@ -2146,16 +2097,13 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 				}
 				
 				std::vector<ToleranceObject*>::iterator j = std::find(toleranceObjectsArray->begin(), toleranceObjectsArray->end(), selectedToleranceObject);
-				//delete selectedToleranceObject;
 				if (dynamic_cast<ToleranceBase*>(selectedToleranceObject)) {
 					delete (ToleranceBase*)selectedToleranceObject;
 				}
 				else {
 					delete selectedToleranceObject;
 				}
-				
 				toleranceObjectsArray->erase(j);
-
 				selectedToleranceObject = nullptr;
 				flagToleranceMove = false;
 			}

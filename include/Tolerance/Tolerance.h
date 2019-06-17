@@ -54,19 +54,19 @@ public:
 	double OrientationAngularity(PlaneApprox* base, PlaneApprox* control, double angle); // Наклон
 
 	// Допуски месторасположения
-	double LocationPosition(std::vector<ObjectApprox*>* objectsArray); // Позиционирование
+	double LocationPosition(PlaneApprox* base1, double l1, PlaneApprox* base2, double l2, CircleApprox* circle); // Позиционирование
 	double LocationConcentricity(CircleApprox *circleA, CircleApprox *circleB); // Концентричность (для точек)
 	double LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB); // Соосность (для осей)
-	double LocationSymmetry(std::vector<ObjectApprox*>* objectsArray); // Симметричность
+	double LocationSymmetry(PlaneApprox* base, PlaneApprox* control1, PlaneApprox* control2); // Симметричность
+	double LocationSymmetry(LineSegmentApprox* base, LineSegmentApprox* control1, LineSegmentApprox* control2); // Симметричность
 
 	// Допуски биения
-	double RunOutFace(CylinderApprox* base, RectangleApprox* control); // Торцевое
+	double RunOutFace(CylinderApprox* base, PlaneApprox* control); // Торцевое
 	double RunOutFace(CylinderApprox* base, CircleApprox* control); // Торцевое
 	double RunOutRadial(CylinderApprox* base, CylinderApprox* control); // Радиальное
 	
 
 	// Обработка и добавление объекта в список для отрисовки
-
 	void addNewObject(ToleranceObject* obj);
 	double round(double value, int num_after_point); // Округление до n цифры после запятой
 	VectorGeometric rotatePlane(PlaneApprox* plane, VectorGeometric axis, double a);
@@ -80,5 +80,4 @@ public:
 	double DistanceBetween(PlaneApprox plane, PointGeometric point);
 	double DistanceBetween(VectorGeometric planeNormal, PointGeometric point);
 	PointGeometric centerByPoints(PointGeometric* points, int arraySize);
-private:
 };

@@ -21,10 +21,8 @@ DialogToleranceSelectObjects::DialogToleranceSelectObjects(CWnd* pParent, TOLERA
 	this->toleranceObjectsArray = parent->dlgMeasure->toleranceObjectsArray;
 	unselectAllObjects();
 	parent->pView->isToleranceAction = true;
-
 	base = nullptr;
 	control = nullptr;
-
 }
 
 
@@ -32,17 +30,9 @@ BOOL DialogToleranceSelectObjects::OnInitDialog() {
 
 	changeName();
 	((CButton*)GetDlgItem(IDOK))->EnableWindow(false);
-
-
-
 	return TRUE;
 }
 
-
-/*DialogToleranceSelectObjects::DialogToleranceSelectObjects(CMainFrame* parent)
-{
-
-}*/
 
 DialogToleranceSelectObjects::~DialogToleranceSelectObjects()
 {
@@ -71,7 +61,6 @@ void DialogToleranceSelectObjects::unselectAllObjects()
 			toleranceObjectsArray->operator[](i)->flagSelected = false;
 		}
 	}
-
 	parent->pView->RedrawWindow();
 }
 
@@ -135,6 +124,12 @@ void DialogToleranceSelectObjects::changeName()
 	case RUNOUT_RADIAL:
 		name = L"Радиальное биение";
 		break;
+	case LOCATION_SYMMETRY:
+		name = L"Симметричность";
+		break;
+	case LOCATION_POSITION:
+		name = L"Позиционирование";
+		break;
 
 	default:
 		name = L"Не разработано";
@@ -151,7 +146,6 @@ BEGIN_MESSAGE_MAP(DialogToleranceSelectObjects, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_CONTROL_OBJECT, &DialogToleranceSelectObjects::OnBnClickedButtonSelectControlObject)
 	ON_BN_CLICKED(IDOK, &DialogToleranceSelectObjects::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &DialogToleranceSelectObjects::OnBnClickedCancel)
-//	ON_STN_CLICKED(IDC_TEXT_BASE_NAME, &DialogToleranceSelectObjects::OnStnClickedTextBaseName)
 ON_STN_CLICKED(IDC_TEXT_INSTRUCTION, &DialogToleranceSelectObjects::OnStnClickedTextInstruction)
 END_MESSAGE_MAP()
 
@@ -162,11 +156,9 @@ END_MESSAGE_MAP()
 void DialogToleranceSelectObjects::OnBnClickedButtonSelectBaseObject()
 {
 	base = nullptr;
-
 	parent->pView->isToleranceAction = true;
 	base = getSelectedBase();
 	if (base != nullptr) {
-		//((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(base->Name.c_str());
 		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->SetWindowTextW(base->baseChar);
 		((CStatic*)GetDlgItem(IDC_TEXT_BASE_NAME))->EnableWindow(true);
 		if (control != nullptr) {
@@ -176,9 +168,7 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectBaseObject()
 	else {
 		AfxMessageBox(L"Необходимо выбрать базу, а не объект!");
 	}
-	
 	unselectAllObjects();
-	
 }
 
 
@@ -195,9 +185,7 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectControlObject()
 			((CStatic*)GetDlgItem(IDOK))->EnableWindow(true);
 		}
 	}
-	
 	unselectAllObjects();
-	
 }
 
 
@@ -258,7 +246,7 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 
 			case ORIENTATION_PERPENDICULARITY:
 				
-				result = parent->pTolerance->OrientationAngularity((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath, 90);
+				result = parent->pTolerance->OrientationPerpendicularity((PlaneApprox*)base->objMath, (PlaneApprox*)control->objMath);
 				frame = new ToleranceFrame(base, control, toleranceName, result);
 
 				break;
@@ -278,7 +266,7 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 			case RUNOUT_FACE:
 				result = NULL;
 				if (base->objMath->GetName() == CylinderApprox().GetName() && control->objMath->GetName() == RectangleApprox().GetName()) {
-					result = parent->pTolerance->RunOutFace((CylinderApprox*)base->objMath, (RectangleApprox*)control->objMath);
+					result = parent->pTolerance->RunOutFace((CylinderApprox*)base->objMath, (PlaneApprox*)control->objMath);
 					frame = new ToleranceFrame(base, control, toleranceName, result);
 				}
 				else if (base->objMath->GetName() == CylinderApprox().GetName() && control->objMath->GetName() == CircleApprox().GetName()) {
