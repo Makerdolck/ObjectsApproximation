@@ -119,11 +119,13 @@ void DataTreeView::OnSelChanged(NMHDR *pNMHDR, LRESULT *pResult)
 void DataTreeView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	if (nChar == VK_DELETE)
-	{	
-		if (pView->RemoveObject((ObjectApprox*)pCtrl->GetItemData(focused_TI)))
 	{
 		pView->RemoveObject((ObjectApprox*)pCtrl->GetItemData(focused_TI));
-
+		/*if (pView->RemoveObject((ObjectApprox*)pCtrl->GetItemData(focused_TI)))
+		{
+			pCtrl->DeleteItem(focused_TI);
+			pView->RecalculateCenterOfAllObjects();
+		}*/
 	}
 	if (nChar == 'F')		// 'F' is pressed
 	{

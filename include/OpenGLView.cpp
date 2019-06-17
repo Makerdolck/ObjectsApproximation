@@ -637,7 +637,7 @@ ObjectApprox *COpenGLView::GetObjectUnderMouse(CPoint point)
 
 ToleranceObject* COpenGLView::GetToleranceObjectUnderMouse(CPoint point)
 {
-	mouse_x0 = point.x;  mouse_y0 = point.y;
+
 
 	prev_x = point.x;
 	prev_y = point.y;
@@ -1907,7 +1907,8 @@ void COpenGLView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	if (nChar == VK_SHIFT)
 		flagShiftPressed = false;
-	}
+
+
 	if (nChar == VK_DELETE)
 	{
 		if (flagToleranceMove) {

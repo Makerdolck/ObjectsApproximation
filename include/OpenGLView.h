@@ -72,7 +72,7 @@ protected:
 
 	   
 protected:
-	std::vector<ObjectApprox*>	*objectsArray;
+	//std::vector<ObjectApprox*>	*objectsArray;
 	std::vector<ToleranceObject*>* toleranceObjectsArray; // Voronov
 
 	const GLfloat blackColor[3] = { 0.0f,	0.0f,	0.0f };
@@ -93,7 +93,7 @@ protected:
 
 	KIOFont *kioFont;
 
-	double						distanceAimEye,
+	double						
 								offsetView_X,
 								offsetView_Y;
 
