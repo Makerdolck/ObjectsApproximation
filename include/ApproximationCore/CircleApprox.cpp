@@ -158,11 +158,11 @@ void CircleApprox::Triangulation(double inAccuracy)
 }
 // ---																										//	---	Intersections ---
 
-// ---																										// LineIntersection
-int CircleApprox::LineIntersection(LineGeometric line, PointGeometric* point1, PointGeometric* point2)
+// ---																										// LineIntersectionCircle
+int CircleApprox::LineIntersectionCircle(LineGeometric line, PointGeometric* point1, PointGeometric* point2)
 {
 	CircleGeometric circle(Line, Radius);
-	return (circle.LineIntersection(line, point1, point2));
+	return (circle.LineIntersectionCircle(line, point1, point2));
 }
 // ---																										// CircleIntersection
 int CircleApprox::CircleIntersection(CircleApprox Circle2, PointGeometric* point1, PointGeometric* point2)
@@ -182,9 +182,6 @@ PointGeometric CircleApprox::PointIntersectionMiddle(PointApprox pointOut)
 PointGeometric CircleApprox::PointIntersection(PointApprox pointOut)
 {
 	CircleGeometric circle(Line, Radius);
-	PointGeometric  point(pointOut.X, pointOut.Y, pointOut.Z);
-	PlaneGeometric plane(circle.Line);
-	PointGeometric pointPJ;
-	pointPJ = plane.PointProjection(point);
-	return (circle.PointIntersectionMiddle(pointPJ));
+	PointGeometric point(pointOut.X, pointOut.Y, pointOut.Z);
+	return (circle.PointIntersectionCircle(point));
 }

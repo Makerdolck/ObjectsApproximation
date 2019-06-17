@@ -8,6 +8,7 @@
 
 #include "RectangleApprox.h"
 #include "LineSegmentApprox.h"
+class ConeApprox;
 #include "ConeApprox.h"
 
 class CylinderApprox : public GeomObjectApprox
@@ -34,6 +35,8 @@ public:
 	int				IntersectionCylinderAndCircle(CircleApprox circle, PointGeometric* point1, PointGeometric* point2);
 	int				IntersectionTwoCylinder(CylinderApprox cylinder2, PointGeometric* point1);
 	int				IntersectionCylinderCone(ConeApprox cone, PointGeometric* point1);
+	PointGeometric	IntersectionCylinderAndPoint(PointApprox pointOut);
+	PlaneGeometric	MiddlePlaneCylinderAndCone(ConeApprox cone);
 
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);

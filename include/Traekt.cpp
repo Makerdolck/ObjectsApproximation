@@ -228,7 +228,7 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 			else
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius + PtDist);
-				if (CircleTr.LineIntersection(forIntersection, &forI1, &forI2) == 0)
+				if (CircleTr.LineIntersectionCircle(forIntersection, &forI1, &forI2) == 0)
 				{
 					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
 				}
@@ -501,7 +501,7 @@ UINT TraektCone(LPVOID Struct)
 			else
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(PtDist);
-				if (CircleTr.LineIntersection(forIntersection, &forI1, &forI2) == 0)
+				if (CircleTr.LineIntersectionCircle(forIntersection, &forI1, &forI2) == 0)
 				{
 					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
 				}
@@ -799,7 +799,7 @@ UINT TraektSphere(LPVOID Struct)
 			else
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(SphereTraekt.Radius + PtDist);
-				if (CircleTr.LineIntersection(forIntersection, &forI1, &forI2) == 0)
+				if (CircleTr.LineIntersectionCircle(forIntersection, &forI1, &forI2) == 0)
 				{
 					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
 				}
@@ -1133,7 +1133,7 @@ UINT TraektCircle(LPVOID Struct)
 		else
 		{
 			tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius + PtDist);
-			if (CircleTraekt.LineIntersection(forIntersection, &forI1, &forI2) == 0)
+			if (CircleTraekt.LineIntersectionCircle(forIntersection, &forI1, &forI2) == 0)
 			{
 				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
 			}

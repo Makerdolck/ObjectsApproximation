@@ -454,34 +454,379 @@ int	ConeApprox::IntersectionTwoCone(ConeApprox cone2, PointGeometric* point1) {
 	return Line.LineBetweenLine(cone2.Line, point1);
 }
 // ---																										// IntersectionConeAndPlane
-int	ConeApprox::IntersectionConeAndPlane(RectangleApprox Plane, CircleGeometric* Сircle) {
+int	ConeApprox::IntersectionConeAndPlane(RectangleApprox Plane, CircleGeometric* Сircle, PointGeometric* point) {
 	PlaneGeometric plane;
 	plane.Line = Plane.Line;
 	LineGeometric line = Line;
-	PointGeometric point;
+	PointGeometric point1;
+
 	int Res;
-	Res = plane.PlaneBetweenLine(line, &point);
+	Res = plane.PlaneBetweenLine(line, &point1);
 	if (Res == 0) {
 		int Res2;
 		Res2 = plane.PlaneAngleLine(line);
-		if (Res2 == 0) {
-			plane.Line.Vector.Normalize();
-			PointGeometric IntersectionPoint;
-			IntersectionPoint = Line.PointProjection(Plane.Line.Point);
-			PointGeometric PointBotton;
-			PointGeometric pointC = plane.PointProjection(Line.Point);
-			double HeightInter;
-			HeightInter = Height - IntersectionPoint.DistanceToPoint(PointBottomSurfaceCenter);
-			double rd;
-			rd = HeightInter * tan(Angle * PI_Approx / 180);
-			Сircle->Radius = rd + RadiusSmaller;
-
-			Сircle->Line.Vector = plane.Line.Vector;
-
-			Сircle->Line.Point = pointC;
-			return 0;
+		if (Res2 == 1) {
+			double Vertex;
+			Vertex = Radius / tan(Angle* PI_Approx / 180);
+			PointGeometric pointVertex = Line.CreatePointOnDistance(Vertex - Height / 2, true);
+			PointGeometric pointProjectionLine = Line.PointProjection(Plane.Line.Point);
+			VectorGeometric vectorVertexAPlane(pointVertex, pointProjectionLine);
+			VectorGeometric vectorVertexACenter(pointVertex, Line.Point);
+			double scalar = vectorVertexAPlane * vectorVertexACenter;
+			if (scalar > 0) {
+				if (fabs(pointVertex.X - pointProjectionLine.X) < 0.001, fabs(pointVertex.Y - pointProjectionLine.Y) < 0.001, fabs(pointVertex.Z - pointProjectionLine.Z) < 0.001) {
+					point->X = pointVertex.X;
+					point->Y = pointVertex.Y;
+					point->Z = pointVertex.Z;
+					return 2;
+				}
+				else {
+					double HeightInter;
+					double rd;
+					HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+					PointGeometric pointC = plane.PointProjection(Line.Point);
+					rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+					Сircle->Radius = rd;
+					Сircle->Line.Vector = plane.Line.Vector;
+					Сircle->Line.Point = pointC;
+					return 0;
+				}
+			}
 		}
 	}
+	else { return 1; }
+}
+// ---																										// IntersectionConeAndPoint
+int  ConeApprox::IntersectionConeAndPoint(PointApprox pointOut, PointGeometric* point1) {
+	PointGeometric point(pointOut.X, pointOut.Y, pointOut.Z);
+	double Vertex;
+	Vertex = Radius / tan(Angle* PI_Approx / 180);
+	PointGeometric pointVertex = Line.CreatePointOnDistance(Vertex - Height / 2, true);
+	PointGeometric pointProjectionLine = Line.PointProjection(point);
+	VectorGeometric vectorVertexAPlane(pointVertex, pointProjectionLine);
+	VectorGeometric vectorVertexACenter(pointVertex, Line.Point);
+	double scalar = vectorVertexAPlane * vectorVertexACenter;
+	if (scalar > 0) {
+		double HeightInter;
+		double rd;
+		HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+		rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+		VectorGeometric vectorNewLine(pointProjectionLine, point);
+		LineGeometric line1(pointProjectionLine, vectorNewLine);
+		PointGeometric PointRes = line1.CreatePointOnDistance(rd);
+		point1->X = PointRes.X;
+		point1->Y = PointRes.Y;
+		point1->Z = PointRes.Z;
+		return 0;
+	}
+	else {
+		return 1;
+	}
+}
+// ---																										// IntersectionConeAndCircle
+int	ConeApprox::IntersectionConeAndCircle(CircleApprox circle, PointGeometric* point1, PointGeometric* point2) {
+	PlaneGeometric tmpPlane = circle.Line;
+	VectorGeometric VectorX, VectorY, VectorZ;
+	VectorX = VectorGeometric(circle.Line.Point, PointGeometric(circle.Line.Point.X + 10, circle.Line.Point.Y + 10, circle.Line.Point.Z + 10));
+	VectorX = tmpPlane.VectorProjection(VectorX);
+	VectorZ = circle.Line.Vector;
+	VectorY = VectorX ^ VectorZ;
+	PointGeometric	tmpPoint;
+	tmpPoint = circle.Line.Point;
+	PointGeometric PointAp;
+	PointGeometric PointAp1;//
+	PointGeometric PointAp2;//
+	double	/*angle,*/ angelsSum = 0, xCompon, yCompon, Function;
+	xCompon = cos(angelsSum * PI_Approx / 180.0f) * circle.Radius; 		// X component
+	yCompon = sin(angelsSum * PI_Approx / 180.0f) * circle.Radius;			// Y component		
+	PointGeometric Point(xCompon, yCompon, 0);
 
-	return 1;
+	PointAp = TransferPointToNewCoordinateSystem(Point,
+		tmpPoint,
+		VectorX,
+		VectorY,
+		VectorZ);
+	// находим расстояние до вершины
+	double Vertex;
+	Vertex = Radius / tan(Angle* PI_Approx / 180);
+	//проекция точки с окружности на ось конуса
+	PointGeometric pointProjectionLine = Line.PointProjection(PointAp);
+	//точка на вершине
+	PointGeometric pointVertex = Line.CreatePointOnDistance(Vertex - Height / 2, true);
+	//нахождение радиуса
+	double HeightInter;
+	double rd;
+	HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+	rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+	//
+
+	Function = pow(rd - Line.DistanceToPoint(PointAp), 2);
+	double	deviationSum, deviationSum1, deviationSum2,
+		deviationSumOld;
+	deviationSum = Function;
+	double	step = 0.5;
+	bool	negativeDirection = false;
+	int n = 0, k = 0;
+	double angle1 = 0, angle2 = 0;
+	do
+	{
+		deviationSumOld = deviationSum;
+		angelsSum += (1 + (-2) * (int)negativeDirection) * step;
+		xCompon = cos(angelsSum * PI_Approx / 180.0f) * circle.Radius; 		// X component
+		yCompon = sin(angelsSum * PI_Approx / 180.0f) * circle.Radius;			// Y component		
+		PointGeometric Point(xCompon, yCompon, 0);
+
+		PointAp = TransferPointToNewCoordinateSystem(Point,
+			tmpPoint,
+			VectorX,
+			VectorY,
+			VectorZ);
+		//перерасчет радиуса по положению точки
+		pointProjectionLine = Line.PointProjection(PointAp);
+		HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+		rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+		//
+		deviationSum = pow(rd - Line.DistanceToPoint(PointAp), 2);
+		if (deviationSum > deviationSumOld&& n == 0)
+		{
+			//PointAp1 = PointAp;
+			deviationSum1 = deviationSum;
+			n += 1;
+			angle1 = angelsSum;
+		}
+		if (deviationSum < deviationSumOld&& k == 0 && n == 1)
+		{
+			//PointAp2 = PointAp;
+			deviationSum2 = deviationSum;
+			angle2 = angelsSum;
+			k += 1;
+		}
+
+	} while (angelsSum != 360) /*(angle2 != angelsSum)*/;
+
+	angelsSum = angle1;
+	deviationSum = deviationSum1;
+	do
+	{
+		deviationSumOld = deviationSum;
+		angelsSum += (1 + (-2) * (int)negativeDirection) * step;
+		xCompon = cos(angelsSum * PI_Approx / 180.0f) * circle.Radius; 		// X component
+		yCompon = sin(angelsSum * PI_Approx / 180.0f) * circle.Radius;			// Y component		
+		PointGeometric Point(xCompon, yCompon, 0);
+
+
+
+		PointAp1 = TransferPointToNewCoordinateSystem(Point,
+			tmpPoint,
+			VectorX,
+			VectorY,
+			VectorZ);
+		//перерасчет радиуса по положению точки
+		pointProjectionLine = Line.PointProjection(PointAp1);
+		HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+		rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+		//
+		deviationSum = pow(rd - Line.DistanceToPoint(PointAp1), 2);
+		if (deviationSum > deviationSumOld)
+		{
+			negativeDirection = !negativeDirection;
+			step /= 2;
+		}
+	} while (fabs(deviationSumOld - deviationSum) > 0.0001);
+	angelsSum = angle2;
+	deviationSum = deviationSum2;
+	do
+	{
+		deviationSumOld = deviationSum;
+		angelsSum += (1 + (-2) * (int)negativeDirection) * step;
+		xCompon = cos(angelsSum * PI_Approx / 180.0f) * circle.Radius; 		// X component
+		yCompon = sin(angelsSum * PI_Approx / 180.0f) * circle.Radius;			// Y component		
+		PointGeometric Point(xCompon, yCompon, 0);
+
+		PointAp2 = TransferPointToNewCoordinateSystem(Point,
+			tmpPoint,
+			VectorX,
+			VectorY,
+			VectorZ);
+		//перерасчет радиуса по положению точки
+		pointProjectionLine = Line.PointProjection(PointAp2);
+		HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+		rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+		//
+		deviationSum = pow(rd - Line.DistanceToPoint(PointAp2), 2);
+		if (deviationSum > deviationSumOld)
+		{
+			negativeDirection = !negativeDirection;
+			step /= 2;
+		}
+	} while (fabs(deviationSumOld - deviationSum) > 0.0001);
+	double l1, l2;
+
+	//перерасчет радиуса по положению точки
+	pointProjectionLine = Line.PointProjection(PointAp1);
+	HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+	rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+	//
+	l1 = pow(RoundingOf(rd, 3) - RoundingOf(Line.DistanceToPoint(PointAp1), 3), 2);
+	//перерасчет радиуса по положению точки
+	pointProjectionLine = Line.PointProjection(PointAp2);
+	HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+	rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+	//
+	l2 = pow(RoundingOf(rd, 3) - RoundingOf(Line.DistanceToPoint(PointAp2), 3), 2);
+
+	if (fabs(l1) < 0.002 && fabs(l2) < 0.0002) {
+		point1->X = PointAp1.X;
+		point1->Y = PointAp1.Y;
+		point1->Z = PointAp1.Z;
+
+		point2->X = PointAp2.X;
+		point2->Y = PointAp2.Y;
+		point2->Z = PointAp2.Z;
+		return 2;
+	}
+	else if (fabs(l2) < 0.0002) {
+		point2->X = PointAp2.X;
+		point2->Y = PointAp2.Y;
+		point2->Z = PointAp2.Z;
+		return 1;
+	}
+	else if (fabs(l1) < 0.0002) {
+		point1->X = PointAp1.X;
+		point1->Y = PointAp1.Y;
+		point1->Z = PointAp1.Z;
+		return 1;
+	}
+	return 0;
+}
+// ---																										// IntersectionConeAndLine
+int	ConeApprox::IntersectionConeAndLine(LineSegmentApprox Lline, PointGeometric* point1, PointGeometric* point2) {
+	//Vertex
+	double Vertex;
+	Vertex = Radius / tan(Angle* PI_Approx / 180);
+	PointGeometric pointVertex = Line.CreatePointOnDistance(Vertex - Height / 2, true);
+	//Создание удаленной точки на линиии
+	PointGeometric pointStep;
+	pointStep = Lline.Line.CreatePointOnDistance(200, false);
+	//проекция точки с окружности на ось конуса
+	PointGeometric pointProjectionLine = Line.PointProjection(pointStep);
+	//
+	LineGeometric line1;
+	line1.Point = pointStep;
+	line1.Vector = Lline.Line.Vector;
+	//нахождение радиуса
+	double HeightInter;
+	double rd;
+	HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+	rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+	//
+
+	double step = 1, step1 = 0, step2 = 0;
+	bool	negativeDirection = false;
+	double Function = pow(rd - Line.DistanceToPoint(pointStep), 2);
+	double	deviationSum, deviationSumOld;
+	deviationSum = Function;
+	double n = 0, k = 0;
+	PointGeometric PointAp1;//
+	PointGeometric PointAp2;//
+	do
+	{
+		step += 1;
+		deviationSumOld = deviationSum;
+		pointStep = line1.CreatePointOnDistance(step);
+		//перерасчет радиуса по положению точки
+		pointProjectionLine = Line.PointProjection(pointStep);
+		HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+		rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+		//
+		deviationSum = pow(rd - Line.DistanceToPoint(pointStep), 2);
+		if (deviationSum > deviationSumOld&& n == 0)
+		{
+			PointAp1 = pointStep;
+			step1 = step;
+			n += 1;
+		}
+		if (deviationSum < deviationSumOld&& k == 0 && n == 1)
+		{
+			PointAp2 = pointStep;
+			step2 = step;
+			k += 1;
+		}
+
+	} while (step != 400 || (k == 1 && n == 1));
+
+	if (n != 0) {
+		PointGeometric pointCentrLine; LineGeometric line2; PointGeometric pointStep1;
+		if (k != 0) {
+			pointCentrLine = PointAp1.PointBetween(PointAp2);
+			line2.Point = pointCentrLine;
+			line2.Vector = Lline.Line.Vector;
+			pointStep1 = pointCentrLine;
+		}
+		else {
+			pointStep1 = PointAp1;
+			line2.Point = PointAp1;
+			line2.Vector = Lline.Line.Vector;
+		}
+		double step0 = 5.0;
+		deviationSum = pow(rd - Line.DistanceToPoint(pointStep1), 2);
+		double st = 0;
+		do
+		{
+			deviationSumOld = deviationSum;
+			st += (1 + (-2) * (int)negativeDirection)*step0;
+			pointStep1 = line2.CreatePointOnDistance(st);
+			//перерасчет радиуса по положению точки
+			pointProjectionLine = Line.PointProjection(pointStep1);
+			HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+			rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+			//
+			deviationSum = pow(rd - Line.DistanceToPoint(pointStep1), 2);
+			if (deviationSum > deviationSumOld)
+			{
+				negativeDirection = !negativeDirection;
+				step0 /= 2;
+			}
+		} while (fabs(deviationSumOld - deviationSum) > 0.0001);
+		PointAp1 = pointStep1;
+		if (k != 0) {
+			PointGeometric pointStep2 = pointCentrLine;
+			negativeDirection = false;
+			double step3 = 20;
+			deviationSum = pow(rd - Line.DistanceToPoint(pointStep2), 2);
+			st = 0;
+			do
+			{
+				deviationSumOld = deviationSum;
+				st += (1 + (-2) * (int)negativeDirection) * step3;
+				pointStep2 = line2.CreatePointOnDistance(st);
+				//перерасчет радиуса по положению точки
+				pointProjectionLine = Line.PointProjection(pointStep2);
+				HeightInter = pointProjectionLine.DistanceToPoint(pointVertex);
+				rd = HeightInter / tan((90 - Angle) * PI_Approx / 180);
+				//
+				deviationSum = pow(rd - Line.DistanceToPoint(pointStep2), 2);
+				if (deviationSum > deviationSumOld)
+				{
+					negativeDirection = !negativeDirection;
+					step3 /= 2;
+				}
+			} while (fabs(deviationSumOld - deviationSum) > 0.0001);
+			PointAp2 = pointStep2;
+
+			point1->X = PointAp1.X;
+			point1->Y = PointAp1.Y;
+			point1->Z = PointAp1.Z;
+
+			point2->X = PointAp2.X;
+			point2->Y = PointAp2.Y;
+			point2->Z = PointAp2.Z;
+			return 2;
+		}
+		point1->X = PointAp1.X;
+		point1->Y = PointAp1.Y;
+		point1->Z = PointAp1.Z;
+		return 1;
+	}
+	return 0;
 }

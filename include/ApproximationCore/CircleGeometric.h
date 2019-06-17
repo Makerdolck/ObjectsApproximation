@@ -20,9 +20,9 @@ public:
 	CircleGeometric(PointGeometric point1, PointGeometric point2, PointGeometric point3);
 	~CircleGeometric();
 
-	int				LineIntersection(LineGeometric line, PointGeometric* point1, PointGeometric* point2);
+	int				LineIntersectionCircle(LineGeometric line, PointGeometric* point1, PointGeometric* point2);
 	int				CircleIntersection(CircleGeometric Circle2, PointGeometric* point1, PointGeometric* point2);
-	PointGeometric	PointIntersectionMiddle(PointGeometric pointOut);
+	PointGeometric	PointIntersectionCircle(PointGeometric pointOut);
 };
 
 #endif /* __CIRCLE_GEOMETRIC_H__ */ 

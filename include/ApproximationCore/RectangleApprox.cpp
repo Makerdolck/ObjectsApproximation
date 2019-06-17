@@ -201,9 +201,39 @@ int	RectangleApprox::PlaneIntersectionCircle(CircleApprox Circle, PointGeometric
 	{
 		CircleGeometric circle(Circle.Line, Circle.Radius);
 		int Res2;
-		Res2 = circle.LineIntersection(LineP, point1, point2);
+		Res2 = circle.LineIntersectionCircle(LineP, point1, point2);
 		return 0;
 	}
 
 	return 1;
+}
+
+int	RectangleApprox::PlaneProjectionLine(LineSegmentApprox Lline, PointGeometric* point1, PointGeometric* point2) {
+	PointGeometric PointLineProjection1, PointLineProjection2;
+	PlaneGeometric Plane;
+	Plane = Line;
+	Plane.Line.Normalize();
+	PointLineProjection1 = Plane.PointProjection(Lline.PointStart);
+	PointLineProjection2 = Plane.PointProjection(Lline.PointEnd);
+
+	point1->X = PointLineProjection1.X;
+	point1->Y = PointLineProjection1.Y;
+	point1->Z = PointLineProjection1.Z;
+
+	point2->X = PointLineProjection2.X;
+	point2->Y = PointLineProjection2.Y;
+	point2->Z = PointLineProjection2.Z;
+
+	return 0;
+}
+
+PlaneGeometric RectangleApprox::MiddlePlane(RectangleApprox Plane2) {
+	PlaneGeometric PlaneBetween;
+
+	PlaneBetween.Line.Point = (Line.Point + Plane2.Line.Point) / 2;
+	PlaneBetween.Line.Vector.X = (Line.Vector.X + Plane2.Line.Vector.X) / 2;
+	PlaneBetween.Line.Vector.Y = (Line.Vector.Y + Plane2.Line.Vector.Y) / 2;
+	PlaneBetween.Line.Vector.Z = (Line.Vector.Z + Plane2.Line.Vector.Z) / 2;
+	PlaneBetween.Line.Normalize();
+	return PlaneBetween;
 }
