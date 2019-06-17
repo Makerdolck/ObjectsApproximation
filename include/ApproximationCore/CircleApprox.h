@@ -23,7 +23,7 @@ public:
 	void			FindByPoints(PointGeometric *points, int arraySize, double accuracy);
 	void			Triangulation(double inAccuracy = 1.0f);
 
-	int				LineIntersection(LineGeometric line, PointGeometric* point1, PointGeometric* point2);
+	int				LineIntersectionCircle(LineGeometric line, PointGeometric* point1, PointGeometric* point2);
 	int				CircleIntersection(CircleApprox Circle2, PointGeometric* point1, PointGeometric* point2);
 	PointGeometric	PointIntersectionMiddle(PointApprox pointOut);
 	PointGeometric	PointIntersection(PointApprox pointOut);
@@ -32,4 +32,4 @@ private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
 };
 
-#endif /* __CIRCLE_APPROX_H__ */ 
+#endif /* __CIRCLE_APPROX_H__ */

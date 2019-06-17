@@ -167,7 +167,6 @@
     <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\LineGeometric.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\LineSegmentApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\MeasureTypesEnum.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\PlaneApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\PlaneGeometric.cpp" />
@@ -205,7 +204,6 @@
     <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h" />
     <ClInclude Include="..\..\include\ApproximationCore\LineGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\LineSegmentApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\MeasureTypesEnum.h" />
     <ClInclude Include="..\..\include\ApproximationCore\MeshTrianglesStructure.h" />
     <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\PlaneApprox.h" />

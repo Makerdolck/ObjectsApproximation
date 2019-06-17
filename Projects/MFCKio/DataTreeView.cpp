@@ -121,15 +121,13 @@ void DataTreeView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_DELETE)
 	{	
 		if (pView->RemoveObject((ObjectApprox*)pCtrl->GetItemData(focused_TI)))
-		{
-			pCtrl->DeleteItem(focused_TI);
-			pView->RecalculateCenterOfAllObjects();
-		}
+	{
+		pView->RemoveObject((ObjectApprox*)pCtrl->GetItemData(focused_TI));
+
 	}
 	if (nChar == 'F')		// 'F' is pressed
 	{
-		pView->FocusingOn((ObjectApprox*)pCtrl->GetItemData(focused_TI));
-			
+		pView->FocusingOn((ObjectApprox*)pCtrl->GetItemData(focused_TI));			
 	}
 
 	CTreeView::OnKeyUp(nChar, nRepCnt, nFlags);
@@ -173,52 +171,53 @@ LRESULT DataTreeView::OnAddNewObjToTree(WPARAM wParam, LPARAM lParam)
 
 	HTREEITEM			treeItem;
 
+	
 
 	switch (theApp.MTActive)
 	{
-	case theApp.MTContainer.point:
+	case theApp.MTpoint:
 		
 		treeItem = pCtrl->InsertItem(object->Name.c_str(), TIR_Points);
 
 		pCtrl->Expand(TIR_Points, TVE_EXPAND);
 
 		break;
-	case theApp.MTContainer.lineSegment:
+	case theApp.MTlineSegment:
 		
 		treeItem = pCtrl->InsertItem(object->Name.c_str(), TIR_LineSegments);
 
 		pCtrl->Expand(TIR_LineSegments, TVE_EXPAND);
 
 		break;
-	case theApp.MTContainer.plane:
+	case theApp.MTplane:
 	
 		treeItem = pCtrl->InsertItem(object->Name.c_str(), TIR_Planes);
 
 		pCtrl->Expand(TIR_Planes, TVE_EXPAND);
 
 		break;
-	case theApp.MTContainer.circle:
+	case theApp.MTcircle:
 		
 		treeItem = pCtrl->InsertItem(object->Name.c_str(), TIR_Circles);
 
 		pCtrl->Expand(TIR_Circles, TVE_EXPAND);
 
 		break;
-	case theApp.MTContainer.cylinder:
+	case theApp.MTcylinder:
 		
 		treeItem = pCtrl->InsertItem(object->Name.c_str(), TIR_Cylinders);
 
 		pCtrl->Expand(TIR_Cylinders, TVE_EXPAND);
 
 		break;
-	case theApp.MTContainer.cone:
+	case theApp.MTcone:
 		
 		treeItem = pCtrl->InsertItem(object->Name.c_str(), TIR_Cones);
 
 		pCtrl->Expand(TIR_Cones, TVE_EXPAND);
 
 		break;
-	case theApp.MTContainer.sphere:
+	case theApp.MTsphere:
 		
 		treeItem = pCtrl->InsertItem(object->Name.c_str(), TIR_Spheres);
 

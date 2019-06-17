@@ -49,7 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
@@ -81,7 +81,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)include;</IncludePath>
+    <IncludePath>$(SolutionDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(Platform);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;</LibraryPath>
     <OutDir>$(SolutionDir)$(Configuration)\$(ProjectName)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)__Intermidate\_$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
@@ -95,6 +95,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\$(ProjectName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)__Intermidate\_$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\$(Platform);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -161,6 +165,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glaux.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -211,7 +216,6 @@
     <ClInclude Include="..\..\include\ApproximationCore\GlobalFunctions.h" />
     <ClInclude Include="..\..\include\ApproximationCore\LineGeometric.h" />
     <ClInclude Include="..\..\include\ApproximationCore\LineSegmentApprox.h" />
-    <ClInclude Include="..\..\include\ApproximationCore\MeasureTypesEnum.h" />
     <ClInclude Include="..\..\include\ApproximationCore\ObjectApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\PlaneApprox.h" />
     <ClInclude Include="..\..\include\ApproximationCore\PlaneGeometric.h" />
@@ -293,7 +297,6 @@
     <ClCompile Include="..\..\include\ApproximationCore\GlobalFunctions.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\LineGeometric.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\LineSegmentApprox.cpp" />
-    <ClCompile Include="..\..\include\ApproximationCore\MeasureTypesEnum.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\ObjectApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\PlaneApprox.cpp" />
     <ClCompile Include="..\..\include\ApproximationCore\PlaneGeometric.cpp" />

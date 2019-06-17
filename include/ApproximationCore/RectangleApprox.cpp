@@ -54,7 +54,7 @@ void RectangleApprox::FindPointsCoordinates(PointGeometric *points, int arraySiz
 		WanderingPoints[i].Z = 0;				// vectorR * Line.Vector;
 	}
 
-	FindWidthHeightMinMaxXY(&points[0], arraySize);
+	FindWidthHeightMinMaxXY(points, arraySize);
 }
 // ---																										// --- APPROXIMATION ---
 double RectangleApprox::FunctionApprox(PointGeometric *points, int arraySize)
@@ -63,9 +63,9 @@ double RectangleApprox::FunctionApprox(PointGeometric *points, int arraySize)
 
 	WanderingCenter = Plane.PointProjection(WanderingCenter);
 	VectorX = Plane.VectorProjection(VectorX);
-	VectorY = VectorX ^ VectorZ;
+	VectorY = VectorX ^ Line.Vector;
 
-	FindPointsCoordinates(&points[0], arraySize);
+	FindPointsCoordinates(points, arraySize);
 
 	sum += pow(fabs(fabs(maxX) - fabs(minX)), 2);
 	sum += pow(fabs(fabs(maxY) - fabs(minY)), 2);
@@ -81,12 +81,11 @@ void RectangleApprox::FindByPoints(PointGeometric *points, int arraySize, double
 
 	WanderingPoints = new PointGeometric[arraySize];
 
-	Plane.FindByPoints(&points[0], arraySize, accuracy);
+	Plane.FindByPoints(points, arraySize, accuracy);
 	Line = Plane.Line;
 
-	VectorZ = Line.Vector;
 	VectorX = VectorGeometric(Line.Point, Plane.PointProjection(points[0]));
-	VectorY = VectorZ ^ VectorX;
+	VectorY = Line.Vector ^ VectorX;
 
 	for (int i = 0; i < arraySize; i++)
 		pointsProjected.push_back(Plane.PointProjection(points[i]));
@@ -157,7 +156,7 @@ void RectangleApprox::Triangulation(double inAccuracy)
 	}
 
 
-	Mesh.vectorsNormal.push_back(VectorZ);
+	Mesh.vectorsNormal.push_back(vectorZ);
 }
 // ---																										//	---	Intersections ---
 
@@ -202,9 +201,39 @@ int	RectangleApprox::PlaneIntersectionCircle(CircleApprox Circle, PointGeometric
 	{
 		CircleGeometric circle(Circle.Line, Circle.Radius);
 		int Res2;
-		Res2 = circle.LineIntersection(LineP, point1, point2);
+		Res2 = circle.LineIntersectionCircle(LineP, point1, point2);
 		return 0;
 	}
 
 	return 1;
+}
+
+int	RectangleApprox::PlaneProjectionLine(LineSegmentApprox Lline, PointGeometric* point1, PointGeometric* point2) {
+	PointGeometric PointLineProjection1, PointLineProjection2;
+	PlaneGeometric Plane;
+	Plane = Line;
+	Plane.Line.Normalize();
+	PointLineProjection1 = Plane.PointProjection(Lline.PointStart);
+	PointLineProjection2 = Plane.PointProjection(Lline.PointEnd);
+
+	point1->X = PointLineProjection1.X;
+	point1->Y = PointLineProjection1.Y;
+	point1->Z = PointLineProjection1.Z;
+
+	point2->X = PointLineProjection2.X;
+	point2->Y = PointLineProjection2.Y;
+	point2->Z = PointLineProjection2.Z;
+
+	return 0;
+}
+
+PlaneGeometric RectangleApprox::MiddlePlane(RectangleApprox Plane2) {
+	PlaneGeometric PlaneBetween;
+
+	PlaneBetween.Line.Point = (Line.Point + Plane2.Line.Point) / 2;
+	PlaneBetween.Line.Vector.X = (Line.Vector.X + Plane2.Line.Vector.X) / 2;
+	PlaneBetween.Line.Vector.Y = (Line.Vector.Y + Plane2.Line.Vector.Y) / 2;
+	PlaneBetween.Line.Vector.Z = (Line.Vector.Z + Plane2.Line.Vector.Z) / 2;
+	PlaneBetween.Line.Normalize();
+	return PlaneBetween;
 }

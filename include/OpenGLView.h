@@ -25,13 +25,10 @@ protected: // create from serialization only
 public:
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTry_OpenGLView)
-	public:
+public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	protected:
-	//}}AFX_VIRTUAL
 
 // Implementation
 public:
@@ -41,51 +38,19 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
+
 protected:
-	GLdouble	gldAspect;
-	GLsizei		glnWidth, 
+	std::vector<ObjectApprox*> *objectsArray;
+
+	GLfloat		gldAspect,
+				fNearPlane,
+				fFarPlane;
+
+	GLint		glnWidth, 
 				glnHeight;
 
 	HGLRC		hRC;
-	double		r;
 
-
-	HGLRC		m_hglrc;
-
-	bool		flagMiddleButtonDown;
-
-	int			mouse_x0,
-				mouse_y0,
-
-				mouseX_old,
-				mouseY_old;
-
-	double		m_z;
-
-	GLsizei		wAngleY,
-				wAngleX,
-				wAngleZ;
-
-	GLfloat		fNearPlane,
-				fFarPlane,
-				fAspect,
-
-				wTransformX,
-				wTransformY,			
-
-				angleLook;
-
-	CRect       m_oldRect;
-
-	int			dd,
-				rotationStep,
-				rotationAngleX,
-				rotationAngleY;
-
-	bool	flagColor1, flagColor2, flagColor3, flagColor4, flagColor5, flagColor6, flagColor7,
-			flagShiftPressed,
-			flagRotateAxisX,
-			flagRotateAxisY;
 
 	
 
@@ -95,19 +60,36 @@ protected:
 	float m_ClearColorGreen;
 	float m_ClearColorBlue;
 
-	VectorGeometric		vectorRotationX,
-						vectorRotationY,
-						vectorRotationZ;
+	bool		flagMiddleButtonDown,
+				flagShiftPressed,
+				flagRotateAxisX,
+				flagRotateAxisY;
+
+	GLdouble	m_dModelViewMatrix[16];
+	GLdouble	m_dProjectionMatrix[16];
+	GLint		m_iViewport[4];
+
 
 	   
 protected:
 	std::vector<ObjectApprox*>	*objectsArray;
 	std::vector<ToleranceObject*>* toleranceObjectsArray; // Voronov
 
-	PointGeometric				centerOfAllObjects;
+	const GLfloat blackColor[3] = { 0.0f,	0.0f,	0.0f };
+	const GLfloat redColor[3]	= { 1.0f,	0.0f,	0.0f };
+	const GLfloat blueColor[3]	= { 0.0f,	0.0f,	1.0f };
+	const GLfloat simpleElementsColor1[3] = { 1.0f,	0.2f,	0.2f};
+	const GLfloat simpleElementsColor2[3] = { 0.0f,	1.0f,	1.0f};
 
-	PointGeometric				pointEyeLook,
-								pointAimLook;
+
+	VectorGeometric		vectorViewX,
+						vectorViewY,
+						vectorViewZ;
+
+	PointGeometric		centerOfAllObjects,
+						pointEyeLook,
+						pointAimLook;
+
 
 	KIOFont *kioFont;
 
@@ -115,15 +97,17 @@ protected:
 								offsetView_X,
 								offsetView_Y;
 
-	float						BoxTrans[16];
-	float						rotx = 0,
-								roty = 0,
-								prev_rotx = 0,
-								prev_roty = 0;
-	int							prev_x, prev_y;
+	float				distanceAimEye,
+						BoxTrans[16],
+						rotx,
+						roty,
+						prev_rotx,
+						prev_roty;
 
-	float						coordinateDifferenceX,
-								coordinateDifferenceY;
+
+	int					prev_x, 
+						prev_y;
+
 
 	
 	

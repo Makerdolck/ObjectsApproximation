@@ -32,7 +32,6 @@ public:
 	void			operator=(wchar_t* option);				// Save Option;
 	
 	operator		wchar_t* () { return SelectedOption; }	// Conversation operator
-
 };
 
 #endif /* __COMPENSATION_OPTION_NAMES_ENUM_H__ */

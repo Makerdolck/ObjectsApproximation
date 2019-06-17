@@ -9,10 +9,6 @@
 
 class PlaneApprox : public GeomObjectApprox
 {
-//	--- --- --- --- --- --- --- --- ---	// Properties
-private:
-	PlaneGeometric	Plane;
-
 //	--- --- --- --- --- --- --- --- ---	// Methods
 public:
 	PlaneApprox();
@@ -27,4 +23,4 @@ private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
 };
 
-#endif /* __RECTANGLE_APPROX_H__ */ 
+#endif /* __RECTANGLE_APPROX_H__ */

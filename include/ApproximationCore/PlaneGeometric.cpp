@@ -88,36 +88,24 @@ PointGeometric PlaneGeometric::PointBetweenPlaneMiddle(PointGeometric point) {
 }
 // ---																										// PlaneBetweenLine
 int PlaneGeometric::PlaneBetweenLine(LineGeometric vectorLine, PointGeometric* pointOut) {
-	PointGeometric pointintersec;
-
+	PointGeometric pointIntersection;
 	double ckolar;
-	//double ckolar1;
-	//ckolar = Line.Vector.X*vectorLine.Vector.X + Line.Vector.Y*vectorLine.Vector.Y + Line.Vector.Z*vectorLine.Vector.Z ;
 	ckolar = Line.Vector * vectorLine.Vector;
 	if (ckolar == 0) {
-		int znach;
-		znach = (int)(Line.Vector * vectorLine.Point);
-		if (znach == 0) {//прямая лежит в плосости
-			return 1;
-		}
-		else {//прямая параллельна плоскости
-			return 1;
-		}
+		return 1;
 	}
 
 	if (ckolar != 0) {
 		double lambda;
 		double D = 0;
 		D = (-1) * (Line.Vector.X * Line.Point.X + Line.Vector.Y * Line.Point.Y + Line.Vector.Z * Line.Point.Z);
-		//lambda = (-1)*(vectorLine.Point.X*Line.Vector.X + vectorLine.Point.Y*Line.Vector.Y + vectorLine.Point.Z*Line.Vector.Z) / (vectorLine.Vector.X*Line.Vector.X + vectorLine.Vector.Y*Line.Vector.Y + vectorLine.Vector.Z*Line.Vector.Z);
 		lambda = (-1) * (Line.Vector.X * vectorLine.Point.X + Line.Vector.Y * vectorLine.Point.Y + Line.Vector.Z * vectorLine.Point.Z + D) / (Line.Vector.X * vectorLine.Vector.X + Line.Vector.Y * vectorLine.Vector.Y + Line.Vector.Z * vectorLine.Vector.Z);
-		pointintersec.X = lambda * vectorLine.Vector.X + vectorLine.Point.X;
-		pointintersec.Y = lambda * vectorLine.Vector.Y + vectorLine.Point.Y;
-		pointintersec.Z = lambda * vectorLine.Vector.Z + vectorLine.Point.Z;
-		*pointOut = pointintersec;
+		pointIntersection.X = lambda * vectorLine.Vector.X + vectorLine.Point.X;
+		pointIntersection.Y = lambda * vectorLine.Vector.Y + vectorLine.Point.Y;
+		pointIntersection.Z = lambda * vectorLine.Vector.Z + vectorLine.Point.Z;
+		*pointOut = pointIntersection;
 		return 0;
 	}
-
 	return 1;
 }
 // ---																										// PlaneIntersectionPlane
@@ -134,15 +122,7 @@ int PlaneGeometric::PlaneIntersectionPlane(PlaneGeometric Plane2, LineGeometric*
 	if ((VectorPr.X == 0) && (VectorPr.Y == 0) && (VectorPr.Z = 0)) {
 		return 1;
 	}
-
 	else {
-		/*if (VectorPr.X != 0) {
-			double del;
-			del = Line.Vector.Y * Plane2.Line.Vector.Z - Line.Vector.Z*Plane2.Line.Vector.Y;
-			LineInter.Point.Y = (D1*Plane2.Line.Vector.Z - Line.Vector.Z*D2) / del;
-			LineInter.Point.Z = (Line.Vector.Y*D2 - Plane2.Line.Vector.Y*D1) / del;
-
-		}*/
 		double del;
 		del = Line.Vector.Y * Plane2.Line.Vector.Z - Line.Vector.Z * Plane2.Line.Vector.Y;
 		if (del != 0) {
@@ -153,18 +133,23 @@ int PlaneGeometric::PlaneIntersectionPlane(PlaneGeometric Plane2, LineGeometric*
 			del = Line.Vector.X * Plane2.Line.Vector.Z - Line.Vector.Z * Plane2.Line.Vector.X;
 			LineInter.Point.X = (D1 * Plane2.Line.Vector.Z - Line.Vector.Z * D2) / del;
 			LineInter.Point.Z = (Line.Vector.X * D2 - Plane2.Line.Vector.X * D1) / del;
+			if (del == 0) {
+				del = Line.Vector.X * Plane2.Line.Vector.Y - Line.Vector.Y * Plane2.Line.Vector.X;
+				LineInter.Point.Z = 0;
+				LineInter.Point.X = (D1 * Plane2.Line.Vector.Y - Line.Vector.Y * D2) / del;
+				LineInter.Point.Y = (Line.Vector.X * D2 - Plane2.Line.Vector.X * D1) / del;
+			}
 		}
-
 		*line = LineInter;
-		//return 1;
-		//return LineInter;
 		return 0;
 	}
-
 }
 // ---																										// PlaneAngleLine
 int PlaneGeometric::PlaneAngleLine(LineGeometric Lline) {
 	double degreeCOS;
+
+	Line.Normalize();
+
 	degreeCOS = fabs((Lline.Vector.X * Line.Vector.X + Lline.Vector.Y * Line.Vector.Y + Lline.Vector.Z * Line.Vector.Z)) / (sqrt(pow(Lline.Vector.X, 2) + pow(Lline.Vector.Y, 2) + pow(Lline.Vector.Z, 2)) * sqrt(pow(Line.Vector.X, 2) + pow(Line.Vector.Y, 2) + pow(Line.Vector.Z, 2)));
 	double angle;
 	double angle1;

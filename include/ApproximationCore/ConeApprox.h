@@ -33,7 +33,10 @@ public:
 	void			Triangulation(double inAccuracy = 1.0f);
 
 	int				IntersectionTwoCone(ConeApprox cone2, PointGeometric* point1);
-	int				IntersectionConeAndPlane(RectangleApprox Plane, CircleGeometric* Ñircle);
+	int				IntersectionConeAndPlane(RectangleApprox Plane, CircleGeometric* Ñircle, PointGeometric* point);
+	int				IntersectionConeAndPoint(PointApprox pointOut, PointGeometric* point1);
+	int				IntersectionConeAndCircle(CircleApprox circle, PointGeometric* point1, PointGeometric* point2);
+	int				IntersectionConeAndLine(LineSegmentApprox Lline, PointGeometric* point1, PointGeometric* point2);
 
 private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
@@ -42,4 +45,4 @@ private:
 
 };
 
-#endif /* __CONE_APPROX_H__ */ 
+#endif /* __CONE_APPROX_H__ */

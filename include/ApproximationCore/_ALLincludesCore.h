@@ -28,7 +28,6 @@
 
 #include "ObjectApprox.h"
 
-#include "MeasureTypesEnum.h"
 #include "CompensationOptionNamesEnum.h"
 #include "MeshTrianglesStructure.h"
 

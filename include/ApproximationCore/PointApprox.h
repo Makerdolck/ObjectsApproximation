@@ -27,4 +27,4 @@ public:
 	PointGeometric	PointBetweenPointMiddle(PointApprox point);
 };
 
-#endif /* __POINT_APPROX_H__ */ 
+#endif /* __POINT_APPROX_H__ */

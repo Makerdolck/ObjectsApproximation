@@ -9,14 +9,13 @@
 class CircleApprox;
 class PointApprox;
 #include "CircleApprox.h"
+#include "LineSegmentApprox.h"
 
 class RectangleApprox :	public GeomObjectApprox
 {
 //	--- --- --- --- --- --- --- --- ---	// Properties
 private:
 	
-
-	VectorGeometric VectorZ;
 
 	PointGeometric	WanderingCenter,
 					*WanderingPoints;
@@ -45,6 +44,8 @@ public:
 	int				PlaneIntersectionCircle(CircleApprox Circle, PointGeometric* point1, PointGeometric* point2);
 	PointGeometric	PointBetweenPlaneMiddle(PointApprox point);
 	PointGeometric	PointBetweenPlane(PointApprox point);
+	int				PlaneProjectionLine(LineSegmentApprox Lline, PointGeometric* point1, PointGeometric* point2);
+	PlaneGeometric  MiddlePlane(RectangleApprox Plane2);
 
 private:
 	void			FindWidthHeightMinMaxXY(PointGeometric *points, int arraySize);
@@ -54,4 +55,4 @@ private:
 	double			FunctionApprox(PointGeometric *points, int arraySize);
 };
 
-#endif /* __RECTANGLE_APPROX_H__ */ 
+#endif /* __RECTANGLE_APPROX_H__ */

@@ -13,15 +13,15 @@ CmmApprox::CmmApprox()
 	
 	if (hLibrary == NULL)
 	{
-		//MessageBoxW(NULL, L"Библиотека CMM.dll не найдена.", L"Error", MB_OK + MB_ICONERROR);
+		MessageBoxW(NULL, L"Библиотека CMM.dll не найдена.", L"Ошибка", MB_OK + MB_ICONERROR);
 		return;
 	}
 
 	Init		= (INIT *)::GetProcAddress(hLibrary, "Init");
 	GetPoint	= (GETPOINT *)::GetProcAddress(hLibrary, "GetPoint");
 	DisConnect	= (DISCONNECT *)::GetProcAddress(hLibrary, "DisConnect");
-	Move = (MOVE*)::GetProcAddress(hLibrary, "Move");
-	Home = (HOME*)::GetProcAddress(hLibrary, "Home");
+	Move		= (MOVE*)::GetProcAddress(hLibrary, "Move");
+	Home		= (HOME*)::GetProcAddress(hLibrary, "Home");
 }
 
 CmmApprox::~CmmApprox()

@@ -4,16 +4,28 @@
 #include <iostream>
 #include <algorithm>
 
- 
+PointGeometric TransToGlobal(PointGeometric	point,
+	PointGeometric	pointCenterLocal,
+	VectorGeometric	vectorX,
+	VectorGeometric	vectorY,
+	VectorGeometric vectorZ)
+{
+	VectorGeometric vectorR(PointGeometric(0, 0, 0), pointCenterLocal, false);
+
+	VectorGeometric vectorPoint = vectorR + vectorX * point.X + vectorY * point.Y + vectorZ * point.Z;
+
+	return PointGeometric(vectorPoint.X, vectorPoint.Y, vectorPoint.Z);
+}
 UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 { 
-	CylinderApprox * CylinderTraekt1 = (CylinderApprox *)((StTr*)Struct)->TrGeom;
-	CylinderApprox CylinderTraekt = *CylinderTraekt1;
-	int step = ((StTr*)Struct)->TrStep;
-	int n = ((StTr*)Struct)->TrPl;
-	bool inside = ((StTr*)Struct)->TrBoss;
-	bool part = ((StTr*)Struct)->TrPart;
-	CmmApprox* pCMM = ((StTr*)Struct)->TrCmm;
+	StTr* struc = ((StTr*)Struct);
+	CylinderApprox CylinderTraekt = *(CylinderApprox *)struc->TrGeom;
+
+	int step = struc->TrStep;
+	int n = struc->TrPl;
+	bool inside = struc->TrBoss;
+	bool part = struc->TrPart;
+	CmmApprox* pCMM = struc->TrCmm;
 	CircleApprox CircleTraekt;
 	LineGeometric LineTraekt;
 	LineTraekt.Point = CylinderTraekt.Line.CreatePointOnDistance(CylinderTraekt.Height / 2, false);
@@ -58,7 +70,8 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 	LineGeometric xVec;
 	PointGeometric xP;
 	VectorGeometric yCoord;
-
+	LineGeometric forIntersection;
+	PointGeometric forI1, forI2;
 
 	CircleTraekt.Line.Point = LineTraekt.CreatePointOnDistance(0);
 	if (part)
@@ -122,7 +135,7 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 		/*fclose(dots);*/
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
-			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+			CircleTraekt.Mesh.points[i] = TransToGlobal(CircleTraekt.Mesh.points[i],
 				CircleTraekt.Line.Point,
 				vectorX,
 				vectorY,
@@ -132,7 +145,20 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 	}
 	else
 	{
+		PlaneTr.Line.Point = CircleTraekt.Line.Point;
+		PlaneTr.Line.Vector = CircleTraekt.Line.Vector;
+		PointPart = PlaneTr.PointProjection(CylinderTraekt.PointsForApprox[0]);
+		LinePart.Point = CircleTraekt.Line.Point;
+		LinePart.Vector = VectorGeometric(CircleTraekt.Line.Point, PointPart);
+
 		angle = 360.0 / step;
+		vectorX = VectorGeometric(CircleTraekt.Line.Point, LinePart.CreatePointOnDistance(CircleTraekt.Radius));
+		vectorZ = CircleTraekt.Line.Vector;
+		vectorY = vectorX ^ vectorZ;
+		if (VectorGeometric(CircleTraekt.Line.Point, PlaneTr.PointProjection(CylinderTraekt.PointsForApprox[1]))*vectorY < 0)
+		{
+			vectorY = vectorY * (-1);
+		}
 		CircleTraekt.Mesh.points.clear();
 		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
 		{
@@ -143,7 +169,7 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 		}
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
-			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+			CircleTraekt.Mesh.points[i] = TransToGlobal(CircleTraekt.Mesh.points[i],
 				CircleTraekt.Line.Point,
 				vectorX,
 				vectorY,
@@ -189,10 +215,12 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 			tmpLine.Vector = VectorGeometric(CircleTraekt.Line.Point, CircleTraekt.Mesh.points[i]);
 			tmpPoint1 = tmpPoint;
 			
+			forIntersection.Point = tmpPoint;
+			forIntersection.Vector = VectorGeometric(tmpPoint, tmpPoint1);
 
 			CircleTr.Line.Point = CircleTraekt.Line.Point;
 			CircleTr.Radius = CircleTraekt.Radius;
-			if (/*CircleTr.LineIntersection = 0 || */inside)
+			if (inside)
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius - PtDist);
 				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
@@ -200,22 +228,29 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 			else
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius + PtDist);
-				double xPre = CircleTraekt.Line.Point.DistanceToPoint(tmpPoint1);
-
-				xVec.Point = CircleTraekt.Line.Point;
-				xVec.Vector = VectorGeometric(CircleTraekt.Line.Point, tmpPoint1);
-				xP = xVec.PointProjection(tmpPoint);
-				double yNew = xP.DistanceToPoint(tmpPoint);
-				PointGeometric subPoint(xPre, yNew, 0);
-
-				yCoord = xVec.Vector^CircleTraekt.Line.Vector;
-				if (yCoord*(VectorGeometric(tmpPoint1, tmpPoint)) < 0)
+				if (CircleTr.LineIntersectionCircle(forIntersection, &forI1, &forI2) == 0)
 				{
-					yCoord = yCoord * (-1);
+					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
 				}
-				subPoint = TransferPointToNewCoordinateSystem(subPoint, CircleTraekt.Line.Point, xVec.Vector, yCoord, CircleTraekt.Line.Vector);
-				pCMM->Move_(&subPoint.X, &subPoint.Y, &subPoint.Z, false);
-				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
+				else
+				{
+					double xPre = CircleTraekt.Line.Point.DistanceToPoint(tmpPoint1);
+
+					xVec.Point = CircleTraekt.Line.Point;
+					xVec.Vector = VectorGeometric(CircleTraekt.Line.Point, tmpPoint1);
+					xP = xVec.PointProjection(tmpPoint);
+					double yNew = xP.DistanceToPoint(tmpPoint);
+					PointGeometric subPoint(xPre, yNew, 0);
+
+					yCoord = xVec.Vector ^ CircleTraekt.Line.Vector;
+					if (yCoord * (VectorGeometric(tmpPoint1, tmpPoint)) < 0)
+					{
+						yCoord = yCoord * (-1);
+					}
+					subPoint = TransToGlobal(subPoint, CircleTraekt.Line.Point, xVec.Vector, yCoord, CircleTraekt.Line.Vector);
+					pCMM->Move_(&subPoint.X, &subPoint.Y, &subPoint.Z, false);
+					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
+				}
 			}
 			pCMM->Move_(&CircleTraekt.Mesh.points[i].X, &CircleTraekt.Mesh.points[i].Y, &CircleTraekt.Mesh.points[i].Z, true);
 		}
@@ -224,24 +259,24 @@ UINT TraektCylinder(LPVOID Struct)		//  StTr *Struct
 			lineOffset.Point = CircleTraekt.Mesh.points[i];
 			CircleTraekt.Mesh.points[i] = lineOffset.CreatePointOnDistance(CylinderTraekt.Height / (n - 1));
 		}
-		if (part)
-		{
+		//if (part)
+		//{
 			std::reverse(std::begin(CircleTraekt.Mesh.points), std::end(CircleTraekt.Mesh.points));
-		}
+		//}
 		
 	}
+	delete struc;
 	return 0;
 }
-
 UINT TraektCone(LPVOID Struct)
 {
-	ConeApprox * ConeTraekt1 = (ConeApprox *)((StTr*)Struct)->TrGeom;
-	ConeApprox ConeTraekt = *ConeTraekt1;
-	int step = ((StTr*)Struct)->TrStep;
-	int n = ((StTr*)Struct)->TrPl;
-	bool inside = ((StTr*)Struct)->TrBoss;
-	bool part = ((StTr*)Struct)->TrPart;
-	CmmApprox* pCMM = ((StTr*)Struct)->TrCmm;
+	StTr* struc = ((StTr*)Struct);
+	ConeApprox ConeTraekt = *(ConeApprox *)struc->TrGeom;
+	int step = struc->TrStep;
+	int n = struc->TrPl;
+	bool inside = struc->TrBoss;
+	bool part = struc->TrPart;
+	CmmApprox* pCMM = struc->TrCmm;
 	CircleApprox CircleTraekt;
 	LineGeometric LineTraekt;
 	LineTraekt.Point = ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2, false);
@@ -279,6 +314,8 @@ UINT TraektCone(LPVOID Struct)
 	LineGeometric xVec;
 	PointGeometric xP;
 	VectorGeometric yCoord;
+	LineGeometric forIntersection;
+	PointGeometric forI1, forI2;
 
 	CircleTraekt.Line.Point = LineTraekt.CreatePointOnDistance(0);
 	if (part)
@@ -348,7 +385,7 @@ UINT TraektCone(LPVOID Struct)
 
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
-			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+			CircleTraekt.Mesh.points[i] = TransToGlobal(CircleTraekt.Mesh.points[i],
 				CircleTraekt.Line.Point,
 				vectorX,
 				vectorY,
@@ -358,7 +395,20 @@ UINT TraektCone(LPVOID Struct)
 	}
 	else
 	{
+		PlaneTr.Line.Point = CircleTraekt.Line.Point;
+		PlaneTr.Line.Vector = CircleTraekt.Line.Vector;
+		PointPart = PlaneTr.PointProjection(ConeTraekt.PointsForApprox[0]);
+		LinePart.Point = CircleTraekt.Line.Point;
+		LinePart.Vector = VectorGeometric(CircleTraekt.Line.Point, PointPart);
+
 		angle = 360.0 / step;
+		vectorX = VectorGeometric(CircleTraekt.Line.Point, LinePart.CreatePointOnDistance(CircleTraekt.Radius));
+		vectorZ = CircleTraekt.Line.Vector;
+		vectorY = vectorX ^ vectorZ;
+		if (VectorGeometric(CircleTraekt.Line.Point, PlaneTr.PointProjection(ConeTraekt.PointsForApprox[1]))*vectorY < 0)
+		{
+			vectorY = vectorY * (-1);
+		}
 		CircleTraekt.Mesh.points.clear();
 		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
 		{
@@ -369,7 +419,7 @@ UINT TraektCone(LPVOID Struct)
 		}
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
-			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+			CircleTraekt.Mesh.points[i] = TransToGlobal(CircleTraekt.Mesh.points[i],
 				CircleTraekt.Line.Point,
 				vectorX,
 				vectorY,
@@ -402,18 +452,22 @@ UINT TraektCone(LPVOID Struct)
 	PlaneGeometric plSurf;
 	plSurf.Line.Point = CircleTraekt.Line.Point;
 	plSurf.Line.Vector = CircleTraekt.Line.Vector;
-
+	VPart.clear();
+	for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
+	{
+		VPart.push_back(CircleTraekt.Mesh.points[i]);
+	}
 	for (double StepSum = 0; StepSum <= ConeTraekt.Height; StepSum += ConeTraekt.Height / (n - 1))//для вала
 	{
-		poSurf = ConeTraekt.Line.CreatePointOnDistance(StepSum + sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f) - ConeTraekt.Height / 2);
-		lnSurf1.Point = CircleTraekt.Mesh.points[0];
+		poSurf = ConeTraekt.Line.CreatePointOnDistance(/*StepSum + */sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f) - ConeTraekt.Height / 2);
+		lnSurf1.Point = VPart[0];
 		lnSurf1.Vector = plSurf.Line.Vector;//VectorGeometric(CircleTraekt.Mesh.points[0], plSurf.PointProjection(CircleTraekt.Mesh.points[0]));
 		lnSurf.Point = poSurf;
 		lnSurf.Vector = VectorGeometric(poSurf, lnSurf1.PointProjection(poSurf));
-		poSurf = lnSurf.CreatePointOnDistance(sqrt(ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f) - sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)*sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)));
+		poSurf = lnSurf.CreatePointOnDistance(ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f));//sqrt(ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f) - sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)*sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)));
 		CircleTraekt.Line.Point = LineTraekt.CreatePointOnDistance(StepSum);
 		tmpLine.Point = CircleTraekt.Mesh.points[0];
-		tmpLine.Vector = VectorGeometric(ConeTraekt.Line.CreatePointOnDistance((ConeTraekt.Height / 2) - StepSum, false), poSurf);
+		tmpLine.Vector = VectorGeometric(ConeTraekt.Line.CreatePointOnDistance((ConeTraekt.Height / 2), false), poSurf);
 		if (inside)
 		{
 			tmpPoint = tmpLine.CreatePointOnDistance(PtDist,false);
@@ -428,18 +482,18 @@ UINT TraektCone(LPVOID Struct)
 		{
 			tmpPoint1 = tmpPoint;
 			poSurf = ConeTraekt.Line.CreatePointOnDistance(sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f) - ConeTraekt.Height / 2);
-			lnSurf1.Point = CircleTraekt.Mesh.points[i];
+			lnSurf1.Point = VPart[i];
 			lnSurf1.Vector = plSurf.Line.Vector;
 			lnSurf.Point = poSurf;
 			lnSurf.Vector = VectorGeometric(poSurf, lnSurf1.PointProjection(poSurf));
-			poSurf = lnSurf.CreatePointOnDistance(sqrt(ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f) - sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)*sin(ConeTraekt.Angle* PI_Approx / 180.0f)*ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)));
+			poSurf = lnSurf.CreatePointOnDistance(ConeTraekt.Radius*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f)*sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f));
 			tmpLine.Point = CircleTraekt.Mesh.points[i];
 			tmpLine.Vector = VectorGeometric(ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2,false), poSurf);
 			
 
-			CircleTr.Line.Point = CircleTraekt.Line.Point;
-			CircleTr.Radius = CircleTraekt.Radius;
-			if (/*CircleTr.LineIntersection = 0 || */inside)
+			CircleTr.Line.Point = ConeTraekt.Line.CreatePointOnDistance(StepSum);
+			CircleTr.Radius = CircleTraekt.Radius - tan(ConeTraekt.Angle * PI_Approx / 180.0f)*StepSum;
+			if (inside)
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(PtDist, false);
 				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
@@ -447,27 +501,46 @@ UINT TraektCone(LPVOID Struct)
 			else
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(PtDist);
-				//ForP1->GetPoint_(&CurX, &CurY, &CurZ, &sh);
-				PlaneGeometric plSurf1(tmpPoint1, tmpPoint, tmpLine.CreatePointOnDistance(2*PtDist));
-				double xPre = plSurf1.PointProjection(ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2, false)).DistanceToPoint(tmpPoint1);
+				if (CircleTr.LineIntersectionCircle(forIntersection, &forI1, &forI2) == 0)
+				{
+					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
+				}
+				else
+				{
+					double xPre = tmpPoint1.DistanceToPoint(ConeTraekt.Line.PointProjection(tmpPoint1));
+					xVec.Point = ConeTraekt.Line.PointProjection(tmpPoint1);
+					xVec.Vector = VectorGeometric(ConeTraekt.Line.PointProjection(tmpPoint1), tmpPoint1);
+					xP = xVec.PointProjection(tmpPoint);
+					double yNew = xP.DistanceToPoint(tmpPoint);
+					PointGeometric subPoint(xPre, yNew, 0);
+					yCoord = xVec.Vector ^ ConeTraekt.Line.Vector;
+					if (yCoord * (VectorGeometric(tmpPoint1, tmpPoint)) < 0)
+					{
+						yCoord = yCoord * (-1);
+					}
+					//ForP1->GetPoint_(&CurX, &CurY, &CurZ, &sh);
+					/*PlaneGeometric plSurf1(tmpPoint1, tmpPoint, tmpLine.CreatePointOnDistance(2*PtDist));
+					double xPre = plSurf1.PointProjection(ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2, false)).DistanceToPoint(tmpPoint1);
 
-				xVec.Point = plSurf1.PointProjection(ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2, false));
-				xVec.Vector = VectorGeometric(plSurf1.PointProjection(ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2, false)), tmpPoint1);
-				xP = xVec.PointProjection(tmpPoint);
-				double yNew = xP.DistanceToPoint(tmpPoint);
-				PointGeometric subPoint(xPre, yNew, 0);
-				if (plSurf1.Line.Vector * ConeTraekt.Line.Vector < 0)
-				{
-					plSurf1.Line.Vector = plSurf1.Line.Vector * (-1);
+
+					xVec.Point = plSurf1.PointProjection(ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2, false));
+					xVec.Vector = VectorGeometric(plSurf1.PointProjection(ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2, false)), tmpPoint1);
+					xP = xVec.PointProjection(tmpPoint);
+					double yNew = xP.DistanceToPoint(tmpPoint);
+					PointGeometric subPoint(xPre, yNew, 0);
+					if (plSurf1.Line.Vector * ConeTraekt.Line.Vector < 0)
+					{
+						plSurf1.Line.Vector = plSurf1.Line.Vector * (-1);
+					}
+					yCoord = xVec.Vector^plSurf1.Line.Vector;
+					if (yCoord*(VectorGeometric(tmpPoint1, tmpPoint)) < 0)
+					{
+						yCoord = yCoord * (-1);
+					}*/
+					subPoint = TransToGlobal(subPoint, ConeTraekt.Line.PointProjection(tmpPoint1), xVec.Vector, yCoord, ConeTraekt.Line.Vector);
+					pCMM->Move_(&subPoint.X, &subPoint.Y, &subPoint.Z, false);
+					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
 				}
-				yCoord = xVec.Vector^plSurf1.Line.Vector;
-				if (yCoord*(VectorGeometric(tmpPoint1, tmpPoint)) < 0)
-				{
-					yCoord = yCoord * (-1);
-				}
-				subPoint = TransferPointToNewCoordinateSystem(subPoint, plSurf1.PointProjection(ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.Height / 2, false)), xVec.Vector, yCoord, plSurf1.Line.Vector);
-				pCMM->Move_(&subPoint.X, &subPoint.Y, &subPoint.Z, false);
-				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
 			}
 			pCMM->Move_(&CircleTraekt.Mesh.points[i].X, &CircleTraekt.Mesh.points[i].Y, &CircleTraekt.Mesh.points[i].Z, true);
 		}
@@ -480,22 +553,24 @@ UINT TraektCone(LPVOID Struct)
 				ConeTraekt.Line.CreatePointOnDistance(ConeTraekt.HeightPhantom - ConeTraekt.Height / 2));
 			CircleTraekt.Mesh.points[i] = PointPusher.CreatePointOnDistance(forR/sin((90 - ConeTraekt.Angle)* PI_Approx / 180.0f));//false?
 		}
-		if (part)
-		{
+		//if (part)
+		//{
 			std::reverse(std::begin(CircleTraekt.Mesh.points), std::end(CircleTraekt.Mesh.points));
-		}
+			std::reverse(std::begin(VPart), std::end(VPart));
+		//}
 	}
+	delete struc;
 	return 0;
 }
 UINT TraektSphere(LPVOID Struct)
 {
-	SphereApprox * SphereTraekt1 = (SphereApprox *)((StTr*)Struct)->TrGeom;
-	SphereApprox SphereTraekt = *SphereTraekt1;
-	int step = ((StTr*)Struct)->TrStep;
-	int n = ((StTr*)Struct)->TrPl;
-	bool inside = ((StTr*)Struct)->TrBoss;
-	bool part = ((StTr*)Struct)->TrPart;
-	CmmApprox* pCMM = ((StTr*)Struct)->TrCmm;
+	StTr* struc = ((StTr*)Struct);
+	SphereApprox SphereTraekt = *(SphereApprox *)struc->TrGeom;
+	int step = struc->TrStep;
+	int n = struc->TrPl;
+	bool inside = struc->TrBoss;
+	bool part = struc->TrPart;
+	CmmApprox* pCMM = struc->TrCmm;
 	CircleGeometric CirTr(SphereTraekt.PointsForApprox[0], SphereTraekt.PointsForApprox[1], SphereTraekt.PointsForApprox[2]);
 	PlaneGeometric FirstPl(SphereTraekt.PointsForApprox[0], SphereTraekt.PointsForApprox[1], SphereTraekt.PointsForApprox[2]);
 	CirTr.Line.Vector = VectorGeometric(FirstPl.PointProjection(SphereTraekt.PointsForApprox[3]),SphereTraekt.PointsForApprox[3]);
@@ -510,9 +585,11 @@ UINT TraektSphere(LPVOID Struct)
 
 	int MinN = 0;
 	double MinDist;
+	LineGeometric forIntersection;
+	PointGeometric forI1, forI2;
 
 	LineGeometric LineTraekt;
-	LineTraekt.Point = CirTr.Line.CreatePointOnDistance(CirTr.Radius, false);
+	LineTraekt.Point = CirTr.Line.Point;
 	LineTraekt.Vector = CirTr.Line.Vector;
 	std::vector<PointGeometric> VPart;
 	std::vector<PointGeometric> VPart1;
@@ -620,7 +697,7 @@ UINT TraektSphere(LPVOID Struct)
 
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
-			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+			CircleTraekt.Mesh.points[i] = TransToGlobal(CircleTraekt.Mesh.points[i],
 				CircleTraekt.Line.Point,
 				vectorX,
 				vectorY,
@@ -630,7 +707,20 @@ UINT TraektSphere(LPVOID Struct)
 	}
 	else
 	{
+		PlaneTr.Line.Point = CircleTraekt.Line.Point;
+		PlaneTr.Line.Vector = CirTr.Line.Vector;
+		//PointPart = PlaneTr.PointProjection(SphereTraekt.PointsForApprox[0]);
+		LinePart.Point = CircleTraekt.Line.Point;
+		LinePart.Vector = VectorGeometric(CircleTraekt.Line.Point, SphereTraekt.PointsForApprox[0]);
+
 		angle = 360.0 / step;
+		vectorX = VectorGeometric(CircleTraekt.Line.Point, LinePart.CreatePointOnDistance(CircleTraekt.Radius));
+		vectorZ = CircleTraekt.Line.Vector;
+		vectorY = vectorX ^ vectorZ;
+		if (VectorGeometric(CircleTraekt.Line.Point, PlaneTr.PointProjection(SphereTraekt.PointsForApprox[1]))*vectorY < 0)
+		{
+			vectorY = vectorY * (-1);
+		}
 		CircleTraekt.Mesh.points.clear();
 		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
 		{
@@ -641,7 +731,7 @@ UINT TraektSphere(LPVOID Struct)
 		}
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
-			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+			CircleTraekt.Mesh.points[i] = TransToGlobal(CircleTraekt.Mesh.points[i],
 				CircleTraekt.Line.Point,
 				vectorX,
 				vectorY,
@@ -700,8 +790,8 @@ UINT TraektSphere(LPVOID Struct)
 			
 
 			CircleTr.Line.Point = CircleTraekt.Line.Point;
-			CircleTr.Radius = CircleTraekt.Radius;
-			if (/*CircleTr.LineIntersection = 0 || */inside)
+			CircleTr.Radius = sqrt(SphereTraekt.Radius* SphereTraekt.Radius - StepSum*StepSum);
+			if (inside)
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(SphereTraekt.Radius - PtDist);
 				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
@@ -709,23 +799,29 @@ UINT TraektSphere(LPVOID Struct)
 			else
 			{
 				tmpPoint = tmpLine.CreatePointOnDistance(SphereTraekt.Radius + PtDist);
-				//ForP1->GetPoint_(&CurX, &CurY, &CurZ, &sh);
-				double xPre = SphereTraekt.Line.Point.DistanceToPoint(tmpPoint1);
-
-				xVec.Point = SphereTraekt.Line.Point;
-				xVec.Vector = VectorGeometric(SphereTraekt.Line.Point, tmpPoint1);
-				xP = xVec.PointProjection(tmpPoint);
-				double yNew = xP.DistanceToPoint(tmpPoint);
-				PointGeometric subPoint(xPre, yNew, 0);
-				PlaneGeometric subPl(SphereTraekt.Line.Point,tmpPoint1, tmpPoint);
-				yCoord = xVec.Vector^subPl.Line.Vector;
-				if (yCoord*(VectorGeometric(tmpPoint1, tmpPoint)) < 0)
+				if (CircleTr.LineIntersectionCircle(forIntersection, &forI1, &forI2) == 0)
 				{
-					yCoord = yCoord * (-1);
+					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
 				}
-				subPoint = TransferPointToNewCoordinateSystem(subPoint, SphereTraekt.Line.Point, xVec.Vector, yCoord, subPl.Line.Vector);
-				pCMM->Move_(&subPoint.X, &subPoint.Y, &subPoint.Z, false);
-				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
+				else
+				{
+					double xPre = tmpPoint1.DistanceToPoint(LineTraekt.PointProjection(tmpPoint1));
+
+					xVec.Point = LineTraekt.PointProjection(tmpPoint1);
+					xVec.Vector = VectorGeometric(LineTraekt.PointProjection(tmpPoint1), tmpPoint1);
+					xP = xVec.PointProjection(tmpPoint);
+					double yNew = xP.DistanceToPoint(tmpPoint);
+					PointGeometric subPoint(xPre, yNew, 0);
+					//PlaneGeometric subPl(SphereTraekt.Line.Point,tmpPoint1, tmpPoint);
+					yCoord = xVec.Vector ^ CircleTraekt.Line.Vector;
+					if (yCoord * (VectorGeometric(tmpPoint1, tmpPoint)) < 0)
+					{
+						yCoord = yCoord * (-1);
+					}
+					subPoint = TransToGlobal(subPoint, LineTraekt.PointProjection(tmpPoint1), xVec.Vector, yCoord, CircleTraekt.Line.Vector);
+					pCMM->Move_(&subPoint.X, &subPoint.Y, &subPoint.Z, false);
+					pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
+				}
 			}
 			pCMM->Move_(&CircleTraekt.Mesh.points[i].X, &CircleTraekt.Mesh.points[i].Y, &CircleTraekt.Mesh.points[i].Z, true);
 		}
@@ -737,29 +833,35 @@ UINT TraektSphere(LPVOID Struct)
 			PointPusher.Vector = VectorGeometric(CircleTraekt.Line.Point, CircleTraekt.Mesh.points[i]);
 			CircleTraekt.Mesh.points[i] = PointPusher.CreatePointOnDistance(sqrt(SphereTraekt.Radius*SphereTraekt.Radius - (VPart[Fpoint].DistanceToPoint(SphereTraekt.Line.Point) + forRev*forR)*(VPart[Fpoint].DistanceToPoint(SphereTraekt.Line.Point) + forRev * forR)));//false?
 		}
-		if (part)
-		{
+		//if (part)
+		//{
 			std::reverse(std::begin(CircleTraekt.Mesh.points), std::end(CircleTraekt.Mesh.points));
-		}
+		//}
 	}
+	delete struc;
 	return 0;
 }
 UINT TraektPoint(LPVOID Struct)
 {
-	PointApprox * PointTraekt1 = (PointApprox *)((StTr*)Struct)->TrGeom;
-	PointApprox PointTraekt = *PointTraekt1;
-	CmmApprox* pCMM = ((StTr*)Struct)->TrCmm;
+	StTr* struc = ((StTr*)Struct);
+	PointApprox PointTraekt = *(PointApprox *)struc->TrGeom;
+	CmmApprox* pCMM = struc->TrCmm;
 	
 	pCMM->Move_(&PointTraekt.X, &PointTraekt.Y, &PointTraekt.Z, true);
+	delete struc;
 	return 0;
 }
 UINT TraektLine(LPVOID Struct)
 {
-	LineSegmentApprox * LineTraekt1 = (LineSegmentApprox *)((StTr*)Struct)->TrGeom;
-	LineSegmentApprox LineTraekt = *LineTraekt1;
-	int step = ((StTr*)Struct)->TrStep;
-	CmmApprox* pCMM = ((StTr*)Struct)->TrCmm;
+	StTr* struc = ((StTr*)Struct);
+	LineSegmentApprox LineTraekt = *(LineSegmentApprox *)struc->TrGeom;
+	int step = struc->TrStep;
+	CmmApprox* pCMM = struc->TrCmm;
 	
+	short sh = 10;
+	PointGeometric PointMach;
+	pCMM->GetPoint_(&PointMach.X, &PointMach.Y, &PointMach.Z, &sh);
+
 	LineGeometric LineF;
 	std::vector<PointGeometric> PointF;
 	int i = 0;
@@ -774,16 +876,18 @@ UINT TraektLine(LPVOID Struct)
 	for (i = 0;i<(int)PointF.size();i++)
 	{
 		pCMM->Move_(&PointF[i].X, &PointF[i].Y, &PointF[i].Z, true);
+		pCMM->Move_(&PointMach.X, &PointMach.Y, &PointMach.Z, true);
 	}
+	delete struc;
 	return 0;
 }
 UINT TraektRectangle(LPVOID Struct)
 {
-	RectangleApprox * RectangleTraekt1 = (RectangleApprox *)((StTr*)Struct)->TrGeom;
-	RectangleApprox RectangleTraekt = *RectangleTraekt1;
-	int step = ((StTr*)Struct)->TrStep;
-	int n = ((StTr*)Struct)->TrPl;
-	CmmApprox* pCMM = ((StTr*)Struct)->TrCmm;
+	StTr* struc = ((StTr*)Struct);
+	RectangleApprox RectangleTraekt = *(RectangleApprox *)struc->TrGeom;
+	int step = struc->TrStep;
+	int n = struc->TrPl;
+	CmmApprox* pCMM = struc->TrCmm;
 	
 	LineGeometric LineX, LineY;
 	std::vector<PointGeometric> PointF;
@@ -836,16 +940,17 @@ UINT TraektRectangle(LPVOID Struct)
 		i = 0;
 		j++;
 	}
+	delete struc;
 	return 0;
 }
 UINT TraektCircle(LPVOID Struct)
 {
-	
-	CircleApprox * CircleTraekt1 = (CircleApprox *)((StTr*)Struct)->TrGeom;
-	CircleApprox CircleTraekt = *CircleTraekt1;
-	int step = ((StTr*)Struct)->TrStep;
-	bool part = ((StTr*)Struct)->TrPart;
-	CmmApprox* pCMM = ((StTr*)Struct)->TrCmm;
+	StTr* struc = ((StTr*)Struct);
+	CircleApprox CircleTraekt = *(CircleApprox *)struc->TrGeom;
+	int step = struc->TrStep;
+	bool part = struc->TrPart;
+	bool inside = struc->TrBoss;
+	CmmApprox* pCMM = struc->TrCmm;
 	int PtDist = 10;
 	int ToolSize = 10;
 
@@ -876,6 +981,8 @@ UINT TraektCircle(LPVOID Struct)
 	LineGeometric xVec;
 	PointGeometric xP;
 	VectorGeometric yCoord;
+	LineGeometric forIntersection;
+	PointGeometric forI1, forI2;
 
 	if (part)
 	{
@@ -947,7 +1054,7 @@ UINT TraektCircle(LPVOID Struct)
 
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
-			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+			CircleTraekt.Mesh.points[i] = TransToGlobal(CircleTraekt.Mesh.points[i],
 				CircleTraekt.Line.Point,
 				vectorX,
 				vectorY,
@@ -957,7 +1064,20 @@ UINT TraektCircle(LPVOID Struct)
 	}
 	else
 	{
+		/*PlaneTr.Line.Point = CircleTraekt.Line.Point;
+		PlaneTr.Line.Vector = CircleTraekt.Line.Vector;
+		PointPart = PlaneTr.PointProjection(CircleTraekt.PointsForApprox[0]);*/
+		LinePart.Point = CircleTraekt.Line.Point;
+		LinePart.Vector = VectorGeometric(CircleTraekt.Line.Point, CircleTraekt.PointsForApprox[0]);
+
 		angle = 360.0 / step;
+		vectorX = VectorGeometric(CircleTraekt.Line.Point, LinePart.CreatePointOnDistance(CircleTraekt.Radius));
+		vectorZ = CircleTraekt.Line.Vector;
+		vectorY = vectorX ^ vectorZ;
+		if (VectorGeometric(CircleTraekt.Line.Point, CircleTraekt.PointsForApprox[1])*vectorY < 0)
+		{
+			vectorY = vectorY * (-1);
+		}
 		CircleTraekt.Mesh.points.clear();
 		for (anglesSum = 0.0f; forPntCnt < step; anglesSum += angle)
 		{
@@ -968,7 +1088,7 @@ UINT TraektCircle(LPVOID Struct)
 		}
 		for (int i = 0; i < (int)CircleTraekt.Mesh.points.size(); i++)
 		{
-			CircleTraekt.Mesh.points[i] = TransferPointToNewCoordinateSystem(CircleTraekt.Mesh.points[i],
+			CircleTraekt.Mesh.points[i] = TransToGlobal(CircleTraekt.Mesh.points[i],
 				CircleTraekt.Line.Point,
 				vectorX,
 				vectorY,
@@ -996,21 +1116,29 @@ UINT TraektCircle(LPVOID Struct)
 
 	
 		
-		tmpLine.Point = CircleTraekt.Line.Point;
-		tmpLine.Vector = VectorGeometric(CircleTraekt.Line.Point, CircleTraekt.Mesh.points[0]);
-		tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius + PtDist);
-		pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
-		pCMM->Move_(&CircleTraekt.Mesh.points[0].X, &CircleTraekt.Mesh.points[0].Y, &CircleTraekt.Mesh.points[0].Z, true);
-		for (int i = 1; i<(int)CircleTraekt.Mesh.points.size(); i++)
+	tmpLine.Point = CircleTraekt.Line.Point;
+	tmpLine.Vector = VectorGeometric(CircleTraekt.Line.Point, CircleTraekt.Mesh.points[0]);
+	tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius + PtDist);
+	pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
+	pCMM->Move_(&CircleTraekt.Mesh.points[0].X, &CircleTraekt.Mesh.points[0].Y, &CircleTraekt.Mesh.points[0].Z, true);
+	for (int i = 1; i<(int)CircleTraekt.Mesh.points.size(); i++)
+	{
+		tmpLine.Vector = VectorGeometric(CircleTraekt.Line.Point, CircleTraekt.Mesh.points[i]);
+		tmpPoint1 = tmpPoint;
+		if (inside)
 		{
-			tmpLine.Vector = VectorGeometric(CircleTraekt.Line.Point, CircleTraekt.Mesh.points[i]);
-			tmpPoint1 = tmpPoint;
+			tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius - PtDist);
+			pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
+		}
+		else
+		{
 			tmpPoint = tmpLine.CreatePointOnDistance(CircleTraekt.Radius + PtDist);
-
-
-			
-			
-				
+			if (CircleTraekt.LineIntersectionCircle(forIntersection, &forI1, &forI2) == 0)
+			{
+				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
+			}
+			else
+			{
 				double xPre = CircleTraekt.Line.Point.DistanceToPoint(tmpPoint1);
 
 				xVec.Point = CircleTraekt.Line.Point;
@@ -1019,19 +1147,20 @@ UINT TraektCircle(LPVOID Struct)
 				double yNew = xP.DistanceToPoint(tmpPoint);
 				PointGeometric subPoint(xPre, yNew, 0);
 
-				yCoord = xVec.Vector^CircleTraekt.Line.Vector;
-				if (yCoord*(VectorGeometric(tmpPoint1, tmpPoint)) < 0)
+				yCoord = xVec.Vector ^ CircleTraekt.Line.Vector;
+				if (yCoord * (VectorGeometric(tmpPoint1, tmpPoint)) < 0)
 				{
 					yCoord = yCoord * (-1);
 				}
-				subPoint = TransferPointToNewCoordinateSystem(subPoint, CircleTraekt.Line.Point, xVec.Vector, yCoord, CircleTraekt.Line.Vector);
+				subPoint = TransToGlobal(subPoint, CircleTraekt.Line.Point, xVec.Vector, yCoord, CircleTraekt.Line.Vector);
 				pCMM->Move_(&subPoint.X, &subPoint.Y, &subPoint.Z, false);
 				pCMM->Move_(&tmpPoint.X, &tmpPoint.Y, &tmpPoint.Z, false);
-				pCMM->Move_(&CircleTraekt.Mesh.points[i].X, &CircleTraekt.Mesh.points[i].Y, &CircleTraekt.Mesh.points[i].Z, true);
+			}
 		}
-
-		//CircleTraekt.Mesh.points.clear();
-
+		pCMM->Move_(&CircleTraekt.Mesh.points[i].X, &CircleTraekt.Mesh.points[i].Y, &CircleTraekt.Mesh.points[i].Z, true);
+	}
+	//CircleTraekt.Mesh.points.clear();
+	delete struc;
 	return 0;
 }
 
