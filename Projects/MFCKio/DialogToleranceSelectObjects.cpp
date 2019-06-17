@@ -215,8 +215,22 @@ void DialogToleranceSelectObjects::OnBnClickedOk()
 				break;
 
 			case LOCATION_COAXIALITY:
-				result = parent->pTolerance->LocationCoaxiality((CylinderApprox*)base->objMath, (CylinderApprox*)control->objMath);
-			
+				if (base->objMath->GetName() == CylinderApprox().GetName()) {
+					if (control->objMath->GetName() == CylinderApprox().GetName()) {
+						result = parent->pTolerance->LocationCoaxiality((CylinderApprox*)base->objMath, (CylinderApprox*)control->objMath);
+					}
+					else if (control->objMath->GetName() == ConeApprox().GetName()) {
+						result = parent->pTolerance->LocationCoaxiality((CylinderApprox*)base->objMath, (ConeApprox*)control->objMath);
+					}
+				}
+				else if (base->objMath->GetName() == ConeApprox().GetName()) {
+					if (control->objMath->GetName() == CylinderApprox().GetName()) {
+						result = parent->pTolerance->LocationCoaxiality((ConeApprox*)base->objMath, (CylinderApprox*)control->objMath);
+					}
+					else if (control->objMath->GetName() == ConeApprox().GetName()) {
+						result = parent->pTolerance->LocationCoaxiality((ConeApprox*)base->objMath, (ConeApprox*)control->objMath);
+					}
+				}
 				frame = new ToleranceFrame(base, control, toleranceName, result);
 				break;
 

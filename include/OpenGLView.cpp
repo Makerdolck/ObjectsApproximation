@@ -1571,8 +1571,9 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 
 
 	// Текст
-	CString sizeValue = L"";
-	sizeValue.Format(L"%g мм", Tolerance().round(obj->length(), 2));
+	CString sizeValue = L"10.5 мм";
+	//CString sizeValue = L"";
+	//sizeValue.Format(L"%g мм", Tolerance().round(obj->length(), 2));
 	PointGeometric centerLine = ((leftLineTop + rightLineTop) / 2) + (ABPerp * 2.5) + ABNormalized * 3;
 	glPushMatrix();
 	glRasterPos3f(centerLine.X, centerLine.Y, centerLine.Z);

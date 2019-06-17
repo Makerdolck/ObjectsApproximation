@@ -57,6 +57,9 @@ public:
 	double LocationPosition(PlaneApprox* base1, double l1, PlaneApprox* base2, double l2, CircleApprox* circle); // Позиционирование
 	double LocationConcentricity(CircleApprox *circleA, CircleApprox *circleB); // Концентричность (для точек)
 	double LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* cylinderB); // Соосность (для осей)
+	double LocationCoaxiality(CylinderApprox* cylinderA, ConeApprox* coneB); // Соосность (для осей)
+	double LocationCoaxiality(ConeApprox* coneA, CylinderApprox* cylinderB); // Соосность (для осей)
+	double LocationCoaxiality(ConeApprox* coneA, ConeApprox* coneB);// Соосность (для осей)
 	double LocationSymmetry(PlaneApprox* base, PlaneApprox* control1, PlaneApprox* control2); // Симметричность
 	double LocationSymmetry(LineSegmentApprox* base, LineSegmentApprox* control1, LineSegmentApprox* control2); // Симметричность
 

@@ -206,6 +206,42 @@ double Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, CylinderApprox* 
 	return round(max, 3);
 }
 
+double Tolerance::LocationCoaxiality(CylinderApprox* cylinderA, ConeApprox* coneB)
+{
+	double bottomDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, coneB->PointBottomSurfaceCenter);
+	double topDistance = DistanceBetween(cylinderA->PointBottomSurfaceCenter, cylinderA->PointTopSurfaceCenter, coneB->PointTopSurfaceCenter);
+
+	double max = bottomDistance;
+	if (topDistance > bottomDistance) {
+		max = topDistance;
+	}
+	return round(max, 3);
+}
+
+double Tolerance::LocationCoaxiality(ConeApprox* coneA, CylinderApprox* cylinderB)
+{
+	double bottomDistance = DistanceBetween(coneA->PointBottomSurfaceCenter, coneA->PointTopSurfaceCenter, cylinderB->PointBottomSurfaceCenter);
+	double topDistance = DistanceBetween(coneA->PointBottomSurfaceCenter, coneA->PointTopSurfaceCenter, cylinderB->PointTopSurfaceCenter);
+
+	double max = bottomDistance;
+	if (topDistance > bottomDistance) {
+		max = topDistance;
+	}
+	return round(max, 3);
+}
+
+double Tolerance::LocationCoaxiality(ConeApprox* coneA, ConeApprox* coneB)
+{
+	double bottomDistance = DistanceBetween(coneA->PointBottomSurfaceCenter, coneA->PointTopSurfaceCenter, coneB->PointBottomSurfaceCenter);
+	double topDistance = DistanceBetween(coneA->PointBottomSurfaceCenter, coneA->PointTopSurfaceCenter, coneB->PointTopSurfaceCenter);
+
+	double max = bottomDistance;
+	if (topDistance > bottomDistance) {
+		max = topDistance;
+	}
+	return round(max, 3);
+}
+
 double Tolerance::LocationSymmetry(PlaneApprox* base, PlaneApprox* control1, PlaneApprox* control2)
 {
 	double maxControl1 = 0;
