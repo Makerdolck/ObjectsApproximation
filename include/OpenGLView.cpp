@@ -448,7 +448,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 	prev_x = point.x;
 	prev_y = point.y;
 
-	
+	//Invalidate(FALSE);
 	
 	if (flagShiftPressed)
 	{
@@ -461,7 +461,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (selectedToleranceObject != nullptr) {
 			selectedToleranceObject->flagSelected = false;
 			selectedToleranceObject = nullptr;
-			Invalidate(FALSE);
+			
 
 		}
 		return;
@@ -504,7 +504,7 @@ void COpenGLView::OnLButtonDown(UINT nFlags, CPoint point)
 	
 
 	Invalidate(FALSE);
-
+	//RedrawWindow();
 	CView::OnLButtonDown(nFlags, point);
 }
 
@@ -696,6 +696,7 @@ ToleranceObject* COpenGLView::GetToleranceObjectUnderMouse(CPoint point)
 
 				if (obj->objID == a)
 				{
+					
 					return obj;
 				}
 			}
@@ -791,44 +792,7 @@ void COpenGLView::PaintScene(GLenum mode)
 	SphereApprox		*sphereA		= new SphereApprox();
 
 	// Voronov
-	if (toleranceObjectsArray != nullptr) {
-
-		ToleranceObject* toleranceObject;
-
-		for (int i = 0; i < toleranceObjectsArray->size(); i++) {
-			toleranceObject = toleranceObjectsArray->operator[](i);
-
-			if (!toleranceObject->isVisible) {
-				continue;
-			}
-			
-
-			if (toleranceObject->flagSelected) {
-				glColor3fv(redColor);
-			}
-			else {
-				glColor3fv(greenToleranceColor);
-			}
-
-			if (mode == GL_SELECT) {
-				glLoadName(toleranceObject->objID);
-			}
-
-			if (dynamic_cast<SizeLine*>(toleranceObject)) {
-				DrawOpenGL_SizeLine((SizeLine*)toleranceObject);
-			}else if (dynamic_cast<DiameterLine*> (toleranceObject)) {
-				DrawOpenGL_DiameterLine((DiameterLine*)toleranceObject);
-			}else if (dynamic_cast<AxialLine*> (toleranceObject)) {
-				DrawOpenGL_AxialLine((AxialLine*)toleranceObject);
-			}else if (dynamic_cast<ToleranceFrame*>(toleranceObject)) {
-				DrawOpenGL_ToleranceFrame((ToleranceFrame*)toleranceObject);
-			}else if (dynamic_cast<ToleranceBase*>(toleranceObject)) {
-				DrawOpenGL_ToleranceBase((ToleranceBase*)toleranceObject);
-			}else if (dynamic_cast<AngleLine*>(toleranceObject)) {
-				DrawOpenGL_AngleLine((AngleLine*)toleranceObject);
-			}
-		}
-	}
+	
 
 
 
@@ -924,6 +888,50 @@ void COpenGLView::PaintScene(GLenum mode)
 			DrawOpenGL_PlaneViaRectangle(*objApprox->objMath);
 		}
 	}	
+
+	if (toleranceObjectsArray != nullptr) {
+
+		ToleranceObject* toleranceObject;
+
+		for (int i = 0; i < toleranceObjectsArray->size(); i++) {
+			toleranceObject = toleranceObjectsArray->operator[](i);
+
+			if (!toleranceObject->isVisible) {
+				continue;
+			}
+
+
+			if (toleranceObject->flagSelected) {
+				glColor3fv(redColor);
+			}
+			else {
+				glColor3fv(greenToleranceColor);
+			}
+
+			if (mode == GL_SELECT) {
+				glLoadName(toleranceObject->objID);
+			}
+
+			if (dynamic_cast<SizeLine*>(toleranceObject)) {
+				DrawOpenGL_SizeLine((SizeLine*)toleranceObject);
+			}
+			else if (dynamic_cast<DiameterLine*> (toleranceObject)) {
+				DrawOpenGL_DiameterLine((DiameterLine*)toleranceObject);
+			}
+			else if (dynamic_cast<AxialLine*> (toleranceObject)) {
+				DrawOpenGL_AxialLine((AxialLine*)toleranceObject);
+			}
+			else if (dynamic_cast<ToleranceFrame*>(toleranceObject)) {
+				DrawOpenGL_ToleranceFrame((ToleranceFrame*)toleranceObject);
+			}
+			else if (dynamic_cast<ToleranceBase*>(toleranceObject)) {
+				DrawOpenGL_ToleranceBase((ToleranceBase*)toleranceObject);
+			}
+			/*else if (dynamic_cast<AngleLine*>(toleranceObject)) {
+				DrawOpenGL_AngleLine((AngleLine*)toleranceObject);
+			}*/
+		}
+	}
 	
 
 	delete pointA;
@@ -1135,9 +1143,15 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 	if (frame->objMath->GetName() == LineSegmentApprox().GetName()) {
 		ABNorm = VectorGeometric(((LineSegmentApprox*)frame->objMath)->PointStart, ((LineSegmentApprox*)frame->objMath)->PointEnd, true);
 	}
-	else if (frame->objMath->GetName() == CylinderApprox().GetName()) {
+	else if (frame->objMath->GetName() == CylinderApprox().GetName() || frame->objMath->GetName() == ConeApprox().GetName()) {
 		PointGeometric pAxialStart = ((CylinderApprox*)frame->objMath)->PointTopSurfaceCenter;
 		PointGeometric pAxialEnd = ((CylinderApprox*)frame->objMath)->PointBottomSurfaceCenter;
+
+		if (frame->objMath->GetName() == ConeApprox().GetName()) {
+			pAxialStart = ((ConeApprox*)frame->objMath)->PointTopSurfaceCenter;
+			pAxialEnd = ((ConeApprox*)frame->objMath)->PointBottomSurfaceCenter;
+		}
+
 		VectorGeometric AB = VectorGeometric(pAxialStart, pAxialEnd, false);
 		ABNorm = VectorGeometric(pAxialStart, pAxialEnd, true);
 
@@ -1403,6 +1417,8 @@ void COpenGLView::DrawOpenGL_AngleLine(AngleLine* obj)
 void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 {
 	glLineWidth(1);
+
+	
 	PointGeometric pMouseEnd = obj->PointPosition;
 
 	VectorGeometric AB = VectorGeometric(obj->PointStart, obj->PointEnd, false);
@@ -1489,6 +1505,7 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 	glRasterPos3f(centerLine.X, centerLine.Y, centerLine.Z);
 	kioFont->RussianFont->Render(sizeValue);
 	glPopMatrix();
+
 }
 
 void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
