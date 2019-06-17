@@ -927,9 +927,9 @@ void COpenGLView::PaintScene(GLenum mode)
 			else if (dynamic_cast<ToleranceBase*>(toleranceObject)) {
 				DrawOpenGL_ToleranceBase((ToleranceBase*)toleranceObject);
 			}
-			/*else if (dynamic_cast<AngleLine*>(toleranceObject)) {
+			else if (dynamic_cast<AngleLine*>(toleranceObject)) {
 				DrawOpenGL_AngleLine((AngleLine*)toleranceObject);
-			}*/
+			}
 		}
 	}
 	
@@ -950,6 +950,7 @@ void COpenGLView::PaintScene(GLenum mode)
 //////////////////////////////////////////////////////////	---	---	---	---	---	---	---	---	---	// Draw OpenGL SizeLine
 void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 {
+	glPopMatrix();
 	PointGeometric pStart = base->PointStart;
 	PointGeometric pEnd = base->PointPosition;
 	VectorGeometric ABNorm;
@@ -1132,10 +1133,12 @@ void COpenGLView::DrawOpenGL_ToleranceBase(ToleranceBase* base)
 		glVertex2d(0, 0);
 	glEnd();
 	glPopMatrix();
+	glPopMatrix();
 }
 
 void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 {
+	glPopMatrix();
 	PointGeometric pStart = frame->PointStart;
 	PointGeometric pEnd = frame->PointPosition;
 	VectorGeometric ABNorm;
@@ -1267,12 +1270,15 @@ void COpenGLView::DrawOpenGL_ToleranceFrame(ToleranceFrame* frame)
 		glPushMatrix();
 		glRasterPos3f(boxWidth - bageWidth, 0,0);
 		kioFont->RussianFont->Render(frame->Base->baseChar);
+		glPopMatrix();
 	}
+	glPopMatrix();
 	glPopMatrix();
 }
 
 void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 {
+	glPopMatrix();
 	double triangle_height = 0.7;
 	double triangle_widht = triangle_height;
 
@@ -1353,10 +1359,12 @@ void COpenGLView::DrawOpenGL_DiameterLine(DiameterLine* obj)
 	glRasterPos3f(obj->PointPosition.X, obj->PointPosition.Y, obj->PointPosition.Z);
 	kioFont->RussianFont->Render(sizeValue);
 	glPopMatrix();
+	glPopMatrix();
 }
 
 void COpenGLView::DrawOpenGL_AngleLine(AngleLine* obj)
 {
+	glPopMatrix();
 	glLineWidth(1);
 	ConeApprox* cone = (ConeApprox*)obj->objMath;
 	PointGeometric pEnd = obj->PointPosition;
@@ -1382,7 +1390,7 @@ void COpenGLView::DrawOpenGL_AngleLine(AngleLine* obj)
 	double projToPhantomDistance = projectionPoint1.DistanceToPoint(coneTopPoint);
 	double angleInRad = cone->Angle / 180 * M_PI;
 	double radiusInProj = projToPhantomDistance * tan(angleInRad);
-	PointGeometric radiusPoint = projectionPoint1 + AprojVec2 * radiusInProj; // Точка на окружности
+	PointGeometric radiusPoint = projectionPoint1 + AprojVec2 * (radiusInProj-2); // Точка на окружности
 
 	//От точки начала до точки остановки 
 	glBegin(GL_LINES);
@@ -1401,7 +1409,6 @@ void COpenGLView::DrawOpenGL_AngleLine(AngleLine* obj)
 	glVertex3d(leftTrianglePoint.X, leftTrianglePoint.Y, leftTrianglePoint.Z);
 	glVertex3d(radiusPoint.X, radiusPoint.Y, radiusPoint.Z);
 	glVertex3d(rightTrianglePoint.X, rightTrianglePoint.Y, rightTrianglePoint.Z);
-
 	glEnd();
 	
 
@@ -1412,12 +1419,13 @@ void COpenGLView::DrawOpenGL_AngleLine(AngleLine* obj)
 	glRasterPos3f(pEnd.X, pEnd.Y, pEnd.Z);
 	kioFont->BadgeFont->Render(sizeValue);
 	glPopMatrix();
+	glPopMatrix();
 }
 
 void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 {
 	glLineWidth(1);
-
+	glPopMatrix();
 	
 	PointGeometric pMouseEnd = obj->PointPosition;
 
@@ -1497,15 +1505,14 @@ void COpenGLView::DrawOpenGL_SizeLine(SizeLine* obj)
 
 
 	// Текст
-	CString sizeValue = L"10.5 мм";
-	//CString sizeValue = L"";
-	//sizeValue.Format(L"%g мм", Tolerance().round(obj->length(), 2));
+	CString sizeValue = L"";
+	sizeValue.Format(L"%g мм", Tolerance().round(obj->length(), 2));
 	PointGeometric centerLine = ((leftLineTop + rightLineTop) / 2) + (ABPerp * 2.5) + ABNormalized * 3;
 	glPushMatrix();
 	glRasterPos3f(centerLine.X, centerLine.Y, centerLine.Z);
 	kioFont->RussianFont->Render(sizeValue);
 	glPopMatrix();
-
+	glPopMatrix();
 }
 
 void COpenGLView::DrawOpenGL_AxialLine(AxialLine * obj)
