@@ -166,7 +166,7 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectBaseObject()
 		}
 	}
 	else {
-		AfxMessageBox(L"Необходимо выбрать базу, а не объект!");
+		AfxMessageBox(L"Необходимо выбрать базу!");
 	}
 	unselectAllObjects();
 }
@@ -184,6 +184,9 @@ void DialogToleranceSelectObjects::OnBnClickedButtonSelectControlObject()
 		if (base != nullptr) {
 			((CStatic*)GetDlgItem(IDOK))->EnableWindow(true);
 		}
+	}
+	else {
+		AfxMessageBox(L"Необходимо выбрать объект!");
 	}
 	unselectAllObjects();
 }
